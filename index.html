@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stromnetz · Labour Attendance & Payroll</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand:#053041; --brand-600:#0a4459; --brand-400:#1d6b88; --brand-100:#e3eef2;
+    --accent:#f5b301; --accent-600:#d99c00;
+    --bg:#f2f5f7; --ink:#0f1f27; --muted:#5d707a; --line:#dde5e9;
+    --bs-primary:#053041; --bs-primary-rgb:5,48,65; --bs-link-color:#1d6b88; --bs-link-hover-color:#053041;
+    --bs-body-font-family:'Plus Jakarta Sans',system-ui,sans-serif; --bs-body-color:var(--ink);
+  }
+  body{background:var(--bg);font-size:.925rem}
+  /* ---------- sidebar ---------- */
+  .sidebar{width:248px;background:var(--brand);color:#c9dbe2;position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;z-index:1040;transition:transform .2s}
+  .brand{display:flex;align-items:center;gap:.65rem;padding:1.25rem 1.25rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.08)}
+  .brand-mark{width:38px;height:38px;border-radius:10px;background:var(--accent);display:grid;place-items:center;flex:none}
+  .brand-name{font-weight:800;font-size:1.25rem;color:#fff;letter-spacing:.2px;line-height:1}
+  .brand-sub{font-size:.62rem;letter-spacing:.22em;color:var(--accent);font-weight:700;margin-top:3px}
+  .nav-side{padding:.9rem .75rem;flex:1}
+  .nav-side .label{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#7fa1ae;padding:.8rem .75rem .35rem;font-weight:700}
+  .nav-side a{display:flex;align-items:center;gap:.7rem;color:#c9dbe2;text-decoration:none;padding:.6rem .75rem;border-radius:8px;font-weight:500;margin-bottom:2px}
+  .nav-side a i{font-size:1.05rem;width:20px;text-align:center}
+  .nav-side a:hover{background:rgba(255,255,255,.06);color:#fff}
+  .nav-side a.active{background:rgba(245,179,1,.14);color:#fff}
+  .nav-side a.active i{color:var(--accent)}
+  .side-foot{padding:1rem 1.25rem;font-size:.75rem;color:#7fa1ae;border-top:1px solid rgba(255,255,255,.08)}
+  .main{margin-left:248px;min-height:100vh}
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:.8rem 1.5rem;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:1030}
+  .topbar h1{font-size:1.15rem;font-weight:700;margin:0}
+  .content{padding:1.5rem}
+  @media(max-width:991px){.sidebar{transform:translateX(-100%)}.sidebar.show{transform:none}.main{margin-left:0}}
+  /* ---------- components ---------- */
+  .card{border:1px solid var(--line);border-radius:12px;box-shadow:0 1px 2px rgba(5,48,65,.04)}
+  .card-header{background:#fff;border-bottom:1px solid var(--line);font-weight:700;padding:.9rem 1.1rem;border-radius:12px 12px 0 0!important}
+  .kpi{padding:1.1rem 1.2rem}
+  .kpi .k-label{color:var(--muted);font-size:.8rem;font-weight:600}
+  .kpi .k-value{font-size:1.65rem;font-weight:800;letter-spacing:-.5px;margin-top:.15rem}
+  .kpi .k-icon{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;font-size:1.2rem;background:var(--brand-100);color:var(--brand)}
+  .kpi .k-icon.amber{background:#fff4d1;color:#9a6c00}
+  .kpi .k-sub{font-size:.78rem;color:var(--muted)}
+  .btn-primary{--bs-btn-bg:var(--brand);--bs-btn-border-color:var(--brand);--bs-btn-hover-bg:var(--brand-600);--bs-btn-hover-border-color:var(--brand-600);--bs-btn-active-bg:var(--brand-600);--bs-btn-disabled-bg:var(--brand);--bs-btn-disabled-border-color:var(--brand)}
+  .btn-accent{background:var(--accent);border-color:var(--accent);color:#1d1600;font-weight:600}
+  .btn-accent:hover{background:var(--accent-600);border-color:var(--accent-600);color:#1d1600}
+  .btn-outline-primary{--bs-btn-color:var(--brand);--bs-btn-border-color:var(--brand);--bs-btn-hover-bg:var(--brand);--bs-btn-hover-border-color:var(--brand);--bs-btn-active-bg:var(--brand)}
+  .table{--bs-table-bg:transparent;margin:0}
+  .table thead th{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;background:#f7fafb;border-bottom:1px solid var(--line);white-space:nowrap}
+  .table td{vertical-align:middle;border-color:#edf1f3}
+  .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--brand-100);color:var(--brand);display:inline-grid;place-items:center;font-weight:700;font-size:.8rem;flex:none}
+  .badge-soft{background:var(--brand-100);color:var(--brand);font-weight:600}
+  .badge-amber{background:#fff4d1;color:#7a5600;font-weight:600}
+  .badge-green{background:#dff3e6;color:#1d6b3a;font-weight:600}
+  .badge-grey{background:#eceff1;color:#56656d;font-weight:600}
+  .badge-red{background:#fde4e1;color:#a2291b;font-weight:600}
+  .form-label{font-weight:600;font-size:.8rem;color:#33454e}
+  .form-control:focus,.form-select:focus{border-color:var(--brand-400);box-shadow:0 0 0 .2rem rgba(29,107,136,.15)}
+  .day-group td{background:#f7fafb!important;font-weight:700;color:var(--brand)}
+  .day-total td{font-weight:700;background:#fffaf0!important}
+  .entry-table input,.entry-table select{min-width:90px}
+  .section{display:none}.section.active{display:block}
+  .chart-box{position:relative;height:260px}
+  .week-nav{display:flex;align-items:center;gap:.5rem}
+  .week-label{font-weight:700;min-width:230px;text-align:center}
+  .paid-input{width:110px;text-align:right;margin-left:auto}
+  .update-item{border-left:3px solid var(--accent);padding:.15rem 0 .15rem .75rem;margin-bottom:.9rem}
+  .perm-grid label{font-size:.85rem}
+  .empty{padding:2.5rem;text-align:center;color:var(--muted)}
+  @media print{.sidebar,.topbar,.no-print{display:none!important}.main{margin:0}.content{padding:0}.section:not(.active){display:none!important}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg width="20" height="22" viewBox="0 0 20 22" aria-hidden="true"><path d="M12 0 1 13h7l-2 9L19 8h-7l2-8Z" fill="#053041"/></svg>
+    </div>
+    <div>
+      <div class="brand-name">Stromnetz</div>
+      <div class="brand-sub">CONSULTANTS</div>
+    </div>
+  </div>
+  <nav class="nav-side">
+    <div class="label">Overview</div>
+    <a href="#dashboard" data-nav="dashboard"><i class="bi bi-grid-1x2"></i>Dashboard</a>
+    <div class="label">Daily work</div>
+    <a href="#attendance" data-nav="attendance"><i class="bi bi-calendar2-check"></i>Add Attendance</a>
+    <a href="#settlement" data-nav="settlement"><i class="bi bi-cash-coin"></i>Weekly Settlement</a>
+    <a href="#projects" data-nav="projects"><i class="bi bi-buildings"></i>Projects</a>
+    <div class="label">People</div>
+    <a href="#employees" data-nav="employees"><i class="bi bi-person-badge"></i>Manage Employees</a>
+    <a href="#staff" data-nav="staff"><i class="bi bi-people"></i>Manage Staff</a>
+  </nav>
+  <div class="side-foot">
+    <div class="fw-semibold text-white-50 mb-1">Power for you and at every time</div>
+    Demo build · data stays in this browser
+    <div><a href="#" id="resetDemo" class="link-warning small">Reset demo data</a></div>
+  </div>
+</aside>
+
+<!-- ================= MAIN ================= -->
+<div class="main">
+  <header class="topbar">
+    <button class="btn btn-light d-lg-none" id="menuBtn"><i class="bi bi-list"></i></button>
+    <h1 id="pageTitle">Dashboard</h1>
+    <span class="text-muted small d-none d-md-inline" id="todayLabel"></span>
+    <div class="ms-auto d-flex align-items-center gap-3">
+      <button class="btn btn-accent btn-sm d-none d-sm-inline-flex align-items-center gap-1" onclick="location.hash='attendance'"><i class="bi bi-plus-lg"></i> Mark attendance</button>
+      <div class="dropdown">
+        <a href="#" class="d-flex align-items-center gap-2 text-decoration-none text-body" data-bs-toggle="dropdown">
+          <span class="avatar">AD</span><span class="d-none d-md-inline fw-semibold">Admin</span><i class="bi bi-chevron-down small"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><span class="dropdown-item-text small text-muted">Signed in as Office Admin</span></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#staff"><i class="bi bi-gear me-2"></i>Staff & access</a></li>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Sign out</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- ========== DASHBOARD ========== -->
+    <section class="section" id="sec-dashboard">
+      <div class="row g-3 mb-3">
+        <div class="col-6 col-xl-3"><div class="card kpi"><div class="d-flex justify-content-between"><div><div class="k-label">Active employees</div><div class="k-value" id="kEmp">0</div><div class="k-sub" id="kEmpSub"></div></div><div class="k-icon"><i class="bi bi-person-badge"></i></div></div></div></div>
+        <div class="col-6 col-xl-3"><div class="card kpi"><div class="d-flex justify-content-between"><div><div class="k-label">On site today</div><div class="k-value" id="kToday">0</div><div class="k-sub" id="kTodaySub"></div></div><div class="k-icon amber"><i class="bi bi-lightning-charge"></i></div></div></div></div>
+        <div class="col-6 col-xl-3"><div class="card kpi"><div class="d-flex justify-content-between"><div><div class="k-label">This week's labour</div><div class="k-value" id="kWeek">₹0</div><div class="k-sub" id="kWeekSub"></div></div><div class="k-icon"><i class="bi bi-calendar-week"></i></div></div></div></div>
+        <div class="col-6 col-xl-3"><div class="card kpi"><div class="d-flex justify-content-between"><div><div class="k-label">Awaiting settlement</div><div class="k-value" id="kPending">₹0</div><div class="k-sub" id="kPendingSub"></div></div><div class="k-icon amber"><i class="bi bi-hourglass-split"></i></div></div></div></div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-8"><div class="card h-100"><div class="card-header d-flex justify-content-between"><span>Daily labour cost · last 14 days</span><span class="text-muted small fw-normal">₹ per day, all sites</span></div><div class="card-body"><div class="chart-box"><canvas id="chDaily" aria-label="Daily labour cost bar chart"></canvas></div></div></div></div>
+        <div class="col-lg-4"><div class="card h-100"><div class="card-header d-flex justify-content-between"><span>Cost by site</span><span class="text-muted small fw-normal">last 30 days</span></div><div class="card-body"><div class="chart-box"><canvas id="chSite" aria-label="Cost by site bar chart"></canvas></div></div></div></div>
+      </div>
+      <div class="row g-3">
+        <div class="col-lg-7"><div class="card h-100"><div class="card-header d-flex justify-content-between align-items-center"><span>Today's attendance</span><a href="#attendance" class="small fw-semibold">Open register →</a></div><div class="table-responsive"><table class="table"><thead><tr><th>Employee</th><th>Site</th><th>In</th><th>Out</th><th>Status</th></tr></thead><tbody id="todayBody"></tbody></table></div></div></div>
+        <div class="col-lg-5"><div class="card h-100"><div class="card-header">Recent work updates</div><div class="card-body" id="updatesList"></div></div></div>
+      </div>
+    </section>
+
+    <!-- ========== ADD ATTENDANCE ========== -->
+    <section class="section" id="sec-attendance">
+      <div class="card mb-3">
+        <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
+          <span><i class="bi bi-calendar2-plus me-2 text-warning"></i>New day entry</span>
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-primary" id="loadTeamBtn"><i class="bi bi-arrow-repeat me-1"></i>Load last team</button>
+            <div class="form-check form-switch m-0 d-flex align-items-center gap-2 small">
+              <input class="form-check-input" type="checkbox" id="payModeSwitch">
+              <label class="form-check-label" for="payModeSwitch" id="payModeLabel">Shift slabs (½ / 1 / 1½ day)</label>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row g-3 mb-3">
+            <div class="col-sm-4 col-lg-3"><label class="form-label">Date</label><input type="date" class="form-control" id="entDate"></div>
+            <div class="col-sm-8 col-lg-5"><label class="form-label">Project / Site</label><input class="form-control" id="entSite" list="siteList" placeholder="e.g. Maya Tower"><datalist id="siteList"></datalist></div>
+            <div class="col-lg-4"><label class="form-label">Category</label><select class="form-select" id="entCat"><option>Electrical</option><option>Plumbing</option><option>HVAC</option><option>Civil support</option></select></div>
+          </div>
+          <div class="table-responsive">
+            <table class="table entry-table">
+              <thead><tr><th style="min-width:170px">Employee</th><th class="num">Basic/day</th><th>Punch in</th><th>Punch out</th><th class="num">Hours</th><th class="num">Days</th><th class="num">Salary</th><th>Petrol ₹</th><th>Tools ₹</th><th class="num">Amount</th><th></th></tr></thead>
+              <tbody id="entryBody"></tbody>
+              <tfoot><tr><td colspan="9"><button class="btn btn-sm btn-light" id="addRowBtn"><i class="bi bi-plus-lg me-1"></i>Add labourer</button></td><td class="num fw-bold" id="entryTotal">₹0</td><td></td></tr></tfoot>
+            </table>
+          </div>
+          <div class="row g-3 mt-1">
+            <div class="col-lg-8"><label class="form-label">Daily work update</label><textarea class="form-control" id="entUpdate" rows="2" placeholder="* Light installation of 2nd floor corridor…"></textarea></div>
+            <div class="col-lg-4 d-flex align-items-end justify-content-lg-end gap-2">
+              <button class="btn btn-light" id="clearEntryBtn">Clear</button>
+              <button class="btn btn-primary px-4" id="saveEntryBtn"><i class="bi bi-check2-circle me-1"></i>Save attendance</button>
+            </div>
+          </div>
+          <div class="small text-muted mt-2"><i class="bi bi-info-circle me-1"></i><span id="payRuleHelp"></span> Leave punch-out empty to save someone as still on site.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
+          <span>Attendance register</span>
+          <div class="d-flex flex-wrap gap-2">
+            <input type="date" class="form-control form-control-sm" id="regFrom" style="width:150px">
+            <input type="date" class="form-control form-control-sm" id="regTo" style="width:150px">
+            <select class="form-select form-select-sm" id="regSite" style="width:190px"><option value="">All sites</option></select>
+            <select class="form-select form-select-sm" id="regEmp" style="width:160px"><option value="">All employees</option></select>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead><tr><th>Employee</th><th>Site</th><th>In</th><th>Out</th><th class="num">Hours</th><th class="num">Rate/hr</th><th class="num">Salary</th><th class="num">Petrol</th><th class="num">Tools</th><th class="num">Amount</th><th class="no-print"></th></tr></thead>
+            <tbody id="regBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== EMPLOYEES ========== -->
+    <section class="section" id="sec-employees">
+      <div class="card">
+        <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
+          <span>Labour employees <span class="badge badge-soft ms-1" id="empCount"></span></span>
+          <div class="d-flex flex-wrap gap-2">
+            <div class="input-group input-group-sm" style="width:220px"><span class="input-group-text bg-white"><i class="bi bi-search"></i></span><input class="form-control" id="empSearch" placeholder="Search name or phone"></div>
+            <select class="form-select form-select-sm" id="empStatusFilter" style="width:130px"><option value="">All status</option><option>Active</option><option>Inactive</option></select>
+            <button class="btn btn-primary btn-sm" onclick="openEmp()"><i class="bi bi-person-plus me-1"></i>Add employee</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead><tr><th>Name</th><th>Phone</th><th>Position</th><th class="num">Basic/day</th><th class="num">Rate/hr</th><th class="num">Days (30d)</th><th class="num">Balance due</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+            <tbody id="empBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PROJECTS ========== -->
+    <section class="section" id="sec-projects">
+      <div class="card">
+        <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
+          <span>Projects / sites <span class="badge badge-soft ms-1" id="prjCount"></span></span>
+          <div class="d-flex flex-wrap gap-2">
+            <div class="input-group input-group-sm" style="width:230px"><span class="input-group-text bg-white"><i class="bi bi-search"></i></span><input class="form-control" id="prjSearch" placeholder="Search name, location, client"></div>
+            <select class="form-select form-select-sm" id="prjStatusFilter" style="width:140px"><option value="">All status</option><option>Ongoing</option><option>On hold</option><option>Completed</option></select>
+            <button class="btn btn-primary btn-sm" onclick="openPrj()"><i class="bi bi-plus-lg me-1"></i>Add project</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead><tr><th>Project</th><th>Location</th><th>Client</th><th>Started</th><th class="num">Man-days</th><th class="num">Labour cost</th><th>Last activity</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+            <tbody id="prjBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== EMPLOYEE HISTORY ========== -->
+    <section class="section" id="sec-employee">
+      <a href="#employees" class="small fw-semibold text-decoration-none d-inline-block mb-2 no-print"><i class="bi bi-arrow-left me-1"></i>All employees</a>
+      <div class="card mb-3"><div class="card-body d-flex flex-wrap gap-3 align-items-center">
+        <span class="avatar" id="ehAvatar" style="width:56px;height:56px;font-size:1.2rem"></span>
+        <div class="me-auto">
+          <div class="d-flex align-items-center gap-2"><h2 class="h4 fw-bold m-0" id="ehName"></h2><span id="ehStatus"></span></div>
+          <div class="text-muted small mt-1" id="ehMeta"></div>
+        </div>
+        <div class="text-end me-3"><div class="small text-muted fw-semibold">Current balance</div><div class="h4 fw-bold m-0" id="ehBal"></div><div class="small text-muted" id="ehBalSub"></div></div>
+        <div class="d-flex gap-2 no-print">
+          <button class="btn btn-outline-primary btn-sm" id="ehAdvBtn"><i class="bi bi-wallet2 me-1"></i>Advance</button>
+          <button class="btn btn-outline-primary btn-sm" id="ehEditBtn"><i class="bi bi-pencil me-1"></i>Edit</button>
+          <button class="btn btn-primary btn-sm" id="ehCsvBtn"><i class="bi bi-download me-1"></i>Export</button>
+        </div>
+      </div></div>
+
+      <div class="card mb-3 no-print"><div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
+        <span class="small fw-semibold text-muted me-1">Period</span>
+        <div class="btn-group btn-group-sm" id="ehPresets">
+          <button class="btn btn-outline-primary" data-p="30">30 days</button><button class="btn btn-outline-primary" data-p="90">90 days</button><button class="btn btn-outline-primary" data-p="365">1 year</button><button class="btn btn-outline-primary" data-p="all">All time</button>
+        </div>
+        <input type="date" class="form-control form-control-sm" id="ehFrom" style="width:150px">
+        <span class="text-muted">→</span>
+        <input type="date" class="form-control form-control-sm" id="ehTo" style="width:150px">
+        <select class="form-select form-select-sm" id="ehSite" style="width:200px"><option value="">All sites</option></select>
+      </div></div>
+
+      <div class="row g-3 mb-3" id="ehKpis"></div>
+
+      <div class="card">
+        <div class="card-header pb-0 border-0">
+          <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#ehTabAtt">Attendance <span class="badge badge-soft ms-1" id="ehCntAtt"></span></button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#ehTabSet">Weekly payments <span class="badge badge-soft ms-1" id="ehCntSet"></span></button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#ehTabAdv">Advances <span class="badge badge-soft ms-1" id="ehCntAdv"></span></button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#ehTabSite">Sites & rate changes</button></li>
+          </ul>
+        </div>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="ehTabAtt"><div class="table-responsive"><table class="table table-hover">
+            <thead><tr><th>Date</th><th>Site</th><th>In</th><th>Out</th><th class="num">Hours</th><th class="num">Days</th><th class="num">Basic</th><th class="num">Salary</th><th class="num">Petrol</th><th class="num">Tools</th><th class="num">Amount</th><th>Work update</th><th class="no-print"></th></tr></thead>
+            <tbody id="ehAttBody"></tbody></table></div></div>
+          <div class="tab-pane fade" id="ehTabSet"><div class="table-responsive"><table class="table table-hover">
+            <thead><tr><th>Week (Sat → Fri)</th><th class="num">Old bal.</th><th class="num">Labour</th><th class="num">Expenses</th><th class="num">Tools</th><th class="num">Advance</th><th class="num">Grand total</th><th class="num">Paid</th><th class="num">Balance</th><th>Status</th></tr></thead>
+            <tbody id="ehSetBody"></tbody></table></div></div>
+          <div class="tab-pane fade" id="ehTabAdv"><div class="table-responsive"><table class="table">
+            <thead><tr><th>Date</th><th>Note</th><th>Adjusted in week</th><th class="num">Amount</th></tr></thead>
+            <tbody id="ehAdvBody"></tbody></table></div></div>
+          <div class="tab-pane fade" id="ehTabSite"><div class="row g-0">
+            <div class="col-lg-7 border-end"><div class="table-responsive"><table class="table"><thead><tr><th>Site</th><th>First / last day</th><th class="num">Days</th><th class="num">Amount</th></tr></thead><tbody id="ehSiteBody"></tbody></table></div></div>
+            <div class="col-lg-5"><div class="table-responsive"><table class="table"><thead><tr><th>Effective from</th><th class="num">Basic/day</th><th class="num">Change</th></tr></thead><tbody id="ehRateBody"></tbody></table></div></div>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== STAFF ========== -->
+    <section class="section" id="sec-staff">
+      <div class="card">
+        <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
+          <span>Office & site staff <span class="small text-muted fw-normal ms-1">people who log in and run this system</span></span>
+          <button class="btn btn-primary btn-sm" onclick="openStaff()"><i class="bi bi-person-plus me-1"></i>Add staff</button>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead><tr><th>Name</th><th>Role</th><th>Contact</th><th>Assigned sites</th><th>Permissions</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+            <tbody id="staffBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SETTLEMENT ========== -->
+    <section class="section" id="sec-settlement">
+      <div class="card mb-3">
+        <div class="card-body d-flex flex-wrap gap-3 align-items-center justify-content-between">
+          <div class="week-nav">
+            <button class="btn btn-light" id="wkPrev"><i class="bi bi-chevron-left"></i></button>
+            <div class="week-label" id="wkLabel"></div>
+            <button class="btn btn-light" id="wkNext"><i class="bi bi-chevron-right"></i></button>
+            <span id="wkStatus"></span>
+          </div>
+          <div class="d-flex gap-2 no-print">
+            <button class="btn btn-outline-primary btn-sm" onclick="window.print()"><i class="bi bi-printer me-1"></i>Print</button>
+            <button class="btn btn-outline-primary btn-sm" id="csvBtn"><i class="bi bi-download me-1"></i>CSV</button>
+            <button class="btn btn-accent btn-sm" id="settleBtn"><i class="bi bi-check2-all me-1"></i>Mark week settled</button>
+          </div>
+        </div>
+      </div>
+      <div id="wkWarn"></div>
+      <div class="card mb-3">
+        <div class="card-header">Employee settlement <span class="small text-muted fw-normal ms-1">Saturday → Friday</span></div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead><tr><th>Name</th><th class="num">Old balance</th><th class="num">Labour</th><th class="num">Expenses</th><th class="num">Tools & material</th><th class="num">Total</th><th class="num">Advance paid</th><th class="num">Grand total</th><th class="num">Paid</th><th class="num">Balance</th></tr></thead>
+            <tbody id="setBody"></tbody>
+            <tfoot id="setFoot"></tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-lg-5"><div class="card h-100"><div class="card-header">Site-wise labour data</div><div class="table-responsive"><table class="table"><thead><tr><th>Site</th><th class="num">Man-days</th><th class="num">Amount</th></tr></thead><tbody id="siteBody"></tbody></table></div></div></div>
+        <div class="col-lg-7"><div class="card h-100"><div class="card-header d-flex justify-content-between align-items-center"><span>Advances this week</span><button class="btn btn-sm btn-outline-primary no-print" onclick="openAdvance()"><i class="bi bi-plus-lg me-1"></i>Record advance</button></div><div class="table-responsive"><table class="table"><thead><tr><th>Date</th><th>Employee</th><th>Note</th><th class="num">Amount</th><th class="no-print"></th></tr></thead><tbody id="advBody"></tbody></table></div></div></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ================= MODALS ================= -->
+<div class="modal fade" id="empModal" tabindex="-1"><div class="modal-dialog"><form class="modal-content" id="empForm">
+  <div class="modal-header"><h5 class="modal-title" id="empModalTitle">Add employee</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body row g-3">
+    <input type="hidden" id="empId">
+    <div class="col-12"><label class="form-label">Full name</label><input class="form-control" id="empName" required></div>
+    <div class="col-6"><label class="form-label">Phone</label><input class="form-control" id="empPhone" placeholder="+91"></div>
+    <div class="col-6"><label class="form-label">Position</label><select class="form-select" id="empPos"><option>Electrical Technician</option><option>Senior Technician</option><option>Helper</option><option>Plumber</option><option>Supervisor</option></select></div>
+    <div class="col-6"><label class="form-label">Basic salary / day (₹)</label><input type="number" class="form-control" id="empBasic" min="0" step="25" required></div>
+    <div class="col-6"><label class="form-label">Joined on</label><input type="date" class="form-control" id="empJoined"></div>
+    <div class="col-6"><label class="form-label">Aadhaar / ID (optional)</label><input class="form-control" id="empIdNo"></div>
+    <div class="col-6"><label class="form-label">Status</label><select class="form-select" id="empStatus"><option>Active</option><option>Inactive</option></select></div>
+    <div class="col-12 small text-muted">Hourly rate is worked out as basic ÷ 8, the same as the sheet.</div>
+  </div>
+  <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary">Save employee</button></div>
+</form></div></div>
+
+<div class="modal fade" id="prjModal" tabindex="-1"><div class="modal-dialog"><form class="modal-content" id="prjForm">
+  <div class="modal-header"><h5 class="modal-title" id="prjModalTitle">Add project</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body row g-3">
+    <input type="hidden" id="prjId">
+    <div class="col-12"><label class="form-label">Project / site name</label><input class="form-control" id="prjName" required placeholder="e.g. Maya Tower"></div>
+    <div class="col-6"><label class="form-label">Location</label><input class="form-control" id="prjLoc" placeholder="Town / district"></div>
+    <div class="col-6"><label class="form-label">Client</label><input class="form-control" id="prjClient"></div>
+    <div class="col-6"><label class="form-label">Start date</label><input type="date" class="form-control" id="prjStart"></div>
+    <div class="col-6"><label class="form-label">Status</label><select class="form-select" id="prjStatus"><option>Ongoing</option><option>On hold</option><option>Completed</option></select></div>
+    <div class="col-12"><label class="form-label">Notes</label><textarea class="form-control" id="prjNotes" rows="2" placeholder="Scope, contact person…"></textarea></div>
+  </div>
+  <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary">Save project</button></div>
+</form></div></div>
+
+<div class="modal fade" id="staffModal" tabindex="-1"><div class="modal-dialog"><form class="modal-content" id="staffForm">
+  <div class="modal-header"><h5 class="modal-title" id="staffModalTitle">Add staff</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body row g-3">
+    <input type="hidden" id="stId">
+    <div class="col-12"><label class="form-label">Full name</label><input class="form-control" id="stName" required></div>
+    <div class="col-6"><label class="form-label">Role</label><select class="form-select" id="stRole"><option>Admin</option><option>Accountant</option><option>Site Supervisor</option><option>Project Engineer</option></select></div>
+    <div class="col-6"><label class="form-label">Status</label><select class="form-select" id="stStatus"><option>Active</option><option>Inactive</option></select></div>
+    <div class="col-6"><label class="form-label">Phone</label><input class="form-control" id="stPhone"></div>
+    <div class="col-6"><label class="form-label">Email</label><input type="email" class="form-control" id="stEmail"></div>
+    <div class="col-12"><label class="form-label">Assigned sites</label><select class="form-select" id="stSites" multiple size="4"></select><div class="form-text">Ctrl/Cmd-click to pick several. Leave empty for all sites.</div></div>
+    <div class="col-12"><label class="form-label">Permissions</label>
+      <div class="row perm-grid g-1" id="stPerms"></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary">Save staff</button></div>
+</form></div></div>
+
+<div class="modal fade" id="attModal" tabindex="-1"><div class="modal-dialog"><form class="modal-content" id="attForm">
+  <div class="modal-header"><h5 class="modal-title">Edit attendance</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body row g-3">
+    <input type="hidden" id="aId">
+    <div class="col-12 fw-semibold" id="aWho"></div>
+    <div class="col-6"><label class="form-label">Date</label><input type="date" class="form-control" id="aDate" required></div>
+    <div class="col-6"><label class="form-label">Site</label><input class="form-control" id="aSite" list="siteList" required></div>
+    <div class="col-6"><label class="form-label">Punch in</label><input type="time" class="form-control" id="aIn" required></div>
+    <div class="col-6"><label class="form-label">Punch out</label><input type="time" class="form-control" id="aOut"></div>
+    <div class="col-4"><label class="form-label">Basic/day</label><input type="number" class="form-control" id="aBasic"></div>
+    <div class="col-4"><label class="form-label">Petrol ₹</label><input type="number" class="form-control" id="aPetrol"></div>
+    <div class="col-4"><label class="form-label">Tools ₹</label><input type="number" class="form-control" id="aTools"></div>
+    <div class="col-12"><label class="form-label">Work update</label><textarea class="form-control" id="aUpdate" rows="2"></textarea></div>
+  </div>
+  <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary">Update</button></div>
+</form></div></div>
+
+<div class="modal fade" id="advModal" tabindex="-1"><div class="modal-dialog modal-sm"><form class="modal-content" id="advForm">
+  <div class="modal-header"><h5 class="modal-title">Record advance</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body row g-3">
+    <div class="col-12"><label class="form-label">Employee</label><select class="form-select" id="advEmp" required></select></div>
+    <div class="col-12"><label class="form-label">Date</label><input type="date" class="form-control" id="advDate" required></div>
+    <div class="col-12"><label class="form-label">Amount (₹)</label><input type="number" class="form-control" id="advAmt" min="1" required></div>
+    <div class="col-12"><label class="form-label">Note</label><input class="form-control" id="advNote" value="Advance"></div>
+  </div>
+  <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary">Save</button></div>
+</form></div></div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3"><div id="toast" class="toast align-items-center text-bg-dark border-0"><div class="d-flex"><div class="toast-body" id="toastMsg"></div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+/* ================= helpers ================= */
+const $ = s => document.querySelector(s);
+const pad = n => String(n).padStart(2,'0');
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y,m-1,d); };
+const addDays = (s,n) => { const d = parse(s); d.setDate(d.getDate()+n); return iso(d); };
+const fmtD = s => parse(s).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+const fmtDs = s => parse(s).toLocaleDateString('en-IN',{weekday:'short',day:'2-digit',month:'short'});
+const inr = n => '₹' + Math.round(n||0).toLocaleString('en-IN');
+const inr2 = n => (n<0?'−':'') + '₹' + Math.abs(Math.round(n||0)).toLocaleString('en-IN');
+const uid = () => Math.random().toString(36).slice(2,9);
+const esc = s => String(s??'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const initials = n => n.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const TODAY = iso(new Date());
+const WEEK_START_DAY = 6; // Saturday (settlement runs Sat → Fri, as in the sheet)
+const weekStartOf = s => { const d = parse(s); const diff = (d.getDay() - WEEK_START_DAY + 7) % 7; d.setDate(d.getDate()-diff); return iso(d); };
+
+function hoursBetween(a,b){ if(!a||!b) return 0; const [h1,m1]=a.split(':').map(Number),[h2,m2]=b.split(':').map(Number); let m=(h2*60+m2)-(h1*60+m1); if(m<0)m+=1440; return m/60; }
+function dayFraction(h){ if(!h) return 0; if(h < 6) return 0.5; if(h < 11) return 1; return 1.5; }
+function calcPay(basic,h){ return db.settings.payMode==='hourly' ? h*basic/8 : dayFraction(h)*basic; }
+function compute(r){ r.hours = hoursBetween(r.in,r.out); r.days = r.out ? (db.settings.payMode==='hourly'? r.hours/8 : dayFraction(r.hours)) : 0; r.salary = r.out ? calcPay(r.basic,r.hours) : 0; r.amount = r.salary + (+r.petrol||0) + (+r.tools||0); return r; }
+
+/* ================= seed data (from Electrical_Labour_Attendance_.xlsx) ================= */
+function seed(){
+  const E = (name,basic,phone,status='Active',joined='2024-04-01') => ({id:uid(),name,phone,position:'Electrical Technician',basic,status,joined,idNo:''});
+  const employees = [
+    E('Suneer',1300,'+91 98470 11201'), E('Jinod',900,'+91 94461 33872'), E('Ratheesh',1300,'+91 97452 20419'),
+    E('Helper',1300,'+91 90370 55120'), E('Uvais',1300,'+91 81389 44106'), E('Ajeesh',1300,'+91 99613 70231'),
+    E('Niyas',1200,'+91 95392 81745'), E('Amal',950,'+91 85475 60128'), E('Nazzer',950,'+91 96051 22394','Inactive'),
+    E('Shanu',1100,'+91 94958 01276','Inactive'), E('Adhil',1100,'+91 79076 33528'), E('Swalih',750,'+91 70340 98215'),
+    E('Nizar',1300,'+91 98951 44670')
+  ];
+  employees.find(e=>e.name==='Helper').position='Helper';
+  const id = n => employees.find(e=>e.name===n).id;
+  const att = [];
+  const A = (date,site,name,inT,outT,petrol=0,update='',basic) => att.push({id:uid(),date,site,cat:'Electrical',empId:id(name),basic:basic ?? employees.find(e=>e.name===name).basic,in:inT,out:outT,petrol,tools:0,update});
+  // Week Sat 24 Oct – Fri 30 Oct 2026
+  [['2026-10-26','Pipe work in the exterior walls',['08:19','17:24'],['12:38','17:26'],['08:19','17:26'],['08:19','17:26']],
+   ['2026-10-27','Wiring in right side bedrooms',['07:46','17:04'],['07:45','16:59'],['07:45','17:04'],['07:45','17:04']],
+   ['2026-10-28','Pipe laying and wiring, first floor',['07:49','17:20'],['07:49','17:20'],['07:48','17:14'],['07:48','17:14']],
+   ['2026-10-29','Wires connected to switchboard',['07:51','17:19'],['07:50','17:16'],['07:44','17:16'],['07:44','17:16']]
+  ].forEach(([d,u,s,j,r,h])=>{ A(d,'Riyas - Residence','Suneer',...s,0,u); A(d,'Riyas - Residence','Jinod',...j,0,'',850); A(d,'Riyas - Residence','Ratheesh',...r); A(d,'Riyas - Residence','Helper',...h); });
+  A('2026-10-30','BRV Cottage - Vagamon','Suneer','09:21','17:23',250,'Conduit laying on the ground floor');
+  A('2026-10-30','BRV Cottage - Vagamon','Jinod','09:21','17:23',0,'',850);
+  A('2026-10-30','BRV Cottage - Vagamon','Ratheesh','09:21','17:23',200);
+  A('2026-10-30','BRV Cottage - Vagamon','Helper','09:21','17:23');
+  // Week Sat 31 Oct – Fri 6 Nov 2026
+  [['2026-11-03','Light marking of 2 rooms',['08:45','20:42',1042],['08:45','20:42',814],['08:45','20:42',0]],
+   ['2026-11-04','Light installation, rooms 3–6',['07:06','19:16',100],['07:04','19:16',0],['07:04','19:16',0]],
+   ['2026-11-05','Light point cutting, corridor',['08:12','19:48',0],['07:56','19:51',0],['08:13','19:51',0]],
+   ['2026-11-06',"Total 10 rooms' light fitting completed",['07:10','19:03',630],['06:57','19:03',0],['07:10','19:03',0]]
+  ].forEach(([d,u,j,r,h])=>{ A(d,'Maya Tower','Jinod',j[0],j[1],j[2],u,850); A(d,'Maya Tower','Ratheesh',r[0],r[1],r[2]); A(d,'Maya Tower','Helper',h[0],h[1],h[2]); });
+  // Week Sat 7 Nov – Fri 13 Nov 2026
+  A('2026-11-07','Maya Tower','Jinod','05:56','18:19',0,'Light installation of corridor');
+  A('2026-11-07','Maya Tower','Ratheesh','05:53','17:39');
+  A('2026-11-07','Maya Tower','Helper','05:54','17:39');
+  // today: on site, not yet punched out
+  A(TODAY,'Maya Tower','Jinod','07:05','',0,'');
+  A(TODAY,'Maya Tower','Ratheesh','07:02','');
+  A(TODAY,'Maya Tower','Helper','07:04','');
+
+  const settlements = {
+    '2026-10-24': { settledOn:'2026-10-31', rows: [
+      ['Suneer',0,7800,250,0,8050],['Jinod',750,3825,0,0,4575],['Uvais',1300,0,0,0,0],['Ratheesh',-1500,7800,200,0,6500],
+      ['Helper',-1300,7800,0,0,6500],['Ajeesh',12054,0,0,0,12054],['Niyas',5673,0,0,0,5673]
+    ].map(([n,old,lab,exp,tools,paid])=>{ const total=old+lab+exp+tools; return {empId:id(n),old,labour:lab,exp,tools,total,adv:0,grand:total,paid,bal:total-paid}; }) }
+  };
+  const advances = [{id:uid(),date:TODAY,empId:id('Ratheesh'),amount:1000,note:'Advance – family function'}];
+  const staff = [
+    {id:uid(),name:'Office Admin',role:'Admin',phone:'+91 94470 10010',email:'admin@stromnetz.in',sites:[],perms:['attendance','employees','settle','staff','reports'],status:'Active'},
+    {id:uid(),name:'Anoop K.',role:'Accountant',phone:'+91 98950 22781',email:'accounts@stromnetz.in',sites:[],perms:['settle','reports'],status:'Active'},
+    {id:uid(),name:'Faisal M.',role:'Site Supervisor',phone:'+91 97440 61523',email:'faisal@stromnetz.in',sites:['Maya Tower','Riyas - Residence'],perms:['attendance'],status:'Active'},
+    {id:uid(),name:'Rahul P.',role:'Project Engineer',phone:'+91 90612 74409',email:'rahul@stromnetz.in',sites:['BRV Cottage - Vagamon','Millenium Jewellery'],perms:['attendance','reports'],status:'Inactive'}
+  ];
+  const sites = ['Maya Tower','Riyas - Residence','BRV Cottage - Vagamon','Millenium Jewellery','Bluetrench','Aslam','Kannur','Adivad','Guruvayoor','Jain Villa - Karnataka','Lenovo Oberon Mall','Accel-TVM'];
+  return {employees,attendance:att,advances,settlements,staff,sites,settings:{payMode:'slab'}};
+}
+
+/* ================= storage ================= */
+const KEY='stromnetz-labour-demo-v1';
+let db;
+try { db = JSON.parse(localStorage.getItem(KEY)); } catch(e) { db = null; }
+if(!db) db = seed();
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(db)); }catch(e){} }
+// projects: build from the old site list on first run
+function ensureProjects(){ if(db.projects) return;
+  const LOC={'Maya Tower':['','',''],'BRV Cottage - Vagamon':['Vagamon, Idukki','BRV',''],'Kannur':['Kannur','',''],'Adivad':['Adivad, Kothamangalam','',''],
+    'Guruvayoor':['Guruvayoor, Thrissur','',''],'Jain Villa - Karnataka':['Karnataka','Jain',''],'Lenovo Oberon Mall':['Oberon Mall, Edappally','Lenovo',''],'Accel-TVM':['Thiruvananthapuram','Accel','']};
+  const names=[...new Set([...(db.sites||[]),...db.attendance.map(a=>a.site)])];
+  db.projects=names.map(n=>{ const d=db.attendance.filter(a=>a.site===n).map(a=>a.date).sort();
+    const last=d.at(-1); const status = !d.length ? 'On hold' : last>=addDays(TODAY,-6) ? 'Ongoing' : 'Completed';
+    return {id:uid(),name:n,location:(LOC[n]||[''])[0],client:(LOC[n]||['',''])[1],start:d[0]||'',status,notes:''}; });
+  delete db.sites; save();
+}
+ensureProjects();
+const siteNames = (onlyOngoing) => db.projects.filter(p=>!onlyOngoing||p.status==='Ongoing').map(p=>p.name).sort((a,b)=>a.localeCompare(b));
+db.attendance.forEach(compute); save();
+const emp = id => db.employees.find(e=>e.id===id) || {name:'(removed)',basic:0};
+function toast(msg){ $('#toastMsg').textContent=msg; bootstrap.Toast.getOrCreateInstance($('#toast'),{delay:2200}).show(); }
+function addSite(s,date){ s=s.trim(); if(s && !db.projects.some(p=>p.name===s)) db.projects.push({id:uid(),name:s,location:'',client:'',start:date||TODAY,status:'Ongoing',notes:''}); }
+
+/* ================= routing ================= */
+const titles={projects:'Projects',dashboard:'Dashboard',attendance:'Add Attendance',employees:'Manage Employees',staff:'Manage Staff',settlement:'Weekly Settlement'};
+function route(){
+  const raw = location.hash.slice(1) || 'dashboard';
+  if(raw.startsWith('employee/')){
+    const id = raw.split('/')[1];
+    if(db.employees.some(e=>e.id===id)){
+      document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id==='sec-employee'));
+      document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active', a.dataset.nav==='employees'));
+      $('#pageTitle').textContent='Employee History'; $('#sidebar').classList.remove('show'); window.scrollTo(0,0);
+      return renderHistory(id);
+    }
+  }
+  const p = raw; const page = titles[p] ? p : 'dashboard';
+  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id==='sec-'+page));
+  document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active', a.dataset.nav===page));
+  $('#pageTitle').textContent = titles[page]; $('#sidebar').classList.remove('show');
+  ({projects:renderProjects,dashboard:renderDashboard,attendance:renderAttendance,employees:renderEmployees,staff:renderStaff,settlement:renderSettlement})[page]();
+}
+window.addEventListener('hashchange',route);
+$('#menuBtn').onclick=()=>$('#sidebar').classList.toggle('show');
+$('#todayLabel').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+$('#resetDemo').onclick=e=>{e.preventDefault(); if(confirm('Reset all demo data?')){ try{localStorage.removeItem(KEY);}catch(_){} db=seed(); db.attendance.forEach(compute); ensureProjects(); save(); route(); toast('Demo data reset'); }};
+
+/* ================= DASHBOARD ================= */
+let chDaily, chSite;
+const CH = { bar:'#1d6b88', barHover:'#053041', grid:'#e9eef1', tick:'#5d707a' };
+function renderDashboard(){
+  const active = db.employees.filter(e=>e.status==='Active');
+  $('#kEmp').textContent = active.length; $('#kEmpSub').textContent = `${db.employees.length-active.length} inactive`;
+  const todays = db.attendance.filter(a=>a.date===TODAY);
+  $('#kToday').textContent = todays.length;
+  $('#kTodaySub').textContent = todays.length ? [...new Set(todays.map(a=>a.site))].join(', ') : 'No entries yet';
+  const ws = weekStartOf(TODAY), we = addDays(ws,6);
+  const wk = db.attendance.filter(a=>a.date>=ws&&a.date<=we);
+  $('#kWeek').textContent = inr(wk.reduce((s,a)=>s+a.amount,0)); $('#kWeekSub').textContent = `${fmtDs(ws)} – ${fmtDs(we)}`;
+  // pending: unsettled weeks with activity
+  const weeks=[...new Set(db.attendance.map(a=>weekStartOf(a.date)))].filter(w=>!db.settlements[w] && w<ws);
+  const pend = weeks.reduce((s,w)=>s+buildWeek(w).rows.reduce((t,r)=>t+r.labour+r.exp+r.tools-r.adv,0),0);
+  $('#kPending').textContent = inr(pend); $('#kPendingSub').textContent = weeks.length ? `${weeks.length} closed week${weeks.length>1?'s':''} not settled` : 'All closed weeks settled';
+
+  // daily chart
+  const days=[...Array(14)].map((_,i)=>addDays(TODAY,i-13));
+  const vals=days.map(d=>db.attendance.filter(a=>a.date===d).reduce((s,a)=>s+a.amount,0));
+  const opts = (horizontal)=>({responsive:true,maintainAspectRatio:false,indexAxis:horizontal?'y':'x',
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#053041',padding:10,displayColors:false,callbacks:{label:c=>inr(c.parsed[horizontal?'x':'y'])}}},
+    scales:{[horizontal?'y':'x']:{grid:{display:false},ticks:{color:CH.tick,font:{size:11}}},
+            [horizontal?'x':'y']:{beginAtZero:true,grid:{color:CH.grid},border:{display:false},ticks:{color:CH.tick,font:{size:11},callback:v=>'₹'+(v>=1000?(v/1000)+'k':v)}}}});
+  const ds = data => ({data,backgroundColor:CH.bar,hoverBackgroundColor:CH.barHover,borderRadius:4,borderSkipped:'start',maxBarThickness:22});
+  chDaily?.destroy(); chDaily = new Chart($('#chDaily'),{type:'bar',data:{labels:days.map(d=>parse(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})),datasets:[ds(vals)]},options:opts(false)});
+  const from=addDays(TODAY,-29), bySite={};
+  db.attendance.filter(a=>a.date>=from).forEach(a=>bySite[a.site]=(bySite[a.site]||0)+a.amount);
+  const sEntries=Object.entries(bySite).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  chSite?.destroy(); chSite = new Chart($('#chSite'),{type:'bar',data:{labels:sEntries.map(e=>e[0]),datasets:[ds(sEntries.map(e=>e[1]))]},options:opts(true)});
+
+  $('#todayBody').innerHTML = todays.length ? todays.map(a=>`<tr><td><div class="d-flex align-items-center gap-2"><span class="avatar">${initials(emp(a.empId).name)}</span>${empLink(a.empId,'')}</div></td><td>${esc(a.site)}</td><td>${a.in||'—'}</td><td>${a.out||'—'}</td><td>${a.out?'<span class="badge badge-green">Completed</span>':'<span class="badge badge-amber"><i class="bi bi-lightning-charge-fill me-1"></i>On site</span>'}</td></tr>`).join('') : `<tr><td colspan="5" class="empty">No attendance marked today. <a href="#attendance">Mark now</a></td></tr>`;
+  const ups = db.attendance.filter(a=>a.update).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+  $('#updatesList').innerHTML = ups.map(a=>`<div class="update-item"><div class="small text-muted">${fmtDs(a.date)} · ${esc(a.site)}</div><div>${esc(a.update)}</div></div>`).join('') || '<div class="empty">No updates yet</div>';
+}
+
+/* ================= ATTENDANCE ================= */
+let entryRows=[];
+function fillSelectors(){
+  $('#siteList').innerHTML = siteNames(true).map(s=>`<option value="${esc(s)}">`).join('');
+  const rs=$('#regSite').value, re=$('#regEmp').value;
+  $('#regSite').innerHTML = '<option value="">All sites</option>'+siteNames().map(s=>`<option>${esc(s)}</option>`).join(''); $('#regSite').value=rs;
+  $('#regEmp').innerHTML = '<option value="">All employees</option>'+db.employees.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join(''); $('#regEmp').value=re;
+}
+function payHelp(){
+  const hourly = db.settings.payMode==='hourly';
+  $('#payModeSwitch').checked = hourly;
+  $('#payModeLabel').textContent = hourly ? 'Hourly (hours × basic ÷ 8)' : 'Shift slabs (½ / 1 / 1½ day)';
+  $('#payRuleHelp').textContent = hourly ? 'Salary = hours worked × (basic ÷ 8).' : 'Salary = basic × day factor: under 6 hrs = ½ day, 6–11 hrs = 1 day, 11+ hrs = 1½ days.';
+}
+function newRow(empId){ const e=empId?emp(empId):null; return {key:uid(),empId:empId||'',basic:e?e.basic:0,in:'08:00',out:'17:00',petrol:'',tools:''}; }
+function renderEntry(){
+  const opts = db.employees.filter(e=>e.status==='Active').map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
+  let total=0;
+  $('#entryBody').innerHTML = entryRows.map(r=>{
+    const c = compute({...r}); total+=c.amount;
+    return `<tr data-k="${r.key}">
+      <td><select class="form-select form-select-sm" data-f="empId"><option value="">Select…</option>${opts}</select></td>
+      <td class="num">${inr(r.basic)}</td>
+      <td><input type="time" class="form-control form-control-sm" data-f="in" value="${r.in}"></td>
+      <td><input type="time" class="form-control form-control-sm" data-f="out" value="${r.out}"></td>
+      <td class="num">${c.out?c.hours.toFixed(2):'—'}</td>
+      <td class="num">${c.out?(db.settings.payMode==='hourly'?c.days.toFixed(2):c.days):'—'}</td>
+      <td class="num">${inr(c.salary)}</td>
+      <td><input type="number" min="0" class="form-control form-control-sm" data-f="petrol" value="${r.petrol}"></td>
+      <td><input type="number" min="0" class="form-control form-control-sm" data-f="tools" value="${r.tools}"></td>
+      <td class="num fw-semibold">${inr(c.amount)}</td>
+      <td><button class="btn btn-sm btn-link text-danger p-0" data-del="${r.key}"><i class="bi bi-x-circle"></i></button></td></tr>`;
+  }).join('') || `<tr><td colspan="11" class="empty">Add labourers for this day, or click <b>Load last team</b>.</td></tr>`;
+  entryRows.forEach(r=>{ const sel=document.querySelector(`tr[data-k="${r.key}"] select`); if(sel) sel.value=r.empId; });
+  $('#entryTotal').textContent = inr(total);
+}
+$('#entryBody').addEventListener('change',e=>{
+  const tr=e.target.closest('tr[data-k]'); if(!tr) return; const r=entryRows.find(x=>x.key===tr.dataset.k); const f=e.target.dataset.f; if(!f) return;
+  r[f]=e.target.value; if(f==='empId') r.basic=r.empId?emp(r.empId).basic:0; renderEntry();
+});
+$('#entryBody').addEventListener('click',e=>{ const b=e.target.closest('[data-del]'); if(b){ entryRows=entryRows.filter(r=>r.key!==b.dataset.del); renderEntry(); }});
+$('#addRowBtn').onclick=()=>{ entryRows.push(newRow()); renderEntry(); };
+$('#loadTeamBtn').onclick=()=>{
+  const past=db.attendance.filter(a=>a.date<$('#entDate').value).sort((a,b)=>b.date.localeCompare(a.date));
+  if(!past.length) return toast('No earlier entries found');
+  const d=past[0].date, last=past.filter(a=>a.date===d);
+  entryRows = last.map(a=>({...newRow(a.empId),in:a.in||'08:00',out:a.out||'17:00'}));
+  $('#entSite').value=last[0].site; renderEntry(); toast(`Loaded team from ${fmtDs(d)}`);
+};
+$('#payModeSwitch').onchange=e=>{ db.settings.payMode=e.target.checked?'hourly':'slab'; db.attendance.forEach(compute); save(); payHelp(); renderEntry(); renderRegister(); toast('Pay rule updated for all entries'); };
+$('#clearEntryBtn').onclick=()=>{ entryRows=[newRow()]; $('#entUpdate').value=''; renderEntry(); };
+$('#saveEntryBtn').onclick=()=>{
+  const date=$('#entDate').value, site=$('#entSite').value.trim();
+  if(!date||!site) return toast('Pick a date and site first');
+  const rows=entryRows.filter(r=>r.empId);
+  if(!rows.length) return toast('Add at least one employee');
+  const dup = rows.find(r=>db.attendance.some(a=>a.date===date&&a.empId===r.empId));
+  if(dup && !confirm(`${emp(dup.empId).name} already has an entry on ${fmtD(date)}. Save anyway?`)) return;
+  rows.forEach((r,i)=>db.attendance.push(compute({id:uid(),date,site,cat:$('#entCat').value,empId:r.empId,basic:+r.basic,in:r.in,out:r.out,petrol:+r.petrol||0,tools:+r.tools||0,update:i===0?$('#entUpdate').value.trim():''})));
+  addSite(site,date); save(); toast(`Saved ${rows.length} attendance entr${rows.length>1?'ies':'y'}`);
+  entryRows=[newRow()]; $('#entUpdate').value=''; renderAttendance();
+};
+['#regFrom','#regTo','#regSite','#regEmp'].forEach(s=>$(s).addEventListener('change',renderRegister));
+function renderRegister(){
+  const f=$('#regFrom').value, t=$('#regTo').value, s=$('#regSite').value, e=$('#regEmp').value;
+  const list=db.attendance.filter(a=>(!f||a.date>=f)&&(!t||a.date<=t)&&(!s||a.site===s)&&(!e||a.empId===e)).sort((a,b)=>b.date.localeCompare(a.date)||emp(a.empId).name.localeCompare(emp(b.empId).name));
+  if(!list.length){ $('#regBody').innerHTML='<tr><td colspan="11" class="empty">No entries for this filter</td></tr>'; return; }
+  let html='', cur=null, dayTot=0, grand=0;
+  const close=()=>{ if(cur) html+=`<tr class="day-total"><td colspan="9" class="text-end">Total · ${fmtDs(cur)}</td><td class="num">${inr(dayTot)}</td><td class="no-print"></td></tr>`; };
+  list.forEach(a=>{
+    if(a.date!==cur){ close(); cur=a.date; dayTot=0; html+=`<tr class="day-group"><td colspan="11"><i class="bi bi-calendar3 me-2"></i>${fmtD(a.date)} <span class="text-muted fw-normal ms-2 small">${esc([...new Set(list.filter(x=>x.date===a.date).map(x=>x.site))].join(', '))}</span></td></tr>`; }
+    dayTot+=a.amount; grand+=a.amount;
+    html+=`<tr><td>${empLink(a.empId,'')}${a.update?`<div class="small text-muted text-truncate" style="max-width:260px" title="${esc(a.update)}">${esc(a.update)}</div>`:''}</td><td>${esc(a.site)}</td><td>${a.in||'—'}</td><td>${a.out||'<span class="badge badge-amber">On site</span>'}</td>
+      <td class="num">${a.out?a.hours.toFixed(2):'—'}</td><td class="num">₹${(a.basic/8).toFixed(2)}</td><td class="num">${inr(a.salary)}</td><td class="num">${a.petrol?inr(a.petrol):'—'}</td><td class="num">${a.tools?inr(a.tools):'—'}</td><td class="num fw-semibold">${inr(a.amount)}</td>
+      <td class="text-end text-nowrap no-print"><button class="btn btn-sm btn-link p-0 me-2" onclick="editAtt('${a.id}')"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-link text-danger p-0" onclick="delAtt('${a.id}')"><i class="bi bi-trash"></i></button></td></tr>`;
+  });
+  close(); html+=`<tr><td colspan="9" class="text-end fw-bold">Grand total</td><td class="num fw-bold">${inr(grand)}</td><td></td></tr>`;
+  $('#regBody').innerHTML=html;
+}
+function renderAttendance(){
+  fillSelectors(); payHelp();
+  if(!$('#entDate').value) $('#entDate').value=TODAY;
+  if(!$('#regFrom').value){ $('#regFrom').value=addDays(TODAY,-13); $('#regTo').value=TODAY; }
+  if(!entryRows.length) entryRows=[newRow()];
+  renderEntry(); renderRegister();
+}
+window.editAtt=id=>{ const a=db.attendance.find(x=>x.id===id);
+  $('#aId').value=id; $('#aWho').textContent=emp(a.empId).name; $('#aDate').value=a.date; $('#aSite').value=a.site; $('#aIn').value=a.in; $('#aOut').value=a.out||''; $('#aBasic').value=a.basic; $('#aPetrol').value=a.petrol||''; $('#aTools').value=a.tools||''; $('#aUpdate').value=a.update||'';
+  bootstrap.Modal.getOrCreateInstance($('#attModal')).show(); };
+$('#attForm').onsubmit=e=>{ e.preventDefault(); const a=db.attendance.find(x=>x.id===$('#aId').value);
+  Object.assign(a,{date:$('#aDate').value,site:$('#aSite').value.trim(),in:$('#aIn').value,out:$('#aOut').value,basic:+$('#aBasic').value,petrol:+$('#aPetrol').value||0,tools:+$('#aTools').value||0,update:$('#aUpdate').value.trim()});
+  compute(a); addSite(a.site,a.date); save(); bootstrap.Modal.getInstance($('#attModal')).hide(); route(); toast('Attendance updated'); };
+window.delAtt=id=>{ if(!confirm('Delete this attendance entry?')) return; db.attendance=db.attendance.filter(a=>a.id!==id); save(); route(); toast('Entry deleted'); };
+
+/* ================= EMPLOYEES ================= */
+$('#empSearch').oninput=renderEmployees; $('#empStatusFilter').onchange=renderEmployees;
+function lastBalance(empId){ const ws=Object.keys(db.settlements).sort().reverse(); for(const w of ws){ const r=db.settlements[w].rows.find(x=>x.empId===empId); if(r) return r.bal; } return 0; }
+function renderEmployees(){
+  const q=$('#empSearch').value.toLowerCase(), st=$('#empStatusFilter').value, from=addDays(TODAY,-29);
+  const list=db.employees.filter(e=>(!q||e.name.toLowerCase().includes(q)||(e.phone||'').includes(q))&&(!st||e.status===st));
+  $('#empCount').textContent=db.employees.length;
+  $('#empBody').innerHTML=list.map(e=>{
+    const days=db.attendance.filter(a=>a.empId===e.id&&a.date>=from).reduce((s,a)=>s+a.days,0);
+    const bal=lastBalance(e.id);
+    return `<tr><td><div class="d-flex align-items-center gap-2"><span class="avatar">${initials(e.name)}</span><div><div>${empLink(e.id)}</div><div class="small text-muted">since ${e.joined?fmtD(e.joined):'—'}</div></div></div></td>
+      <td>${esc(e.phone||'—')}</td><td>${esc(e.position)}</td><td class="num">${inr(e.basic)}</td><td class="num">${inr(e.basic/8)}</td><td class="num">${days?days.toFixed(1):'—'}</td>
+      <td class="num ${bal>0?'text-danger fw-semibold':''}">${bal?inr2(bal):'—'}</td>
+      <td>${e.status==='Active'?'<span class="badge badge-green">Active</span>':'<span class="badge badge-grey">Inactive</span>'}</td>
+      <td class="text-end text-nowrap"><a class="btn btn-sm btn-light" title="History" href="#employee/${e.id}"><i class="bi bi-clock-history"></i></a>
+      <button class="btn btn-sm btn-light" title="Record advance" onclick="openAdvance('${e.id}')"><i class="bi bi-wallet2"></i></button>
+      <button class="btn btn-sm btn-light" title="Edit" onclick="openEmp('${e.id}')"><i class="bi bi-pencil"></i></button>
+      <button class="btn btn-sm btn-light text-danger" title="Delete" onclick="delEmp('${e.id}')"><i class="bi bi-trash"></i></button></td></tr>`;
+  }).join('') || '<tr><td colspan="9" class="empty">No employees match</td></tr>';
+}
+window.openEmp=id=>{ const e=id?emp(id):{name:'',phone:'',position:'Electrical Technician',basic:'',joined:TODAY,idNo:'',status:'Active'};
+  $('#empModalTitle').textContent=id?'Edit employee':'Add employee'; $('#empId').value=id||'';
+  $('#empName').value=e.name; $('#empPhone').value=e.phone; $('#empPos').value=e.position; $('#empBasic').value=e.basic; $('#empJoined').value=e.joined; $('#empIdNo').value=e.idNo||''; $('#empStatus').value=e.status;
+  bootstrap.Modal.getOrCreateInstance($('#empModal')).show(); };
+$('#empForm').onsubmit=ev=>{ ev.preventDefault(); const id=$('#empId').value;
+  const data={name:$('#empName').value.trim(),phone:$('#empPhone').value.trim(),position:$('#empPos').value,basic:+$('#empBasic').value,joined:$('#empJoined').value,idNo:$('#empIdNo').value.trim(),status:$('#empStatus').value};
+  if(id) Object.assign(emp(id),data); else db.employees.push({id:uid(),...data});
+  save(); bootstrap.Modal.getInstance($('#empModal')).hide(); renderEmployees(); toast(id?'Employee updated':'Employee added'); };
+window.delEmp=id=>{ if(db.attendance.some(a=>a.empId===id)){ if(!confirm('This employee has attendance history. Mark as Inactive instead?')) return; emp(id).status='Inactive'; }
+  else { if(!confirm('Delete this employee?')) return; db.employees=db.employees.filter(e=>e.id!==id); }
+  save(); renderEmployees(); toast('Employee updated'); };
+
+/* ================= PROJECTS ================= */
+const PRJ_BADGE={Ongoing:'badge-amber','On hold':'badge-grey',Completed:'badge-green'};
+$('#prjSearch').oninput=renderProjects; $('#prjStatusFilter').onchange=renderProjects;
+function renderProjects(){
+  const q=$('#prjSearch').value.toLowerCase(), st=$('#prjStatusFilter').value;
+  const list=db.projects.filter(p=>(!st||p.status===st)&&(!q||[p.name,p.location,p.client].join(' ').toLowerCase().includes(q)));
+  const order={Ongoing:0,'On hold':1,Completed:2};
+  $('#prjCount').textContent=db.projects.length;
+  $('#prjBody').innerHTML=list.map(p=>{ const att=db.attendance.filter(a=>a.site===p.name); const last=att.map(a=>a.date).sort().at(-1);
+      return {p,att,last,days:att.reduce((s,a)=>s+a.days,0),cost:att.reduce((s,a)=>s+a.amount,0)}; })
+    .sort((a,b)=>order[a.p.status]-order[b.p.status]||(b.last||'').localeCompare(a.last||''))
+    .map(({p,att,last,days,cost})=>`<tr><td><div class="fw-semibold">${esc(p.name)}</div>${p.notes?`<div class="small text-muted text-truncate" style="max-width:240px">${esc(p.notes)}</div>`:''}</td>
+      <td>${p.location?`<i class="bi bi-geo-alt text-muted me-1"></i>${esc(p.location)}`:'<span class="text-muted">—</span>'}</td><td>${esc(p.client)||'<span class="text-muted">—</span>'}</td>
+      <td class="text-nowrap">${p.start?fmtD(p.start):'—'}</td><td class="num">${days?(days%1?days.toFixed(1):days):'—'}</td><td class="num fw-semibold">${cost?inr(cost):'—'}</td>
+      <td class="text-nowrap">${last?fmtDs(last):'<span class="text-muted">No work yet</span>'}</td>
+      <td><span class="badge ${PRJ_BADGE[p.status]}">${p.status}</span></td>
+      <td class="text-end text-nowrap"><button class="btn btn-sm btn-light" title="View attendance" onclick="viewPrjAtt('${esc(p.name)}')"><i class="bi bi-list-check"></i></button>
+        <button class="btn btn-sm btn-light" title="Edit" onclick="openPrj('${p.id}')"><i class="bi bi-pencil"></i></button>
+        <button class="btn btn-sm btn-light text-danger" title="Delete" onclick="delPrj('${p.id}')"><i class="bi bi-trash"></i></button></td></tr>`).join('')
+    || '<tr><td colspan="9" class="empty">No projects match</td></tr>';
+}
+window.viewPrjAtt=name=>{ fillSelectors(); $('#regSite').value=name; $('#regFrom').value=''; $('#regTo').value=''; location.hash='attendance'; setTimeout(()=>$('#regBody').scrollIntoView({behavior:'smooth'}),50); };
+window.openPrj=id=>{ const p=id?db.projects.find(x=>x.id===id):{name:'',location:'',client:'',start:TODAY,status:'Ongoing',notes:''};
+  $('#prjModalTitle').textContent=id?'Edit project':'Add project'; $('#prjId').value=id||'';
+  $('#prjName').value=p.name; $('#prjLoc').value=p.location; $('#prjClient').value=p.client; $('#prjStart').value=p.start; $('#prjStatus').value=p.status; $('#prjNotes').value=p.notes||'';
+  bootstrap.Modal.getOrCreateInstance($('#prjModal')).show(); };
+$('#prjForm').onsubmit=ev=>{ ev.preventDefault(); const id=$('#prjId').value, name=$('#prjName').value.trim();
+  if(db.projects.some(p=>p.name.toLowerCase()===name.toLowerCase()&&p.id!==id)) return toast('A project with this name already exists');
+  const data={name,location:$('#prjLoc').value.trim(),client:$('#prjClient').value.trim(),start:$('#prjStart').value,status:$('#prjStatus').value,notes:$('#prjNotes').value.trim()};
+  if(id){ const p=db.projects.find(x=>x.id===id);
+    if(p.name!==name){ db.attendance.forEach(a=>{ if(a.site===p.name) a.site=name; }); db.staff.forEach(s=>s.sites=s.sites.map(x=>x===p.name?name:x)); }
+    Object.assign(p,data); } else db.projects.push({id:uid(),...data});
+  save(); bootstrap.Modal.getInstance($('#prjModal')).hide(); renderProjects(); toast(id?'Project updated':'Project added'); };
+window.delPrj=id=>{ const p=db.projects.find(x=>x.id===id);
+  if(db.attendance.some(a=>a.site===p.name)){ if(!confirm('This project has attendance entries. Mark it Completed instead?')) return; p.status='Completed'; }
+  else { if(!confirm('Delete this project?')) return; db.projects=db.projects.filter(x=>x.id!==id); }
+  save(); renderProjects(); };
+
+/* ================= EMPLOYEE HISTORY ================= */
+const empLink = (id, cls='fw-semibold') => `<a href="#employee/${id}" class="${cls} text-decoration-none text-reset">${esc(emp(id).name)}</a>`;
+let ehId=null;
+function currentBalance(id){ // last settled balance + everything since that hasn't been settled
+  const settledWeeks=Object.keys(db.settlements).filter(w=>db.settlements[w].rows.some(r=>r.empId===id)).sort();
+  const last=settledWeeks.at(-1); let bal = last ? db.settlements[last].rows.find(r=>r.empId===id).bal : 0;
+  const after = last ? addDays(last,7) : '0000-00-00';
+  const lastAnyWeek = Object.keys(db.settlements).sort().at(-1);
+  const cutoff = lastAnyWeek && lastAnyWeek>=after ? addDays(lastAnyWeek,7) : after; // weeks settled without this employee are closed too
+  const unsAtt=db.attendance.filter(a=>a.empId===id&&a.date>=cutoff&&!db.settlements[weekStartOf(a.date)]);
+  const unsAdv=db.advances.filter(a=>a.empId===id&&a.date>=cutoff&&!db.settlements[weekStartOf(a.date)]);
+  bal += unsAtt.reduce((s,a)=>s+a.amount,0) - unsAdv.reduce((s,a)=>s+a.amount,0);
+  return {bal, unsettled: unsAtt.reduce((s,a)=>s+a.amount,0)};
+}
+function setEhPreset(p){
+  document.querySelectorAll('#ehPresets button').forEach(b=>b.classList.toggle('active',b.dataset.p===p));
+  if(p==='all'){ const first=db.attendance.filter(a=>a.empId===ehId).map(a=>a.date).sort()[0]; $('#ehFrom').value=first||TODAY; }
+  else $('#ehFrom').value=addDays(TODAY,-(+p-1));
+  $('#ehTo').value=TODAY;
+}
+document.querySelectorAll('#ehPresets button').forEach(b=>b.onclick=()=>{ setEhPreset(b.dataset.p); renderHistory(ehId,true); });
+['#ehFrom','#ehTo','#ehSite'].forEach(s=>$(s).addEventListener('change',()=>{ document.querySelectorAll('#ehPresets button').forEach(b=>b.classList.remove('active')); renderHistory(ehId,true); }));
+$('#ehAdvBtn').onclick=()=>openAdvance(ehId);
+$('#ehEditBtn').onclick=()=>openEmp(ehId);
+
+function renderHistory(id, keepFilters){
+  const e=emp(id);
+  if(id!==ehId || !keepFilters && !$('#ehFrom').value){ ehId=id; setEhPreset('all'); $('#ehSite').value=''; }
+  ehId=id;
+  const all=db.attendance.filter(a=>a.empId===id);
+  const sites=[...new Set(all.map(a=>a.site))].sort();
+  const sv=$('#ehSite').value; $('#ehSite').innerHTML='<option value="">All sites</option>'+sites.map(s=>`<option>${esc(s)}</option>`).join(''); $('#ehSite').value=sites.includes(sv)?sv:'';
+  const f=$('#ehFrom').value, t=$('#ehTo').value, site=$('#ehSite').value;
+  const att=all.filter(a=>a.date>=f&&a.date<=t&&(!site||a.site===site)).sort((a,b)=>b.date.localeCompare(a.date));
+  const advs=db.advances.filter(a=>a.empId===id&&a.date>=f&&a.date<=t).sort((a,b)=>b.date.localeCompare(a.date));
+
+  // header
+  $('#ehAvatar').textContent=initials(e.name); $('#ehName').textContent=e.name;
+  $('#ehStatus').innerHTML=e.status==='Active'?'<span class="badge badge-green">Active</span>':'<span class="badge badge-grey">Inactive</span>';
+  $('#ehMeta').innerHTML=`${esc(e.position)} · ${esc(e.phone||'no phone')} · Basic ${inr(e.basic)}/day (₹${(e.basic/8).toFixed(2)}/hr) · Joined ${e.joined?fmtD(e.joined):'—'}`;
+  const cb=currentBalance(id);
+  $('#ehBal').textContent=Math.abs(cb.bal)<0.5?'₹0':inr2(cb.bal); $('#ehBal').className='h4 fw-bold m-0 '+(cb.bal>0.5?'text-danger':cb.bal<-0.5?'text-success':'');
+  $('#ehBalSub').textContent = cb.bal>0.5?'payable to employee':cb.bal<-0.5?'overpaid / recoverable':'fully settled';
+
+  // KPIs
+  const sum=(arr,k)=>arr.reduce((s,a)=>s+(+a[k]||0),0);
+  const closed=att.filter(a=>a.out);
+  const daysW=sum(closed,'days'), hrs=sum(closed,'hours'), sal=sum(att,'salary'), exp=sum(att,'petrol')+sum(att,'tools'), adv=sum(advs,'amount');
+  const paid=Object.entries(db.settlements).filter(([w])=>w>=weekStartOf(f)&&w<=t).reduce((s,[,v])=>s+(v.rows.find(r=>r.empId===id)?.paid||0),0);
+  const k=(label,val,sub,icon,amber)=>`<div class="col-6 col-md-4 col-xl-2"><div class="card kpi h-100"><div class="d-flex justify-content-between"><div><div class="k-label">${label}</div><div class="k-value" style="font-size:1.35rem">${val}</div><div class="k-sub">${sub}</div></div><div class="k-icon ${amber?'amber':''}" style="width:36px;height:36px;font-size:1rem"><i class="bi ${icon}"></i></div></div></div></div>`;
+  $('#ehKpis').innerHTML =
+    k('Days worked', daysW%1?daysW.toFixed(1):daysW, `${closed.length} attendance entries`,'bi-calendar-check') +
+    k('Hours', hrs.toFixed(1), closed.length?`avg ${(hrs/closed.length).toFixed(1)} hrs/day`:'—','bi-clock') +
+    k('Wages earned', inr(sal), daysW?`avg ${inr(sal/closed.length)}/day`:'—','bi-cash-stack') +
+    k('Expenses', inr(exp), 'petrol + tools','bi-fuel-pump',true) +
+    k('Advances', inr(adv), `${advs.length} advance${advs.length===1?'':'s'}`,'bi-wallet2',true) +
+    k('Paid out', inr(paid), 'in settled weeks','bi-check2-circle');
+
+  // attendance tab
+  $('#ehCntAtt').textContent=att.length;
+  let html='', curM=null, mTot=0, mDays=0;
+  const closeM=()=>{ if(curM) html+=`<tr class="day-total"><td colspan="5" class="text-end">${curM} total</td><td class="num">${mDays%1?mDays.toFixed(1):mDays}</td><td></td><td colspan="3"></td><td class="num">${inr(mTot)}</td><td colspan="2"></td></tr>`; };
+  att.forEach(a=>{
+    const m=parse(a.date).toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+    if(m!==curM){ closeM(); curM=m; mTot=0; mDays=0; }
+    mTot+=a.amount; mDays+=a.days;
+    html+=`<tr><td class="text-nowrap">${fmtDs(a.date)}</td><td>${esc(a.site)}</td><td>${a.in||'—'}</td><td>${a.out||'<span class="badge badge-amber">On site</span>'}</td>
+      <td class="num">${a.out?a.hours.toFixed(2):'—'}</td><td class="num">${a.out?(a.days%1?a.days.toFixed(2).replace(/0$/,''):a.days):'—'}</td><td class="num">${inr(a.basic)}</td><td class="num">${inr(a.salary)}</td>
+      <td class="num">${a.petrol?inr(a.petrol):'—'}</td><td class="num">${a.tools?inr(a.tools):'—'}</td><td class="num fw-semibold">${inr(a.amount)}</td>
+      <td class="small text-muted" style="max-width:240px">${esc(a.update||'')}</td>
+      <td class="text-end no-print"><button class="btn btn-sm btn-link p-0" onclick="editAtt('${a.id}')"><i class="bi bi-pencil"></i></button></td></tr>`;
+  });
+  closeM();
+  $('#ehAttBody').innerHTML = html || '<tr><td colspan="13" class="empty">No attendance in this period</td></tr>';
+
+  // weekly payments tab
+  const weeks=new Set([...all.map(a=>weekStartOf(a.date)), ...db.advances.filter(a=>a.empId===id).map(a=>weekStartOf(a.date)),
+    ...Object.keys(db.settlements).filter(w=>db.settlements[w].rows.some(r=>r.empId===id))]);
+  const wrows=[...weeks].filter(w=>addDays(w,6)>=f && w<=t).sort().reverse().map(w=>{
+    const W=buildWeek(w), r=W.rows.find(x=>x.empId===id); if(!r) return '';
+    const status = W.settled ? `<span class="badge badge-green">Settled ${fmtDs(W.settledOn)}</span>` : w===weekStartOf(TODAY) ? '<span class="badge badge-amber">In progress</span>' : '<span class="badge badge-red">Pending</span>';
+    return `<tr><td class="text-nowrap"><a href="#settlement" onclick="curWeek='${w}'" class="text-decoration-none fw-semibold">${fmtDs(w)} – ${fmtDs(addDays(w,6))}</a></td>
+      <td class="num">${r.old?inr2(r.old):'—'}</td><td class="num">${inr(r.labour)}</td><td class="num">${r.exp?inr(r.exp):'—'}</td><td class="num">${r.tools?inr(r.tools):'—'}</td><td class="num">${r.adv?'−'+inr(r.adv):'—'}</td>
+      <td class="num fw-semibold">${inr2(r.grand)}</td><td class="num">${W.settled?inr(r.paid):'—'}</td>
+      <td class="num fw-semibold ${W.settled&&r.bal>0.5?'text-danger':''}">${W.settled?(Math.abs(r.bal)<0.5?'₹0':inr2(r.bal)):'—'}</td><td>${status}</td></tr>`;
+  }).filter(Boolean);
+  $('#ehCntSet').textContent=wrows.length;
+  $('#ehSetBody').innerHTML = wrows.join('') || '<tr><td colspan="10" class="empty">No weekly payments in this period</td></tr>';
+
+  // advances tab
+  $('#ehCntAdv').textContent=advs.length;
+  $('#ehAdvBody').innerHTML = advs.map(a=>{ const w=weekStartOf(a.date); return `<tr><td>${fmtD(a.date)}</td><td>${esc(a.note)}</td><td>${fmtDs(w)} – ${fmtDs(addDays(w,6))} ${db.settlements[w]?'<span class="badge badge-green ms-1">Settled</span>':'<span class="badge badge-amber ms-1">Open</span>'}</td><td class="num fw-semibold">${inr(a.amount)}</td></tr>`; }).join('')
+    + (advs.length?`<tr class="day-total"><td colspan="3" class="text-end">Total</td><td class="num">${inr(adv)}</td></tr>`:'<tr><td colspan="4" class="empty">No advances in this period</td></tr>');
+
+  // sites + rate changes
+  const bySite={}; att.forEach(a=>{ const s=bySite[a.site]||(bySite[a.site]={d:0,amt:0,first:a.date,last:a.date}); s.d+=a.days; s.amt+=a.amount; if(a.date<s.first)s.first=a.date; if(a.date>s.last)s.last=a.date; });
+  $('#ehSiteBody').innerHTML = Object.entries(bySite).sort((a,b)=>b[1].amt-a[1].amt).map(([s,v])=>`<tr><td>${esc(s)}</td><td class="small text-muted">${fmtDs(v.first)} → ${fmtDs(v.last)}</td><td class="num">${v.d%1?v.d.toFixed(1):v.d}</td><td class="num">${inr(v.amt)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">No site work in this period</td></tr>';
+  const chron=[...all].sort((a,b)=>a.date.localeCompare(b.date)); const rates=[]; let prev=null;
+  chron.forEach(a=>{ if(a.basic!==prev){ rates.push({date:a.date,basic:a.basic,chg:prev==null?null:a.basic-prev}); prev=a.basic; } });
+  if(prev!==null && e.basic!==prev) rates.push({date:'',basic:e.basic,chg:e.basic-prev});
+  $('#ehRateBody').innerHTML = rates.reverse().map(r=>`<tr><td>${r.date?fmtD(r.date):'<span class="text-muted">Next entry</span>'}</td><td class="num fw-semibold">${inr(r.basic)}</td><td class="num">${r.chg==null?'<span class="text-muted">starting rate</span>':`<span class="badge ${r.chg>0?'badge-green':'badge-red'}">${r.chg>0?'+':'−'}${inr(Math.abs(r.chg))}</span>`}</td></tr>`).join('') || `<tr><td colspan="3" class="empty">No history yet · current ${inr(e.basic)}/day</td></tr>`;
+}
+$('#ehCsvBtn').onclick=()=>{
+  const e=emp(ehId), f=$('#ehFrom').value, t=$('#ehTo').value, site=$('#ehSite').value;
+  const att=db.attendance.filter(a=>a.empId===ehId&&a.date>=f&&a.date<=t&&(!site||a.site===site)).sort((a,b)=>a.date.localeCompare(b.date));
+  const q=v=>`"${String(v??'').replace(/"/g,'""')}"`;
+  const lines=[['Date','Site','Punch In','Punch Out','Hours','Days','Basic','Salary','Petrol','Tools','Amount','Work Update'].join(','),
+    ...att.map(a=>[a.date,q(a.site),a.in,a.out,a.hours.toFixed(2),a.days,a.basic,Math.round(a.salary),a.petrol||0,a.tools||0,Math.round(a.amount),q(a.update)].join(','))];
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/csv'})); a.download=`${e.name}_history_${f}_to_${t}.csv`; a.click();
+};
+
+/* ================= STAFF ================= */
+const PERMS={attendance:'Mark attendance',employees:'Manage employees',settle:'Approve settlements',staff:'Manage staff',reports:'View reports'};
+const ROLE_BADGE={Admin:'badge-soft','Accountant':'badge-amber','Site Supervisor':'badge-green','Project Engineer':'badge-grey'};
+function renderStaff(){
+  $('#staffBody').innerHTML=db.staff.map(s=>`<tr><td><div class="d-flex align-items-center gap-2"><span class="avatar" style="background:#fff4d1;color:#7a5600">${initials(s.name)}</span><span class="fw-semibold">${esc(s.name)}</span></div></td>
+    <td><span class="badge ${ROLE_BADGE[s.role]||'badge-grey'}">${esc(s.role)}</span></td>
+    <td><div class="small">${esc(s.phone)}</div><div class="small text-muted">${esc(s.email)}</div></td>
+    <td class="small">${s.sites.length?s.sites.map(esc).join('<br>'):'<span class="text-muted">All sites</span>'}</td>
+    <td>${s.perms.map(p=>`<span class="badge bg-light text-dark border me-1 mb-1">${PERMS[p]}</span>`).join('')}</td>
+    <td>${s.status==='Active'?'<span class="badge badge-green">Active</span>':'<span class="badge badge-grey">Inactive</span>'}</td>
+    <td class="text-end text-nowrap"><button class="btn btn-sm btn-light" onclick="openStaff('${s.id}')"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-light text-danger" onclick="delStaff('${s.id}')"><i class="bi bi-trash"></i></button></td></tr>`).join('');
+}
+window.openStaff=id=>{ const s=id?db.staff.find(x=>x.id===id):{name:'',role:'Site Supervisor',phone:'',email:'',sites:[],perms:['attendance'],status:'Active'};
+  $('#staffModalTitle').textContent=id?'Edit staff':'Add staff'; $('#stId').value=id||'';
+  $('#stName').value=s.name; $('#stRole').value=s.role; $('#stPhone').value=s.phone; $('#stEmail').value=s.email; $('#stStatus').value=s.status;
+  $('#stSites').innerHTML=siteNames().map(x=>`<option ${s.sites.includes(x)?'selected':''}>${esc(x)}</option>`).join('');
+  $('#stPerms').innerHTML=Object.entries(PERMS).map(([k,v])=>`<div class="col-6"><div class="form-check"><input class="form-check-input" type="checkbox" value="${k}" id="p-${k}" ${s.perms.includes(k)?'checked':''}><label class="form-check-label" for="p-${k}">${v}</label></div></div>`).join('');
+  bootstrap.Modal.getOrCreateInstance($('#staffModal')).show(); };
+$('#staffForm').onsubmit=ev=>{ ev.preventDefault(); const id=$('#stId').value;
+  const data={name:$('#stName').value.trim(),role:$('#stRole').value,phone:$('#stPhone').value.trim(),email:$('#stEmail').value.trim(),status:$('#stStatus').value,
+    sites:[...$('#stSites').selectedOptions].map(o=>o.value),perms:[...document.querySelectorAll('#stPerms input:checked')].map(i=>i.value)};
+  if(id) Object.assign(db.staff.find(x=>x.id===id),data); else db.staff.push({id:uid(),...data});
+  save(); bootstrap.Modal.getInstance($('#staffModal')).hide(); renderStaff(); toast(id?'Staff updated':'Staff added'); };
+window.delStaff=id=>{ if(!confirm('Remove this staff member?')) return; db.staff=db.staff.filter(s=>s.id!==id); save(); renderStaff(); };
+
+/* ================= SETTLEMENT ================= */
+let curWeek = addDays(weekStartOf(TODAY),-7); // default: last closed week
+let paidDraft = {};
+function prevBalance(empId, ws){ const ks=Object.keys(db.settlements).filter(k=>k<ws).sort().reverse(); for(const k of ks){ const r=db.settlements[k].rows.find(x=>x.empId===empId); if(r) return r.bal; } return 0; }
+function buildWeek(ws){
+  const we=addDays(ws,6);
+  if(db.settlements[ws]) return {ws,we,settled:true,rows:db.settlements[ws].rows,settledOn:db.settlements[ws].settledOn};
+  const att=db.attendance.filter(a=>a.date>=ws&&a.date<=we), adv=db.advances.filter(a=>a.date>=ws&&a.date<=we);
+  const ids=new Set([...att.map(a=>a.empId),...adv.map(a=>a.empId)]);
+  db.employees.forEach(e=>{ if(Math.abs(prevBalance(e.id,ws))>=1) ids.add(e.id); });
+  const rows=[...ids].map(id=>{
+    const mine=att.filter(a=>a.empId===id);
+    const old=Math.round(prevBalance(id,ws)), labour=mine.reduce((s,a)=>s+a.salary,0), exp=mine.reduce((s,a)=>s+(+a.petrol||0),0), tools=mine.reduce((s,a)=>s+(+a.tools||0),0);
+    const total=old+labour+exp+tools, advAmt=adv.filter(a=>a.empId===id).reduce((s,a)=>s+a.amount,0), grand=total-advAmt;
+    const paid = paidDraft[ws+id] ?? Math.max(0,Math.round(grand));
+    return {empId:id,old,labour,exp,tools,total,adv:advAmt,grand,paid,bal:grand-paid};
+  }).sort((a,b)=>emp(a.empId).name.localeCompare(emp(b.empId).name));
+  return {ws,we,settled:false,rows,att};
+}
+function renderSettlement(){
+  const W=buildWeek(curWeek), isCurrent = curWeek===weekStartOf(TODAY);
+  $('#wkLabel').textContent=`${fmtDs(W.ws)} – ${fmtDs(W.we)} ${parse(W.we).getFullYear()}`;
+  $('#wkStatus').innerHTML = W.settled ? `<span class="badge badge-green"><i class="bi bi-check2-circle me-1"></i>Settled ${fmtD(W.settledOn)}</span>` : isCurrent ? '<span class="badge badge-amber">Week in progress</span>' : '<span class="badge badge-red">Pending</span>';
+  $('#wkNext').disabled = curWeek>=weekStartOf(TODAY);
+  $('#settleBtn').innerHTML = W.settled ? '<i class="bi bi-unlock me-1"></i>Reopen week' : '<i class="bi bi-check2-all me-1"></i>Mark week settled';
+  const prevW=addDays(curWeek,-7), prevHasData=db.attendance.some(a=>a.date>=prevW&&a.date<=addDays(prevW,6));
+  $('#wkWarn').innerHTML = (!W.settled && prevHasData && !db.settlements[prevW]) ? `<div class="alert alert-warning py-2 small"><i class="bi bi-exclamation-triangle me-1"></i>The previous week (${fmtDs(prevW)}) isn't settled yet, so old balances below may be incomplete.</div>` : '';
+  const T={old:0,labour:0,exp:0,tools:0,total:0,adv:0,grand:0,paid:0,bal:0};
+  $('#setBody').innerHTML = W.rows.map(r=>{ Object.keys(T).forEach(k=>T[k]+=r[k]);
+    return `<tr><td><div class="d-flex align-items-center gap-2"><span class="avatar">${initials(emp(r.empId).name)}</span>${empLink(r.empId)}</div></td>
+      <td class="num ${r.old<0?'text-success':''}">${r.old?inr2(r.old):'—'}</td><td class="num">${inr(r.labour)}</td><td class="num">${r.exp?inr(r.exp):'—'}</td><td class="num">${r.tools?inr(r.tools):'—'}</td>
+      <td class="num fw-semibold">${inr2(r.total)}</td><td class="num">${r.adv?'−'+inr(r.adv):'—'}</td><td class="num fw-bold">${inr2(r.grand)}</td>
+      <td class="num">${W.settled?inr(r.paid):`<input type="number" class="form-control form-control-sm paid-input" data-emp="${r.empId}" value="${r.paid}">`}</td>
+      <td class="num fw-semibold ${r.bal>0.5?'text-danger':r.bal<-0.5?'text-success':''}">${Math.abs(r.bal)<0.5?'₹0':inr2(r.bal)}</td></tr>`; }).join('') || '<tr><td colspan="10" class="empty">No attendance, advances or open balances in this week</td></tr>';
+  $('#setFoot').innerHTML = W.rows.length ? `<tr class="day-total"><td>Total</td>${['old','labour','exp','tools','total','adv','grand','paid','bal'].map(k=>`<td class="num">${k==='adv'&&T[k]?'−'+inr(T[k]):inr2(T[k])}</td>`).join('')}</tr>` : '';
+  // site-wise
+  const att = W.settled ? db.attendance.filter(a=>a.date>=W.ws&&a.date<=W.we) : W.att; const bySite={};
+  att.forEach(a=>{ bySite[a.site]=bySite[a.site]||{d:0,amt:0}; bySite[a.site].d+=a.days; bySite[a.site].amt+=a.amount; });
+  const se=Object.entries(bySite).sort((a,b)=>b[1].amt-a[1].amt);
+  $('#siteBody').innerHTML = se.map(([s,v])=>`<tr><td>${esc(s)}</td><td class="num">${v.d.toFixed(1)}</td><td class="num">${inr(v.amt)}</td></tr>`).join('') + (se.length?`<tr class="day-total"><td>Total</td><td class="num">${se.reduce((t,e)=>t+e[1].d,0).toFixed(1)}</td><td class="num">${inr(se.reduce((t,e)=>t+e[1].amt,0))}</td></tr>`:'<tr><td colspan="3" class="empty">No site work this week</td></tr>');
+  const adv=db.advances.filter(a=>a.date>=W.ws&&a.date<=W.we).sort((a,b)=>a.date.localeCompare(b.date));
+  $('#advBody').innerHTML = adv.map(a=>`<tr><td>${fmtDs(a.date)}</td><td>${esc(emp(a.empId).name)}</td><td class="small text-muted">${esc(a.note)}</td><td class="num">${inr(a.amount)}</td><td class="text-end no-print">${W.settled?'':`<button class="btn btn-sm btn-link text-danger p-0" onclick="delAdv('${a.id}')"><i class="bi bi-trash"></i></button>`}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">No advances recorded</td></tr>';
+}
+$('#setBody').addEventListener('change',e=>{ if(e.target.matches('.paid-input')){ paidDraft[curWeek+e.target.dataset.emp]=+e.target.value||0; renderSettlement(); }});
+$('#wkPrev').onclick=()=>{ curWeek=addDays(curWeek,-7); renderSettlement(); };
+$('#wkNext').onclick=()=>{ curWeek=addDays(curWeek,7); renderSettlement(); };
+$('#settleBtn').onclick=()=>{
+  if(db.settlements[curWeek]){ if(!confirm('Reopen this week? Later weeks will recalculate their old balances.')) return; delete db.settlements[curWeek]; save(); renderSettlement(); return toast('Week reopened'); }
+  if(curWeek===weekStartOf(TODAY) && !confirm('This week is still in progress. Settle it anyway?')) return;
+  const W=buildWeek(curWeek); if(!W.rows.length) return toast('Nothing to settle');
+  db.settlements[curWeek]={settledOn:TODAY,rows:W.rows.map(({empId,old,labour,exp,tools,total,adv,grand,paid,bal})=>({empId,old,labour,exp,tools,total,adv,grand,paid,bal}))};
+  save(); renderSettlement(); toast('Week settled · balances carried forward');
+};
+$('#csvBtn').onclick=()=>{
+  const W=buildWeek(curWeek); const head=['Name','Old Balance','Labour','Expenses','Tools & Material','Total','Advance Paid','Grand Total','Paid','Balance'];
+  const lines=[head,...W.rows.map(r=>[emp(r.empId).name,r.old,r.labour,r.exp,r.tools,r.total,r.adv,r.grand,r.paid,r.bal].map(v=>typeof v==='number'?Math.round(v):`"${v}"`))].map(l=>l.join(','));
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/csv'})); a.download=`settlement_${W.ws}_to_${W.we}.csv`; a.click();
+};
+window.openAdvance=empId=>{ $('#advEmp').innerHTML=db.employees.filter(e=>e.status==='Active').map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
+  if(empId) $('#advEmp').value=empId; $('#advDate').value=TODAY; $('#advAmt').value=''; $('#advNote').value='Advance';
+  bootstrap.Modal.getOrCreateInstance($('#advModal')).show(); };
+$('#advForm').onsubmit=e=>{ e.preventDefault(); const date=$('#advDate').value; const ws=weekStartOf(date);
+  if(db.settlements[ws]) return toast('That week is already settled – reopen it first');
+  db.advances.push({id:uid(),date,empId:$('#advEmp').value,amount:+$('#advAmt').value,note:$('#advNote').value.trim()||'Advance'});
+  save(); bootstrap.Modal.getInstance($('#advModal')).hide(); route(); toast('Advance recorded'); };
+window.delAdv=id=>{ if(!confirm('Delete this advance?')) return; db.advances=db.advances.filter(a=>a.id!==id); save(); renderSettlement(); };
+
+route();
+</script>
+</body>
+</html>
