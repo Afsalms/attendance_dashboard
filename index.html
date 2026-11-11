@@ -2,8 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stromnetz · Labour Attendance & Payroll</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#053041">
+<meta name="description" content="Attendance with location, weekly settlement and projects for Stromnetz Consultants.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stromnetz">
+<title>Stromnetz Labour</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,6 +24,7 @@
     --bs-primary:#053041; --bs-primary-rgb:5,48,65; --bs-link-color:#1d6b88; --bs-link-hover-color:#053041;
     --bs-body-font-family:'Plus Jakarta Sans',system-ui,sans-serif; --bs-body-color:var(--ink);
   }
+  [hidden]{display:none!important}
   body{background:var(--bg);font-size:.925rem}
   /* ---------- sidebar ---------- */
   .sidebar{width:248px;background:var(--brand);color:#c9dbe2;position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;z-index:1040;transition:transform .2s}
@@ -116,6 +126,125 @@
     .form-host .modal-footer .btn{flex:1}
     .form-host .modal-body .col-6{width:100%}
   }
+  /* ---------- staff view / employee view ---------- */
+  body.emp-mode .staff-only{display:none!important}
+  body:not(.emp-mode) .emp-only{display:none!important}
+  .demo-bar{background:#fff4d1;color:#5c4300;font-size:.8rem;padding:.45rem 1.5rem;border-bottom:1px solid #f3dd95}
+  .demo-bar a{color:#053041;font-weight:700}
+  .acct-emps{max-height:240px;overflow:auto}
+  .badge-self{background:#e3eef2;color:#0a4459;font-weight:700;font-size:.62rem;vertical-align:1px}
+  .geo-pin{font-size:.8rem;margin-left:3px;text-decoration:none}
+  /* employee home */
+  .punch-card .card-body{padding:1.5rem}
+  .punch-status{display:inline-flex;align-items:center;gap:.5rem;font-weight:700;font-size:.85rem;padding:.3rem .75rem;border-radius:999px;background:#eceff1;color:#56656d}
+  .punch-status.on{background:#dff3e6;color:#1d6b3a}
+  .punch-status.done{background:var(--brand-100);color:var(--brand)}
+  .punch-status .dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+  .punch-status.on .dot{animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(29,107,58,.45)}70%{box-shadow:0 0 0 8px rgba(29,107,58,0)}100%{box-shadow:0 0 0 0 rgba(29,107,58,0)}}
+  .punch-clock{font-size:2.8rem;font-weight:800;letter-spacing:-1.5px;line-height:1;margin:.9rem 0 .2rem;font-variant-numeric:tabular-nums}
+  .punch-btn{padding:.95rem 1rem;font-size:1.1rem;font-weight:700;border-radius:12px}
+  .geo-line{font-size:.8rem;margin-top:.35rem;line-height:1.35}
+  .geo-line i{margin-right:.3rem}
+  .geo-ok{color:#1d6b3a}.geo-far,.geo-none{color:#a2291b}.geo-unk{color:var(--muted)}
+  .fact-row{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px solid #edf1f3;font-size:.88rem}
+  .fact-row:last-child{border-bottom:0}
+  .fact-row span:first-child{color:var(--muted)}
+  .fact-row span:last-child{font-weight:600;text-align:right}
+  .day-item{display:flex;align-items:center;gap:.75rem;padding:.6rem 0;border-bottom:1px solid #edf1f3}
+  .day-item:last-child{border-bottom:0}
+  .day-date{width:46px;text-align:center;flex:none;border-radius:8px;background:var(--brand-100);color:var(--brand);padding:.25rem 0;line-height:1.1}
+  .day-date b{display:block;font-size:1.05rem}
+  .day-date small{font-size:.62rem;text-transform:uppercase;font-weight:700;letter-spacing:.06em}
+  /* calendar */
+  .cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+  .cal-head{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:center;padding:.2rem 0}
+  .cal-day{min-height:86px;border:1px solid var(--line);border-radius:10px;padding:.4rem .5rem;background:#fff;text-align:left;display:flex;flex-direction:column;gap:2px;font-size:.76rem;color:var(--ink);min-width:0}
+  .cal-day .dn{font-weight:700;font-size:.85rem}
+  .cal-day .cd-tag{font-size:.68rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cal-day .cd-amt{margin-top:auto;font-weight:700;font-size:.74rem}
+  .cal-day.other{opacity:.35}
+  .cal-day.future{background:#fafcfc;color:#9aabb3}
+  .cal-day.full{background:#e6f4ec;border-color:#bfe3cc}.cal-day.full .cd-tag{color:#1d6b3a}
+  .cal-day.half{background:#fff4d1;border-color:#f3dd95}.cal-day.half .cd-tag{color:#7a5600}
+  .cal-day.extra{background:#e3eef2;border-color:#b7d2dc}.cal-day.extra .cd-tag{color:var(--brand)}
+  .cal-day.open{background:#fffaf0;border-color:var(--accent)}.cal-day.open .cd-tag{color:#9a6c00}
+  .cal-day.today{box-shadow:inset 0 0 0 2px var(--accent)}
+  .cal-day.sel{border-color:var(--brand);box-shadow:0 0 0 2px rgba(5,48,65,.3)}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:.9rem;font-size:.75rem;color:var(--muted);margin-top:.9rem}
+  .cal-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px;border:1px solid rgba(0,0,0,.08)}
+  .prof-avatar{width:84px;height:84px;font-size:1.8rem}
+  .min-w-0{min-width:0}
+  @media(max-width:575.98px){
+    .cal-grid{gap:4px}
+    .cal-day{min-height:56px;padding:.3rem .3rem;font-size:.66rem;border-radius:8px}
+    .cal-day .cd-amt{display:none}
+    .cal-day .cd-tag{font-size:.6rem}
+    .punch-clock{font-size:2.4rem}
+    .demo-bar{padding:.45rem .9rem}
+  }
+  /* ---------- selfie with location ---------- */
+  .cam-sheet{position:fixed;inset:0;z-index:2000;background:rgba(4,22,30,.94);display:flex;align-items:center;justify-content:center;padding:1rem;overflow:auto}
+  .cam-box{width:100%;max-width:420px;color:#fff}
+  .cam-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;font-size:1.05rem}
+  .cam-stage{position:relative;aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:#0a2a36}
+  .cam-stage video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block}
+  .cam-stage img{width:100%;height:100%;object-fit:cover;display:block}
+  .cam-ring{position:absolute;inset:10% 20% 26%;border:2px dashed rgba(255,255,255,.55);border-radius:50%;pointer-events:none}
+  .cam-loc{margin:.75rem 0 .35rem;font-size:.85rem;padding:.5rem .75rem;border-radius:10px;background:rgba(255,255,255,.08);color:#d9e6eb}
+  .cam-loc.ok{color:#8ee0a8}.cam-loc.far,.cam-loc.none{color:#ff9c8f}
+  .cam-msg{color:#9fb6bf;font-size:.8rem;margin-bottom:.75rem}
+  .cam-actions{display:flex;flex-direction:column;gap:.5rem;align-items:stretch}
+  .cam-actions .btn-link{color:#b8c9d0}
+  .selfie-thumb{width:22px;height:22px;border-radius:50%;object-fit:cover;margin-left:5px;vertical-align:-6px;cursor:zoom-in;border:1px solid var(--line)}
+  .proof{display:flex;gap:.65rem;align-items:center;margin-top:.55rem}
+  .proof .geo-line{margin-top:0}
+  .proof-img{width:48px;height:48px;border-radius:10px;object-fit:cover;cursor:zoom-in;flex:none;border:1px solid var(--line)}
+  .sv-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+  .sv-grid img,.sv-empty{width:100%;aspect-ratio:1/1;border-radius:12px;display:block;object-fit:cover}
+  .sv-empty{background:#0a2a36;display:grid;place-items:center;color:#7fa1ae;font-size:.85rem}
+  .sv-cap{font-size:.8rem;color:#c9dbe2;margin-top:.4rem;line-height:1.4}
+  .sv-cap a{color:#f5b301}
+  @media(max-width:575.98px){.sv-grid{grid-template-columns:1fr}}
+  /* ---------- attachments: bills, TA, photos ---------- */
+  .att-sheet{position:fixed;inset:0;z-index:1990;background:rgba(5,30,40,.55);display:flex;align-items:flex-end;justify-content:center}
+  .att-panel{background:#fff;width:100%;max-width:580px;max-height:90vh;display:flex;flex-direction:column;border-radius:16px 16px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.15)}
+  @media(min-width:768px){.att-sheet{align-items:center;padding:1rem}.att-panel{border-radius:16px}}
+  .att-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:1rem 1.1rem .8rem;border-bottom:1px solid var(--line)}
+  .att-body{padding:.9rem 1.1rem;overflow:auto}
+  .att-drop{border:1.5px dashed #b7c8cf;border-radius:12px;padding:1rem;display:flex;gap:.85rem;align-items:center;cursor:pointer;background:#f7fafb;margin:0}
+  .att-drop:hover,.att-drop.over{border-color:var(--brand-400);background:var(--brand-100)}
+  .att-drop > i{font-size:1.7rem;color:var(--brand-400)}
+  .att-item{display:flex;gap:.75rem;align-items:center;padding:.65rem 0;border-bottom:1px solid #edf1f3}
+  .att-item:last-child{border-bottom:0}
+  .att-thumb{width:52px;height:52px;border-radius:9px;flex:none;background:#eef3f5;display:grid;place-items:center;color:var(--brand-400);font-size:1.4rem;border:1px solid var(--line);padding:0;overflow:hidden;cursor:zoom-in}
+  .att-thumb img{width:100%;height:100%;object-fit:cover}
+  .att-meta{flex:1;min-width:0}
+  .att-meta .nm{font-weight:600;font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .att-meta .form-select{width:auto;max-width:100%;font-size:.78rem;padding:.15rem 1.9rem .15rem .55rem;margin-top:.3rem}
+  .att-foot{padding:.8rem 1.1rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap}
+  .att-foot .form-select{width:auto}
+  .file-chips{display:flex;flex-wrap:wrap;gap:.4rem}
+  .file-chips:not(:empty){margin-top:.45rem}
+  .file-chip{display:inline-flex;align-items:center;gap:.4rem;border:1px solid var(--line);background:#fff;border-radius:999px;padding:.2rem .7rem .2rem .25rem;font-size:.78rem;max-width:100%;color:var(--ink)}
+  .file-chip:hover{border-color:var(--brand-400)}
+  .file-chip img,.file-chip .fi{width:24px;height:24px;border-radius:50%;object-fit:cover;background:#eef3f5;display:grid;place-items:center;font-size:.8rem;color:var(--brand-400);flex:none}
+  .file-chip small{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
+  .file-tag{border:0;background:var(--brand-100);color:var(--brand);border-radius:999px;font-size:.68rem;font-weight:700;padding:.1rem .45rem;margin-left:5px;vertical-align:1px;white-space:nowrap}
+  .file-tag:hover{background:#cfe2e9}
+  .att-btn{border:1px solid var(--line);background:#fff;color:var(--brand);padding:.15rem .45rem;border-radius:8px;white-space:nowrap}
+  .att-btn.has{background:var(--brand-100);border-color:#b7d2dc}
+  .att-btn span{font-size:.7rem;font-weight:700;margin-left:2px}
+  #fileView .cam-box{max-width:860px}
+  .fv-stage{background:#0a2a36;border-radius:14px;min-height:280px;max-height:68vh;display:grid;place-items:center;overflow:hidden;color:#9fb6bf;text-align:center}
+  .fv-stage img{max-width:100%;max-height:68vh;display:block}
+  .fv-stage iframe{width:100%;height:68vh;border:0;background:#fff}
+  .fv-bar{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-top:.65rem;flex-wrap:wrap}
+  .fv-strip{display:flex;gap:.45rem;margin-top:.65rem;overflow-x:auto;padding-bottom:2px}
+  .fv-strip button{border:2px solid transparent;border-radius:9px;padding:0;background:#0a2a36;width:54px;height:54px;flex:none;color:#7fa1ae;overflow:hidden;font-size:1.2rem}
+  .fv-strip button.on{border-color:#f5b301}
+  .fv-strip img{width:100%;height:100%;object-fit:cover}
+  @media(max-width:575.98px){.fv-stage iframe{height:60vh}}
   /* ---------- phone bottom navigation ---------- */
   .bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:1035;background:#fff;border-top:1px solid var(--line);display:flex;padding:.3rem .25rem calc(.3rem + env(safe-area-inset-bottom));box-shadow:0 -2px 10px rgba(5,48,65,.06)}
   .bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.68rem;font-weight:600;color:var(--muted);text-decoration:none;padding:.3rem 0;border-radius:8px}
@@ -164,6 +293,14 @@
     .nav-tabs .nav-link{white-space:nowrap}
   }
   @media print{.bottom-nav{display:none!important}}
+  /* ---------- installed app ---------- */
+  @media (display-mode: standalone){
+    .topbar{padding-top:max(.8rem, env(safe-area-inset-top))}
+    .sidebar .brand{padding-top:max(1.25rem, env(safe-area-inset-top))}
+    body{overscroll-behavior-y:none}
+  }
+  .offline-bar{background:#053041;color:#fff;font-size:.8rem;padding:.4rem 1.5rem;display:none}
+  body.offline .offline-bar{display:block}
   @media print{.sidebar,.topbar,.no-print{display:none!important}.main{margin:0}.content{padding:0}.section:not(.active){display:none!important}.card{box-shadow:none}}
 </style>
 </head>
@@ -180,7 +317,15 @@
       <div class="brand-sub">CONSULTANTS</div>
     </div>
   </div>
-  <nav class="nav-side">
+  <nav class="nav-side emp-only">
+    <div class="label">My work</div>
+    <a href="#me-home" data-nav="me-home"><i class="bi bi-geo-alt"></i>Punch in / out</a>
+    <a href="#me-attendance" data-nav="me-attendance"><i class="bi bi-calendar3"></i>My attendance</a>
+    <a href="#me-payments" data-nav="me-payments"><i class="bi bi-wallet2"></i>My payments</a>
+    <div class="label">Me</div>
+    <a href="#me-profile" data-nav="me-profile"><i class="bi bi-person-circle"></i>My profile</a>
+  </nav>
+  <nav class="nav-side staff-only">
     <div class="label">Overview</div>
     <a href="#dashboard" data-nav="dashboard"><i class="bi bi-grid-1x2"></i>Dashboard</a>
     <div class="label">Daily work</div>
@@ -205,21 +350,19 @@
     <h1 id="pageTitle">Dashboard</h1>
     <span class="text-muted small d-none d-md-inline" id="todayLabel"></span>
     <div class="ms-auto d-flex align-items-center gap-3">
-      <button class="btn btn-accent btn-sm d-none d-sm-inline-flex align-items-center gap-1" onclick="location.hash='new-attendance'"><i class="bi bi-plus-lg"></i> Mark attendance</button>
+      <button class="btn btn-accent btn-sm d-none d-sm-inline-flex align-items-center gap-1 staff-only" onclick="location.hash='new-attendance'"><i class="bi bi-plus-lg"></i> Mark attendance</button>
+      <button class="btn btn-outline-primary btn-sm d-none" id="installBtn"><i class="bi bi-download me-1"></i><span class="d-none d-sm-inline">Install app</span><span class="d-sm-none">Install</span></button>
       <div class="dropdown">
         <a href="#" class="d-flex align-items-center gap-2 text-decoration-none text-body" data-bs-toggle="dropdown">
-          <span class="avatar">AD</span><span class="d-none d-md-inline fw-semibold">Admin</span><i class="bi bi-chevron-down small"></i>
+          <span class="avatar" id="acctAvatar">AD</span><span class="d-none d-md-inline fw-semibold" id="acctName">Admin</span><i class="bi bi-chevron-down small"></i>
         </a>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><span class="dropdown-item-text small text-muted">Signed in as Office Admin</span></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="#staff"><i class="bi bi-gear me-2"></i>Staff & access</a></li>
-          <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Sign out</a></li>
-        </ul>
+        <ul class="dropdown-menu dropdown-menu-end" id="acctMenu"></ul>
       </div>
     </div>
   </header>
 
+  <div class="offline-bar"><i class="bi bi-wifi-off me-1"></i>No internet. You can keep working; everything is saved on this phone.</div>
+  <div class="demo-bar emp-only"><i class="bi bi-phone me-1"></i>Employee view of <b id="demoWho"></b> · what a worker sees on their phone. <a href="#" data-view-staff>Back to staff view</a></div>
   <main class="content">
 
     <!-- ========== DASHBOARD ========== -->
@@ -361,6 +504,7 @@
         </div>
         <div class="text-end me-3"><div class="small text-muted fw-semibold">Current balance</div><div class="h4 fw-bold m-0" id="ehBal"></div><div class="small text-muted" id="ehBalSub"></div></div>
         <div class="d-flex gap-2 no-print">
+          <button class="btn btn-outline-primary btn-sm" id="ehAppBtn" title="See the app as this employee"><i class="bi bi-phone me-1"></i>Employee view</button>
           <button class="btn btn-outline-primary btn-sm" id="ehAdvBtn"><i class="bi bi-wallet2 me-1"></i>Advance</button>
           <button class="btn btn-outline-primary btn-sm" id="ehEditBtn"><i class="bi bi-pencil me-1"></i>Edit</button>
           <button class="btn btn-primary btn-sm" id="ehCsvBtn"><i class="bi bi-download me-1"></i>Export</button>
@@ -467,6 +611,58 @@
       </div>
     </section>
 
+    <!-- ========== EMPLOYEE VIEW: HOME (punch in / out) ========== -->
+    <section class="section" id="sec-me-home">
+      <div class="mb-3"><div class="small text-muted fw-semibold" id="meDate"></div><h2 class="h4 fw-bold m-0" id="meHello"></h2></div>
+      <div class="row g-3">
+        <div class="col-lg-7"><div class="card punch-card h-100" id="punchCard"></div></div>
+        <div class="col-lg-5"><div class="row g-3" id="meWeekKpis"></div></div>
+      </div>
+      <div class="card mt-3"><div class="card-header d-flex justify-content-between align-items-center"><span>Recent days</span><a href="#me-attendance" class="small fw-semibold">All attendance →</a></div><div class="card-body py-1" id="meRecent"></div></div>
+    </section>
+
+    <!-- ========== EMPLOYEE VIEW: MY ATTENDANCE ========== -->
+    <section class="section" id="sec-me-attendance">
+      <div class="card mb-3"><div class="card-body d-flex flex-wrap gap-2 align-items-center justify-content-between py-2">
+        <div class="week-nav"><button class="btn btn-light" id="calPrev" aria-label="Previous month"><i class="bi bi-chevron-left"></i></button><div class="week-label" id="calLabel" style="min-width:150px"></div><button class="btn btn-light" id="calNext" aria-label="Next month"><i class="bi bi-chevron-right"></i></button></div>
+        <div class="btn-group btn-group-sm" id="calMode"><button class="btn btn-outline-primary active" data-m="cal"><i class="bi bi-calendar3 me-1"></i>Calendar</button><button class="btn btn-outline-primary" data-m="list"><i class="bi bi-list-ul me-1"></i>List</button></div>
+      </div></div>
+      <div class="row g-3 mb-3" id="calKpis"></div>
+      <div id="calView">
+        <div class="card"><div class="card-body">
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-legend"><span><i style="background:#e6f4ec"></i>Full day</span><span><i style="background:#fff4d1"></i>Half day</span><span><i style="background:#e3eef2"></i>1½ days</span><span><i style="background:#fffaf0;border-color:#f5b301"></i>On site now</span><span>Weeks run Saturday → Friday, like your pay</span></div>
+        </div></div>
+        <div class="card mt-3"><div class="card-header" id="calDetailTitle">Day details</div><div class="card-body" id="calDetail"></div></div>
+      </div>
+      <div id="listView" class="d-none"><div class="card"><div class="table-responsive"><table class="table table-hover">
+        <thead><tr><th>Date</th><th>Site</th><th>In</th><th>Out</th><th class="num">Hours</th><th class="num">Days</th><th class="num">Expenses</th><th class="num">Amount</th><th>Work update</th></tr></thead>
+        <tbody id="meListBody"></tbody><tfoot id="meListFoot"></tfoot></table></div></div></div>
+    </section>
+
+    <!-- ========== EMPLOYEE VIEW: MY PAYMENTS ========== -->
+    <section class="section" id="sec-me-payments">
+      <div class="row g-3 mb-3" id="payKpis"></div>
+      <div class="card mb-3"><div class="card-header">Weekly payments <span class="small text-muted fw-normal ms-1">Saturday → Friday</span></div><div class="table-responsive"><table class="table">
+        <thead><tr><th>Week</th><th class="num">Old balance</th><th class="num">Wages</th><th class="num">Expenses</th><th class="num">Advance</th><th class="num">To be paid</th><th class="num">Paid</th><th class="num">Balance</th><th>Status</th></tr></thead>
+        <tbody id="payBody"></tbody></table></div></div>
+      <div class="card"><div class="card-header">Advances taken</div><div class="table-responsive"><table class="table">
+        <thead><tr><th>Date</th><th>Note</th><th>Adjusted in week</th><th class="num">Amount</th></tr></thead>
+        <tbody id="payAdvBody"></tbody></table></div></div>
+    </section>
+
+    <!-- ========== EMPLOYEE VIEW: MY PROFILE ========== -->
+    <section class="section" id="sec-me-profile">
+      <div class="row g-3">
+        <div class="col-lg-4"><div class="card h-100"><div class="card-body text-center p-4" id="profTop"></div></div></div>
+        <div class="col-lg-8">
+          <div class="card"><div class="card-header">My details</div><div class="card-body py-2" id="profDetails"></div></div>
+          <div class="card mt-3" id="profContractCard"><div class="card-header">My contract</div><div class="card-body py-2" id="profContract"></div></div>
+          <div class="small text-muted mt-3"><i class="bi bi-info-circle me-1"></i>Something wrong here? Ask the office to correct it.</div>
+        </div>
+      </div>
+    </section>
+
     <!-- ========== FORM PAGE (add / edit) ========== -->
     <section class="section" id="sec-form">
       <a href="#" id="formBack" class="small fw-semibold text-decoration-none d-inline-block mb-2"><i class="bi bi-arrow-left me-1"></i><span>Back</span></a>
@@ -526,7 +722,13 @@
   </main>
 </div>
 
-<nav class="bottom-nav d-lg-none" aria-label="Main">
+<nav class="bottom-nav d-lg-none emp-only" aria-label="Employee">
+  <a href="#me-home" data-nav="me-home"><i class="bi bi-geo-alt"></i><span>Punch</span></a>
+  <a href="#me-attendance" data-nav="me-attendance"><i class="bi bi-calendar3"></i><span>Attendance</span></a>
+  <a href="#me-payments" data-nav="me-payments"><i class="bi bi-wallet2"></i><span>Payments</span></a>
+  <a href="#me-profile" data-nav="me-profile"><i class="bi bi-person-circle"></i><span>Profile</span></a>
+</nav>
+<nav class="bottom-nav d-lg-none staff-only" aria-label="Main">
   <a href="#dashboard" data-nav="dashboard"><i class="bi bi-grid-1x2"></i><span>Home</span></a>
   <a href="#attendance" data-nav="attendance"><i class="bi bi-calendar2-check"></i><span>Attendance</span></a>
   <a href="#settlement" data-nav="settlement"><i class="bi bi-cash-coin"></i><span>Settle</span></a>
@@ -570,6 +772,7 @@
     <div class="col-6"><label class="form-label">Department</label><select class="form-select" id="prjDept"></select></div>
     <div class="col-6"><label class="form-label">Start date</label><input type="date" class="form-control" id="prjStart"></div>
     <div class="col-6"><label class="form-label">Status</label><select class="form-select" id="prjStatus"><option>Ongoing</option><option>On hold</option><option>Completed</option></select></div>
+    <div class="col-12"><label class="form-label">Site location <span class="text-muted fw-normal">(for the punch location check)</span></label><div class="input-group"><input class="form-control" id="prjGeo" placeholder="Latitude, longitude e.g. 9.9816, 76.2999"><button type="button" class="btn btn-outline-primary" id="prjGeoBtn"><i class="bi bi-crosshair me-1"></i>Use my location</button></div><div class="form-text">Self punches more than 500 m from this point are flagged for the office.</div></div>
     <div class="col-12"><label class="form-label">Notes</label><textarea class="form-control" id="prjNotes" rows="2" placeholder="Scope, contact person…"></textarea></div>
   </div>
   <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary">Save project</button></div>
@@ -607,6 +810,7 @@
     <div class="col-6 col-sm-3"><label class="form-label">Material ₹</label><input type="number" class="form-control" id="aMat" min="0"></div>
     <div class="col-12"><label class="form-label">Material purchase note</label><input class="form-control" id="aMatNote" placeholder="What was bought, shop, bill no."></div>
     <div class="col-12"><label class="form-label">Final amount ₹</label><div class="input-group"><input type="number" min="0" class="form-control fw-bold" id="aAmt"><button type="button" class="btn btn-outline-secondary d-none" id="aAmtReset">Use auto</button></div><div class="form-text" id="aAmtHint"></div></div>
+    <div class="col-12"><label class="form-label">Bills, TA &amp; other files</label><div id="aFiles"></div></div>
     <div class="col-12"><label class="form-label">Work update</label><textarea class="form-control" id="aUpdate" rows="2"></textarea></div>
   </div>
   <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary">Update</button></div>
@@ -623,7 +827,51 @@
   <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary">Save</button></div>
 </form></div></div>
 
-<div class="toast-container position-fixed bottom-0 end-0 p-3"><div id="toast" class="toast align-items-center text-bg-dark border-0"><div class="d-flex"><div class="toast-body" id="toastMsg"></div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+<div class="cam-sheet" id="camSheet" hidden role="dialog" aria-modal="true" aria-labelledby="camTitle">
+  <div class="cam-box">
+    <div class="cam-head"><b id="camTitle">Selfie</b><button type="button" class="btn-close btn-close-white" id="camClose" aria-label="Cancel"></button></div>
+    <div class="cam-stage"><video id="camVideo" playsinline autoplay muted></video><img id="camShot" alt="Your selfie" hidden><div class="cam-ring" id="camRing"></div></div>
+    <div class="cam-loc" id="camLoc"></div>
+    <div class="cam-msg" id="camMsg"></div>
+    <div class="cam-actions">
+      <button type="button" class="btn btn-accent btn-lg" id="camSnap" hidden><i class="bi bi-camera-fill me-2"></i>Take selfie</button>
+      <div class="d-flex gap-2" id="camConfirm" hidden><button type="button" class="btn btn-light btn-lg flex-fill" id="camRetake">Retake</button><button type="button" class="btn btn-accent btn-lg flex-fill" id="camUse">Use photo</button></div>
+      <label class="btn btn-accent btn-lg" id="camFileLbl" hidden><i class="bi bi-camera me-2"></i>Open phone camera<input type="file" accept="image/*" capture="user" id="camFile" hidden></label>
+      <button type="button" class="btn btn-link btn-sm" id="camSkip" hidden>Punch without a selfie</button>
+    </div>
+  </div>
+</div>
+<div class="cam-sheet" id="selfieView" hidden role="dialog" aria-modal="true" aria-labelledby="svTitle">
+  <div class="cam-box" style="max-width:640px">
+    <div class="cam-head"><b id="svTitle"></b><button type="button" class="btn-close btn-close-white" id="svClose" aria-label="Close"></button></div>
+    <div class="sv-grid" id="svBody"></div>
+  </div>
+</div>
+
+<div class="att-sheet" id="filesSheet" hidden role="dialog" aria-modal="true" aria-labelledby="fsTitle">
+  <div class="att-panel">
+    <div class="att-head"><div class="min-w-0"><b id="fsTitle">Attachments</b><div class="small text-muted" id="fsSub"></div></div><button type="button" class="btn-close" id="fsClose" aria-label="Close"></button></div>
+    <div class="att-body">
+      <div id="fsList"></div>
+      <label class="att-drop mt-2" id="fsDrop"><i class="bi bi-cloud-arrow-up"></i><div><b>Add bills, TA or photos</b><div class="small text-muted">Tap to choose files or take a photo · photos and PDF, up to 10 MB each</div></div><input type="file" id="fsInput" multiple accept="image/*,application/pdf" hidden></label>
+      <div class="small text-muted mt-2" id="fsBusy" hidden><span class="spinner-border spinner-border-sm me-2"></span>Adding files…</div>
+    </div>
+    <div class="att-foot"><div class="d-flex align-items-center gap-2" id="fsKindWrap"><span class="small text-muted">New files are</span><select class="form-select form-select-sm" id="fsKind"></select></div><button type="button" class="btn btn-primary ms-auto" id="fsDone">Done</button></div>
+  </div>
+</div>
+<div class="cam-sheet" id="fileView" hidden role="dialog" aria-modal="true" aria-labelledby="fvTitle">
+  <div class="cam-box">
+    <div class="cam-head"><div class="min-w-0 me-3"><b id="fvTitle" class="d-block text-truncate"></b><div class="small" style="color:#9fb6bf" id="fvSub"></div></div><button type="button" class="btn-close btn-close-white" id="fvClose" aria-label="Close"></button></div>
+    <div class="fv-stage" id="fvStage"></div>
+    <div class="fv-bar">
+      <div class="d-flex gap-2"><button type="button" class="btn btn-sm btn-light" id="fvPrev" aria-label="Previous file"><i class="bi bi-chevron-left"></i></button><button type="button" class="btn btn-sm btn-light" id="fvNext" aria-label="Next file"><i class="bi bi-chevron-right"></i></button></div>
+      <div class="d-flex gap-2"><a class="btn btn-sm btn-light" id="fvOpen" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>Open</a><a class="btn btn-sm btn-accent" id="fvDl"><i class="bi bi-download me-1"></i>Download</a></div>
+    </div>
+    <div class="fv-strip" id="fvStrip"></div>
+  </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:2100"><div id="toast" class="toast align-items-center text-bg-dark border-0"><div class="d-flex"><div class="toast-body" id="toastMsg"></div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -714,7 +962,7 @@ const KEY='stromnetz-labour-demo-v1';
 let db;
 try { db = JSON.parse(localStorage.getItem(KEY)); } catch(e) { db = null; }
 if(!db) db = seed();
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify(db)); }catch(e){} }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(db)); return true; }catch(e){ try{ toast('Could not save: this device\'s storage is full'); }catch(_){} return false; } }
 /* departments, employee types, material (data version 2) */
 const DEPTS=['Electrical','Plumbing','HVAC','Civil support'];
 function migrate(){
@@ -748,6 +996,46 @@ function migrate(){
   db.projects.forEach(p=>{ p.dept=p.dept||PDEPT[p.name]||'Electrical'; if(['Accel-TVM','Lenovo Oberon Mall'].includes(p.name)&&p.status==='On hold'){ p.status='Ongoing'; p.start=p.start||'2026-11-09'; } });
   db.v=2;
 }
+function migrate3(){
+  if((db.v||1)>=3) return;
+  const PG={'Maya Tower':{lat:9.9816,lng:76.2999},'Riyas - Residence':{lat:10.0261,lng:76.3125},'BRV Cottage - Vagamon':{lat:9.6862,lng:76.9050},'Lenovo Oberon Mall':{lat:10.0270,lng:76.3080},'Accel-TVM':{lat:8.5241,lng:76.9366}};
+  db.projects.forEach(p=>{ if(p.geo===undefined) p.geo=PG[p.name]||null; });
+  // a few self punches in the sample data: two on site, one far away, one without location
+  const tag=(date,name,inLoc,outLoc)=>{ const e=db.employees.find(x=>x.name===name), a=e&&db.attendance.find(x=>x.date===date&&x.empId===e.id); if(a){ a.src='self'; a.inLoc=inLoc; a.outLoc=a.out?outLoc:null; } };
+  tag('2026-11-10','Adhil',{lat:9.98172,lng:76.30011,acc:12},{lat:9.98150,lng:76.29975,acc:18});
+  tag('2026-11-10','Swalih',{lat:9.98161,lng:76.29988,acc:9},{lat:9.98166,lng:76.29993,acc:11});
+  tag('2026-11-09','Adhil',{lat:9.98168,lng:76.30002,acc:15},{lat:9.99902,lng:76.31544,acc:35});
+  tag('2026-11-09','Swalih',null,{lat:9.98159,lng:76.29981,acc:20});
+  tag(TODAY,'Jinod',{lat:9.98175,lng:76.29995,acc:14},null);
+  db.v=3;
+}
+const GEO_RADIUS=500;
+function distM(a,b){ const R=6371000, r=x=>x*Math.PI/180, dLat=r(b.lat-a.lat), dLng=r(b.lng-a.lng);
+  const h=Math.sin(dLat/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dLng/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
+const fmtDist = d => d<1000 ? Math.round(d)+' m' : (d/1000).toFixed(1)+' km';
+function geoCheck(loc, site){
+  if(!loc) return {k:'none',label:'No location captured'};
+  const p=db.projects.find(x=>x.name===site);
+  if(!p||!p.geo) return {k:'unk',label:'Location saved · site has no pin'};
+  const d=distM(loc,p.geo);
+  return {k:d<=GEO_RADIUS?'ok':'far', d, label:`${fmtDist(d)} from site${d>GEO_RADIUS?' · outside the site area':''}`};
+}
+function geoTag(a,which){ return selfieThumb(a,which)+geoPin(a,which); }
+const askedSelfie = (a,which) => a[which+'SelfieAsked'] ?? !!a.selfieStep;
+function selfieThumb(a,which){
+  if(a.src!=='self' || (which==='out'&&!a.out)) return '';
+  const ph=a[which+'Photo'], when=which==='in'?'Punch in':'Punch out';
+  if(ph) return `<img src="${ph}" class="selfie-thumb" data-selfie="${a.id}" alt="${when} selfie" title="${when} selfie · click to view">`;
+  return askedSelfie(a,which) ? `<span class="geo-pin text-danger" title="${when}: no selfie"><i class="bi bi-person-x"></i></span>` : '';
+}
+function geoPin(a,which){
+  if(a.src!=='self') return '';
+  const loc=a[which+'Loc'], c=geoCheck(loc,a.site), when=which==='in'?'Punch in':'Punch out';
+  const cls={ok:'text-success',far:'text-danger',unk:'text-secondary',none:'text-danger'}[c.k];
+  return loc ? `<a href="https://www.google.com/maps?q=${loc.lat},${loc.lng}" target="_blank" rel="noopener" class="geo-pin ${cls}" title="${when}: ${esc(c.label)}${loc.acc?` (±${loc.acc} m)`:''}"><i class="bi bi-geo-alt-fill"></i></a>`
+             : `<span class="geo-pin ${cls}" title="${when}: no location captured"><i class="bi bi-geo-alt"></i></span>`;
+}
+const selfBadge = a => a.src==='self' ? ' <span class="badge badge-self" title="Marked by the employee on their phone">Self</span>' : '';
 const daysTo = s => Math.round((parse(s)-parse(TODAY))/864e5);
 function contractState(e){
   if(e.type!=='Contract') return null;
@@ -770,7 +1058,7 @@ function ensureProjects(){ if(db.projects) return;
     return {id:uid(),name:n,location:(LOC[n]||[''])[0],client:(LOC[n]||['',''])[1],start:d[0]||'',status,notes:''}; });
   delete db.sites; save();
 }
-ensureProjects(); migrate();
+ensureProjects(); migrate(); migrate3();
 const siteNames = (onlyOngoing) => db.projects.filter(p=>!onlyOngoing||p.status==='Ongoing').map(p=>p.name).sort((a,b)=>a.localeCompare(b));
 db.attendance.forEach(compute); save();
 const emp = id => db.employees.find(e=>e.id===id) || {name:'(removed)',basic:0};
@@ -798,10 +1086,12 @@ function closeForm(){ formOpen=null; location.hash=formReturn; }
 $('#formBack').onclick=e=>{ e.preventDefault(); closeForm(); };
 
 /* ================= routing ================= */
-const titles={'new-attendance':'New Attendance Entry',projects:'Projects',dashboard:'Dashboard',attendance:'Attendance',employees:'Manage Employees',staff:'Manage Staff',settlement:'Weekly Settlement'};
+const titles={'me-home':'My Day','me-attendance':'My Attendance','me-payments':'My Payments','me-profile':'My Profile','new-attendance':'New Attendance Entry',projects:'Projects',dashboard:'Dashboard',attendance:'Attendance',employees:'Manage Employees',staff:'Manage Staff',settlement:'Weekly Settlement'};
 let lastRoute=null;
 function route(){
-  const raw = location.hash.slice(1) || 'dashboard';
+  const raw = location.hash.slice(1) || (isEmp()?'me-home':'dashboard');
+  if(isEmp() && !raw.startsWith('me-')){ location.replace('#me-home'); return; }
+  if(!isEmp() && raw.startsWith('me-')){ location.replace('#dashboard'); return; }
   if(raw.startsWith('form/')){
     if(!formOpen){ location.replace('#'+(formReturn||'dashboard')); return; }
     document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id==='sec-form'));
@@ -832,12 +1122,12 @@ function route(){
   document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id==='sec-'+sec));
   document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active', a.dataset.nav===sec));
   $('#pageTitle').textContent = titles[page]; $('#sidebar').classList.remove('show'); if(lastRoute!==raw) window.scrollTo(0,0); lastRoute=raw;
-  ({'new-attendance':renderAttendance,projects:renderProjects,dashboard:renderDashboard,attendance:renderAttendance,employees:renderEmployees,staff:renderStaff,settlement:renderSettlement})[page]();
+  ({'me-home':renderMeHome,'me-attendance':renderMeAttendance,'me-payments':renderMePayments,'me-profile':renderMeProfile,'new-attendance':renderAttendance,projects:renderProjects,dashboard:renderDashboard,attendance:renderAttendance,employees:renderEmployees,staff:renderStaff,settlement:renderSettlement})[page]();
 }
 window.addEventListener('hashchange',route);
 $('#menuBtn').onclick=()=>$('#sidebar').classList.toggle('show');
 $('#todayLabel').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-$('#resetDemo').onclick=e=>{e.preventDefault(); if(confirm('Reset all demo data?')){ try{localStorage.removeItem(KEY);}catch(_){} db=seed(); ensureProjects(); migrate(); db.attendance.forEach(compute); save(); route(); toast('Demo data reset'); }};
+$('#resetDemo').onclick=e=>{e.preventDefault(); if(confirm('Reset all demo data?')){ try{localStorage.removeItem(KEY);}catch(_){} FDB.clear(); db=seed(); ensureProjects(); migrate(); migrate3(); db.attendance.forEach(compute); save(); route(); toast('Demo data reset'); }};
 
 /* ================= DASHBOARD ================= */
 let chDaily, chSite;
@@ -889,7 +1179,7 @@ function payHelp(){
   $('#payModeLabel').textContent = hourly ? 'Hourly (hours × basic ÷ 8)' : 'Shift slabs (½ / 1 / 1½ day)';
   $('#payRuleHelp').textContent = hourly ? 'Salary = hours worked × (basic ÷ 8).' : 'Salary = basic × day factor: under 6 hrs = ½ day, 6–11 hrs = 1 day, 11+ hrs = 1½ days.';
 }
-function newRow(empId){ const e=empId?emp(empId):null; return {key:uid(),empId:empId||'',basic:e?e.basic:0,in:'08:00',out:'17:00',petrol:'',tools:'',material:'',matNote:''}; }
+function newRow(empId){ const e=empId?emp(empId):null; return {key:uid(),empId:empId||'',basic:e?e.basic:0,in:'08:00',out:'17:00',petrol:'',tools:'',material:'',matNote:'',files:[],blobs:new Map()}; }
 function renderEntry(){
   const opts = db.employees.filter(e=>e.status==='Active').map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
   let total=0;
@@ -907,7 +1197,7 @@ function renderEntry(){
       <td><input type="number" min="0" class="form-control form-control-sm" data-f="tools" value="${r.tools}"></td>
       <td><input type="number" min="0" class="form-control form-control-sm" data-f="material" value="${r.material}" placeholder="0"><input class="form-control form-control-sm mt-1 mat-note${+r.material>0&&!String(r.matNote||'').trim()?' is-invalid':''}" data-f="matNote" value="${esc(r.matNote)}" placeholder="What was bought?"></td>
       <td class="num"><input type="number" min="0" class="form-control form-control-sm amt-input ${c.adj?'is-edited':''}" data-f="amtOv" value="${Math.round(c.amount)}" title="Auto-calculated, type to change"><div class="amt-hint">${c.adj?`Auto ${inr(c.auto)} · <a href="#" data-reset="${r.key}">reset</a>`:'Auto · editable'}</div></td>
-      <td><button class="btn btn-sm btn-link text-danger p-0" data-del="${r.key}"><i class="bi bi-x-circle"></i></button></td></tr>`;
+      <td class="text-nowrap"><button type="button" class="btn btn-sm att-btn ${r.files.length?'has':''}" data-manage-files="row:${r.key}" title="Attach bills, TA, photos"><i class="bi bi-paperclip"></i>${r.files.length?`<span>${r.files.length}</span>`:''}</button> <button class="btn btn-sm btn-link text-danger p-0 ms-1" data-del="${r.key}" title="Remove row"><i class="bi bi-x-circle"></i></button></td></tr>`;
   }).join('') || `<tr><td colspan="12" class="empty">Add labourers for this day, or click <b>Load last team</b>.</td></tr>`;
   entryRows.forEach(r=>{ const sel=document.querySelector(`tr[data-k="${r.key}"] select`); if(sel) sel.value=r.empId; });
   $('#entryTotal').textContent = inr(total);
@@ -929,7 +1219,7 @@ $('#loadTeamBtn').onclick=()=>{
 };
 $('#payModeSwitch').onchange=e=>{ db.settings.payMode=e.target.checked?'hourly':'slab'; db.attendance.forEach(compute); save(); payHelp(); renderEntry(); renderRegister(); toast('Pay rule updated for all entries'); };
 $('#clearEntryBtn').onclick=()=>{ entryRows=[newRow()]; $('#entUpdate').value=''; renderEntry(); };
-$('#saveEntryBtn').onclick=()=>{
+$('#saveEntryBtn').onclick=async()=>{
   const date=$('#entDate').value, site=$('#entSite').value.trim();
   if(!date||!site) return toast('Pick a date and site first');
   const rows=entryRows.filter(r=>r.empId);
@@ -938,7 +1228,8 @@ $('#saveEntryBtn').onclick=()=>{
   if(noNote){ renderEntry(); return toast(`Add what was bought for ${emp(noNote.empId).name}'s material purchase`); }
   const dup = rows.find(r=>db.attendance.some(a=>a.date===date&&a.empId===r.empId));
   if(dup && !confirm(`${emp(dup.empId).name} already has an entry on ${fmtD(date)}. Save anyway?`)) return;
-  rows.forEach((r,i)=>db.attendance.push(compute({id:uid(),date,site,cat:$('#entCat').value,empId:r.empId,basic:+r.basic,in:r.in,out:r.out,petrol:+r.petrol||0,tools:+r.tools||0,material:+r.material||0,matNote:String(r.matNote||'').trim(),amtOv:r.amtOv==null||r.amtOv===''?null:+r.amtOv,update:i===0?$('#entUpdate').value.trim():''})));
+  try{ for(const r of rows) await commitBlobs(r.files,r.blobs); }catch(err){ return toast('Could not save the files: this device is out of space'); }
+  rows.forEach((r,i)=>db.attendance.push(compute({id:uid(),files:r.files.map(({...f})=>f),date,site,cat:$('#entCat').value,empId:r.empId,basic:+r.basic,in:r.in,out:r.out,petrol:+r.petrol||0,tools:+r.tools||0,material:+r.material||0,matNote:String(r.matNote||'').trim(),amtOv:r.amtOv==null||r.amtOv===''?null:+r.amtOv,update:i===0?$('#entUpdate').value.trim():''})));
   addSite(site,date,$('#entCat').value); save(); toast(`Saved ${rows.length} attendance entr${rows.length>1?'ies':'y'}`);
   entryRows=[newRow()]; $('#entUpdate').value=''; location.hash='attendance';
 };
@@ -952,7 +1243,7 @@ function renderRegister(){
   list.forEach(a=>{
     if(a.date!==cur){ close(); cur=a.date; dayTot=0; html+=`<tr class="day-group"><td colspan="12"><i class="bi bi-calendar3 me-2"></i>${fmtD(a.date)} <span class="text-muted fw-normal ms-2 small">${esc([...new Set(list.filter(x=>x.date===a.date).map(x=>x.site))].join(', '))}</span></td></tr>`; }
     dayTot+=a.amount; grand+=a.amount;
-    html+=`<tr><td>${empLink(a.empId,'')}${a.update?`<div class="small text-muted text-truncate" style="max-width:260px" title="${esc(a.update)}">${esc(a.update)}</div>`:''}</td><td>${esc(a.site)}</td><td>${a.in||'—'}</td><td>${a.out||'<span class="badge badge-amber">On site</span>'}</td>
+    html+=`<tr><td>${empLink(a.empId,'')}${selfBadge(a)}${fileTag(a)}${a.update?`<div class="small text-muted text-truncate" style="max-width:260px" title="${esc(a.update)}">${esc(a.update)}</div>`:''}</td><td>${esc(a.site)}</td><td class="text-nowrap">${a.in||'—'}${geoTag(a,'in')}</td><td class="text-nowrap">${a.out?a.out+geoTag(a,'out'):'<span class="badge badge-amber">On site</span>'}</td>
       <td class="num">${a.out?a.hours.toFixed(2):'—'}</td><td class="num">₹${(a.basic/8).toFixed(2)}</td><td class="num">${inr(a.salary)}</td><td class="num">${a.petrol?inr(a.petrol):'—'}</td><td class="num">${a.tools?inr(a.tools):'—'}</td><td class="num">${matCell(a)}</td><td class="num fw-semibold">${amtCell(a)}</td>
       <td class="text-end text-nowrap no-print"><button class="btn btn-sm btn-link p-0 me-2" onclick="editAtt('${a.id}')"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-link text-danger p-0" onclick="delAtt('${a.id}')"><i class="bi bi-trash"></i></button></td></tr>`;
   });
@@ -969,7 +1260,7 @@ function renderAttendance(){
   renderEntry(); renderRegister();
 }
 window.editAtt=id=>{ const a=db.attendance.find(x=>x.id===id);
-  $('#aId').value=id; $('#aWho').textContent=emp(a.empId).name; $('#aDate').value=a.date; $('#aSite').value=a.site; $('#aIn').value=a.in; $('#aOut').value=a.out||''; $('#aBasic').value=a.basic; $('#aPetrol').value=a.petrol||''; $('#aTools').value=a.tools||''; $('#aMat').value=a.material||''; $('#aMatNote').value=a.matNote||''; aAmtEdited=a.amtOv!=null; $('#aAmt').value=Math.round(a.amount); amtHint(true); $('#aUpdate').value=a.update||'';
+  $('#aId').value=id; $('#aWho').textContent=emp(a.empId).name; $('#aDate').value=a.date; $('#aSite').value=a.site; $('#aIn').value=a.in; $('#aOut').value=a.out||''; $('#aBasic').value=a.basic; $('#aPetrol').value=a.petrol||''; $('#aTools').value=a.tools||''; $('#aMat').value=a.material||''; $('#aMatNote').value=a.matNote||''; aAmtEdited=a.amtOv!=null; $('#aAmt').value=Math.round(a.amount); amtHint(true); aFilesId=id; renderAFiles(); $('#aUpdate').value=a.update||'';
   showForm('attModal'); };
 let aAmtEdited=false;
 function modalAuto(){ return Math.round(compute({in:$('#aIn').value,out:$('#aOut').value,basic:+$('#aBasic').value,petrol:+$('#aPetrol').value||0,tools:+$('#aTools').value||0,material:+$('#aMat').value||0,amtOv:null}).amount); }
@@ -983,7 +1274,7 @@ $('#aAmtReset').onclick=()=>{ aAmtEdited=false; amtHint(); };
 $('#attForm').onsubmit=e=>{ e.preventDefault(); if(+$('#aMat').value>0&&!$('#aMatNote').value.trim()){ $('#aMatNote').focus(); return toast('Add what was bought for this material purchase'); } const a=db.attendance.find(x=>x.id===$('#aId').value);
   Object.assign(a,{date:$('#aDate').value,site:$('#aSite').value.trim(),in:$('#aIn').value,out:$('#aOut').value,basic:+$('#aBasic').value,petrol:+$('#aPetrol').value||0,tools:+$('#aTools').value||0,material:+$('#aMat').value||0,matNote:$('#aMatNote').value.trim(),amtOv:aAmtEdited&&$('#aAmt').value!==''?+$('#aAmt').value:null,update:$('#aUpdate').value.trim()});
   compute(a); addSite(a.site,a.date,a.cat); save(); closeForm(); route(); toast('Attendance updated'); };
-window.delAtt=id=>{ if(!confirm('Delete this attendance entry?')) return; db.attendance=db.attendance.filter(a=>a.id!==id); save(); route(); toast('Entry deleted'); };
+window.delAtt=id=>{ const na=(db.attendance.find(a=>a.id===id)?.files||[]).length; if(!confirm(`Delete this attendance entry${na?` and its ${na} file${na>1?'s':''}`:''}?`)) return; (db.attendance.find(a=>a.id===id)?.files||[]).forEach(f=>FDB.del(f.id)); db.attendance=db.attendance.filter(a=>a.id!==id); save(); route(); toast('Entry deleted'); };
 
 /* ================= EMPLOYEES ================= */
 $('#empSearch').oninput=renderEmployees; ['#empStatusFilter','#empTypeFilter','#empDeptFilter'].forEach(s=>$(s).onchange=renderEmployees);
@@ -1079,11 +1370,13 @@ function renderProjects(){
 window.viewPrjAtt=name=>{ fillSelectors(); $('#regSite').value=name; $('#regFrom').value=''; $('#regTo').value=''; location.hash='attendance'; setTimeout(()=>$('#regBody').scrollIntoView({behavior:'smooth'}),50); };
 window.openPrj=id=>{ const p=id?db.projects.find(x=>x.id===id):{name:'',location:'',client:'',dept:'Electrical',start:TODAY,status:'Ongoing',notes:''};
   $('#prjModalTitle').textContent=id?'Edit project':'Add project'; $('#prjId').value=id||'';
-  $('#prjName').value=p.name; $('#prjLoc').value=p.location; $('#prjClient').value=p.client; $('#prjStart').value=p.start; $('#prjStatus').value=p.status; $('#prjNotes').value=p.notes||''; $('#prjDept').value=p.dept||'Electrical';
+  $('#prjName').value=p.name; $('#prjLoc').value=p.location; $('#prjClient').value=p.client; $('#prjStart').value=p.start; $('#prjStatus').value=p.status; $('#prjNotes').value=p.notes||''; $('#prjGeo').value=p.geo?`${p.geo.lat}, ${p.geo.lng}`:''; $('#prjDept').value=p.dept||'Electrical';
   showForm('prjModal'); };
 $('#prjForm').onsubmit=ev=>{ ev.preventDefault(); const id=$('#prjId').value, name=$('#prjName').value.trim();
+  const gm=$('#prjGeo').value.trim().match(/^(-?\d{1,2}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)$/);
+  if($('#prjGeo').value.trim()&&!gm) return toast('Site location should look like 9.9816, 76.2999');
   if(db.projects.some(p=>p.name.toLowerCase()===name.toLowerCase()&&p.id!==id)) return toast('A project with this name already exists');
-  const data={name,location:$('#prjLoc').value.trim(),client:$('#prjClient').value.trim(),start:$('#prjStart').value,status:$('#prjStatus').value,dept:$('#prjDept').value,notes:$('#prjNotes').value.trim()};
+  const data={name,location:$('#prjLoc').value.trim(),client:$('#prjClient').value.trim(),start:$('#prjStart').value,status:$('#prjStatus').value,dept:$('#prjDept').value,geo:gm?{lat:+gm[1],lng:+gm[2]}:null,notes:$('#prjNotes').value.trim()};
   if(id){ const p=db.projects.find(x=>x.id===id);
     if(p.name!==name){ db.attendance.forEach(a=>{ if(a.site===p.name) a.site=name; }); db.staff.forEach(s=>s.sites=s.sites.map(x=>x===p.name?name:x)); }
     Object.assign(p,data); } else db.projects.push({id:uid(),...data});
@@ -1159,7 +1452,7 @@ function renderHistory(id, keepFilters){
     const m=parse(a.date).toLocaleDateString('en-IN',{month:'long',year:'numeric'});
     if(m!==curM){ closeM(); curM=m; mTot=0; mDays=0; }
     mTot+=a.amount; mDays+=a.days;
-    html+=`<tr><td class="text-nowrap">${fmtDs(a.date)}</td><td>${esc(a.site)}</td><td>${a.in||'—'}</td><td>${a.out||'<span class="badge badge-amber">On site</span>'}</td>
+    html+=`<tr><td class="text-nowrap">${fmtDs(a.date)}${fileTag(a)}</td><td>${esc(a.site)}</td><td class="text-nowrap">${a.in||'—'}${geoTag(a,'in')}</td><td class="text-nowrap">${a.out?a.out+geoTag(a,'out'):'<span class="badge badge-amber">On site</span>'}</td>
       <td class="num">${a.out?a.hours.toFixed(2):'—'}</td><td class="num">${a.out?(a.days%1?a.days.toFixed(2).replace(/0$/,''):a.days):'—'}</td><td class="num">${inr(a.basic)}</td><td class="num">${inr(a.salary)}</td>
       <td class="num">${a.petrol?inr(a.petrol):'—'}</td><td class="num">${a.tools?inr(a.tools):'—'}</td><td class="num">${matCell(a)}</td><td class="num fw-semibold">${amtCell(a)}</td>
       <td class="small text-muted" style="max-width:240px">${esc(a.update||'')}</td>
@@ -1284,7 +1577,7 @@ function renderProject(id, keep){
     if(a.date!==cur){ cur=a.date; const day=att.filter(x=>x.date===cur);
       html+=`<tr class="day-group"><td colspan="12"><i class="bi bi-calendar3 me-2"></i>${fmtD(cur)} <span class="text-muted fw-normal ms-2 small">${day.length} worker${day.length>1?'s':''} · ${inr(sum(day,x=>x.amount))}</span></td></tr>`; }
     const e=emp(a.empId);
-    html+=`<tr><td>${empLink(a.empId)}</td><td>${typeBadge(e)}</td><td>${a.in||'—'}</td><td>${a.out||'<span class="badge badge-amber">On site</span>'}</td>
+    html+=`<tr><td>${empLink(a.empId)}${selfBadge(a)}${fileTag(a)}</td><td>${typeBadge(e)}</td><td class="text-nowrap">${a.in||'—'}${geoTag(a,'in')}</td><td class="text-nowrap">${a.out?a.out+geoTag(a,'out'):'<span class="badge badge-amber">On site</span>'}</td>
       <td class="num">${a.out?a.hours.toFixed(2):'—'}</td><td class="num">${a.out?fmtN(a.days):'—'}</td><td class="num">${a.petrol?inr(a.petrol):'—'}</td><td class="num">${a.tools?inr(a.tools):'—'}</td>
       <td class="num">${matCell(a)}</td><td class="num fw-semibold">${amtCell(a)}</td><td class="small text-muted" style="max-width:220px">${esc(a.update||'')}</td>
       <td class="text-end no-print"><button class="btn btn-sm btn-link p-0" title="Edit" onclick="editAtt('${a.id}')"><i class="bi bi-pencil"></i></button></td></tr>`;
@@ -1320,6 +1613,493 @@ $('#pdCsvBtn').onclick=()=>{
     ...att.map(a=>[a.date,q(emp(a.empId).name),emp(a.empId).type,a.in,a.out,a.hours.toFixed(2),a.days,Math.round(a.wage),a.petrol||0,a.tools||0,a.material||0,q(a.matNote),Math.round(a.amount),q(a.update)].join(','))];
   const el=document.createElement('a'); el.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/csv'})); el.download=`${p.name}_${$('#pdFrom').value}_to_${$('#pdTo').value}.csv`; el.click();
 };
+
+$('#prjGeoBtn').onclick=async()=>{ const b=$('#prjGeoBtn'); b.disabled=true; const loc=await getLoc(); b.disabled=false;
+  if(loc.err) return toast(loc.err); $('#prjGeo').value=`${loc.lat}, ${loc.lng}`; toast(`Site pinned (±${loc.acc} m)`); };
+
+/* ================= EMPLOYEE VIEW =================
+   Same app, a second view: a worker sees only their own day, attendance,
+   payments and profile, and marks attendance themselves with location. */
+const VIEW_KEY='stromnetz-view';
+let view={mode:'staff',empId:null};
+try{ view=JSON.parse(localStorage.getItem(VIEW_KEY))||view; }catch(e){}
+function isEmp(){ return view.mode==='employee' && db.employees.some(e=>e.id===view.empId); }
+const me = () => emp(view.empId);
+function setView(mode, empId){
+  view={mode,empId:empId||null}; try{ localStorage.setItem(VIEW_KEY,JSON.stringify(view)); }catch(e){}
+  applyView(); const target=mode==='employee'?'#me-home':'#dashboard';
+  if(location.hash===target) route(); else location.hash=target;
+}
+function applyView(){
+  const emode=isEmp(); document.body.classList.toggle('emp-mode',emode);
+  if(emode){ const e=me(); $('#acctAvatar').textContent=initials(e.name); $('#acctName').textContent=e.name; $('#demoWho').textContent=e.name;
+    $('#acctMenu').innerHTML=`<li><span class="dropdown-item-text small text-muted">Signed in as ${esc(e.name)} · Employee</span></li><li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="#me-profile"><i class="bi bi-person-circle me-2"></i>My profile</a></li>
+      <li><a class="dropdown-item" href="#me-payments"><i class="bi bi-wallet2 me-2"></i>My payments</a></li>
+      <li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="#" data-view-staff><i class="bi bi-arrow-left-right me-2"></i>Back to staff view (demo)</a></li>`;
+  } else {
+    $('#acctAvatar').textContent='AD'; $('#acctName').textContent='Admin';
+    $('#acctMenu').innerHTML=`<li><span class="dropdown-item-text small text-muted">Signed in as Office Admin</span></li><li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="#staff"><i class="bi bi-gear me-2"></i>Staff &amp; access</a></li>
+      <li><hr class="dropdown-divider"></li><li><h6 class="dropdown-header">Open the employee view as… (demo)</h6></li>
+      <li><div class="acct-emps">${db.employees.filter(e=>e.status==='Active').map(e=>`<a class="dropdown-item" href="#" data-view-emp="${e.id}"><span class="avatar me-2" style="width:24px;height:24px;font-size:.65rem">${initials(e.name)}</span>${esc(e.name)}${e.type==='Contract'?' <span class="badge badge-contract ms-1">Contract</span>':''}</a>`).join('')}</div></li>
+      <li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Sign out</a></li>`;
+  }
+}
+document.addEventListener('click',e=>{
+  const ve=e.target.closest('[data-view-emp]'); if(ve){ e.preventDefault(); return setView('employee',ve.dataset.viewEmp); }
+  const vs=e.target.closest('[data-view-staff]'); if(vs){ e.preventDefault(); return setView('staff'); }
+});
+$('#ehAppBtn').onclick=()=>setView('employee',ehId);
+
+const nowHM = () => { const d=new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); };
+function getLoc(){
+  return new Promise(res=>{
+    if(!navigator.geolocation) return res({err:'This phone cannot share location'});
+    navigator.geolocation.getCurrentPosition(
+      p=>res({lat:+p.coords.latitude.toFixed(6),lng:+p.coords.longitude.toFixed(6),acc:Math.round(p.coords.accuracy)}),
+      e=>res({err:e.code===1?'Location permission is turned off':'Your location could not be found'}),
+      {enableHighAccuracy:true,timeout:12000,maximumAge:30000});
+  });
+}
+function geoLine(loc, site, when){
+  const c=geoCheck(loc,site), icon=c.k==='ok'?'bi-geo-alt-fill':c.k==='unk'?'bi-geo-alt':'bi-exclamation-triangle-fill';
+  return `<div class="geo-line geo-${c.k}"><i class="bi ${icon}"></i>${when} · ${esc(c.label)}${loc?` · <a href="https://www.google.com/maps?q=${loc.lat},${loc.lng}" target="_blank" rel="noopener">map</a>`:''}</div>`;
+}
+const dayWord = d => d===0.5?'½ day':d===1?'1 day':d===1.5?'1½ days':(d?fmtN(+d.toFixed(2))+' days':'—');
+const hm = h => `${Math.floor(h)}h ${pad(Math.round((h%1)*60))}m`;
+
+function renderMeHome(){
+  const e=me(), h=new Date().getHours();
+  $('#meDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+  $('#meHello').textContent=`${h<12?'Good morning':h<17?'Good afternoon':'Good evening'}, ${e.name}`;
+  const mine=db.attendance.filter(a=>a.empId===e.id);
+  const today=mine.filter(a=>a.date===TODAY), open=today.find(a=>!a.out), stale=mine.find(a=>!a.out&&a.date<TODAY);
+  const ongoing=siteNames(true), lastSite=[...mine].sort((a,b)=>b.date.localeCompare(a.date))[0]?.site;
+  const staleNote = stale ? `<div class="alert alert-warning small py-2 mb-3"><i class="bi bi-exclamation-triangle me-1"></i>You did not punch out on ${fmtD(stale.date)} at ${esc(stale.site)}. Ask the office to add your out time.</div>` : '';
+  let html;
+  if(open){
+    html=`<div class="card-body">${staleNote}
+      <span class="punch-status on"><span class="dot"></span>On site · ${esc(open.site)}</span>
+      <div class="punch-clock" id="punchElapsed">${hm(hoursBetween(open.in,nowHM()))}</div>
+      <div class="text-muted small">since ${open.in} today</div>
+      ${punchProof(open,'in')}
+      <hr>
+      <div class="mb-2"><label class="form-label">Work done today</label><textarea class="form-control" id="poUpdate" rows="2" placeholder="e.g. Light fitting in rooms 7–10"></textarea></div>
+      <div class="row g-2 mb-2">
+        <div class="col-6"><label class="form-label">Petrol ₹</label><input type="number" min="0" inputmode="numeric" class="form-control" id="poPetrol" placeholder="0"></div>
+        <div class="col-6"><label class="form-label">Material bought ₹</label><input type="number" min="0" inputmode="numeric" class="form-control" id="poMat" placeholder="0"></div>
+        <div class="col-12"><input class="form-control" id="poMatNote" placeholder="What did you buy? (needed if you spent on material)"></div>
+        <div class="col-12"><div class="d-flex justify-content-between align-items-center mt-1"><span class="form-label m-0">Bills, TA &amp; photos</span><button type="button" class="btn btn-sm btn-outline-primary" data-manage-files="po"><i class="bi bi-paperclip me-1"></i>Attach</button></div><div class="file-chips" id="poFiles"></div></div>
+      </div>
+      <div class="small text-muted mb-3" id="punchPreview"></div>
+      <button class="btn btn-primary w-100 punch-btn" id="punchOutBtn" data-id="${open.id}"><i class="bi bi-camera-fill me-2"></i>Selfie &amp; punch out</button>
+      <div class="small mt-2" id="punchMsg"></div></div>`;
+  } else if(today.length){
+    const a=today[today.length-1];
+    html=`<div class="card-body">${staleNote}
+      <span class="punch-status done"><span class="dot"></span>Day complete</span>
+      <div class="punch-clock">${inr(a.amount)}</div>
+      <div class="text-muted small">${a.days?dayWord(a.days)+' at ':'At '}${esc(a.site)} · ${a.in} – ${a.out} (${a.hours.toFixed(2)} hrs)</div>
+      ${punchProof(a,'in')}${punchProof(a,'out')}
+      ${a.update?`<div class="update-item mt-3 mb-0">${esc(a.update)}</div>`:''}${filesBlock(a)}
+      <div class="small text-muted mt-3"><i class="bi bi-info-circle me-1"></i>Punched in or out by mistake? Ask the office to correct it.</div></div>`;
+  } else {
+    html=`<div class="card-body">${staleNote}
+      <span class="punch-status"><span class="dot"></span>Not punched in</span>
+      <div class="punch-clock" id="punchClock">${nowHM()}</div>
+      <div class="text-muted small mb-3">${new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}</div>
+      <label class="form-label">Your site today</label>
+      <select class="form-select form-select-lg mb-3" id="punchSite">${ongoing.map(n=>`<option ${n===lastSite?'selected':''}>${esc(n)}</option>`).join('')}</select>
+      <button class="btn btn-accent w-100 punch-btn" id="punchInBtn"><i class="bi bi-camera-fill me-2"></i>Selfie &amp; punch in</button>
+      <div class="small text-muted mt-2"><i class="bi bi-shield-check me-1"></i>A selfie and your location are saved with each punch so the office can see you were on site.</div>
+      <div class="small mt-2" id="punchMsg"></div></div>`;
+  }
+  $('#punchCard').innerHTML=html; if($('#poFiles')) renderPoFiles();
+  $('#punchInBtn') && ($('#punchInBtn').onclick=punchIn);
+  $('#punchOutBtn') && ($('#punchOutBtn').onclick=()=>punchOut($('#punchOutBtn').dataset.id));
+  updatePreview();
+
+  // this week
+  const ws=weekStartOf(TODAY), wk=mine.filter(a=>a.date>=ws), wDays=wk.filter(a=>a.out).reduce((s,a)=>s+a.days,0), wAmt=wk.reduce((s,a)=>s+a.amount,0);
+  const cb=currentBalance(e.id), lp=lastPayment(e.id);
+  const k=(label,val,sub,icon,amber)=>`<div class="col-6"><div class="card kpi kpi-sm h-100"><div class="d-flex justify-content-between gap-2"><div><div class="k-label">${label}</div><div class="k-value">${val}</div><div class="k-sub">${sub}</div></div><div class="k-icon ${amber?'amber':''}"><i class="bi ${icon}"></i></div></div></div></div>`;
+  $('#meWeekKpis').innerHTML =
+    k('Days this week', fmtN(wDays), `since ${fmtDs(ws)}`, 'bi-calendar-check') +
+    k('Earned this week', inr(wAmt), 'wages + expenses', 'bi-cash-stack', true) +
+    k('Balance due to you', Math.abs(cb.bal)<0.5?'₹0':inr2(cb.bal), cb.bal>0.5?'paid at week end':cb.bal<-0.5?'advance to adjust':'all settled', 'bi-wallet2', true) +
+    k('Last payment', lp?inr(lp.paid):'—', lp?`on ${fmtDs(lp.on)}`:'none yet', 'bi-check2-circle');
+  const recent=[...mine].sort((a,b)=>b.date.localeCompare(a.date)||b.in.localeCompare(a.in)).slice(0,5);
+  $('#meRecent').innerHTML = recent.map(a=>{ const d=parse(a.date); return `<div class="day-item"><div class="day-date"><b>${d.getDate()}</b><small>${d.toLocaleDateString('en-IN',{month:'short'})}</small></div>
+    <div class="flex-grow-1 min-w-0"><div class="fw-semibold">${esc(a.site)}</div><div class="small text-muted">${a.in} – ${a.out||'on site'}${a.out?' · '+dayWord(a.days):''}</div></div>
+    <div class="fw-bold text-nowrap">${a.out?inr(a.amount):'<span class="badge badge-amber">On site</span>'}</div></div>`; }).join('') || '<div class="empty">No attendance yet. Punch in when you reach the site.</div>';
+}
+function updatePreview(){
+  const el=$('#punchPreview'), btn=$('#punchOutBtn'); if(!el||!btn) return;
+  const a=db.attendance.find(x=>x.id===btn.dataset.id); if(!a) return;
+  const c=compute({...a,out:nowHM(),petrol:+$('#poPetrol').value||0,material:+$('#poMat').value||0,amtOv:null});
+  el.innerHTML=`If you punch out now: <b>${dayWord(c.days)}</b> · <b>${inr(c.amount)}</b>`;
+}
+document.addEventListener('input',e=>{ if(e.target.matches('#poPetrol,#poMat')) updatePreview(); });
+setInterval(()=>{
+  if($('#punchClock')) $('#punchClock').textContent=nowHM();
+  const btn=$('#punchOutBtn'); if(btn&&$('#punchElapsed')){ const a=db.attendance.find(x=>x.id===btn.dataset.id); if(a) $('#punchElapsed').textContent=hm(hoursBetween(a.in,nowHM())); updatePreview(); }
+},15000);
+const punchMsg = h => { const m=$('#punchMsg'); if(m) m.innerHTML=h; };
+async function punchIn(){
+  const site=$('#punchSite').value; if(!site) return toast('Choose your site');
+  const r=await openSelfie('Punch in', site);
+  if(!r) return punchMsg('<span class="text-muted">Punch in cancelled.</span>');
+  if(r.loc.err && !confirm(`${r.loc.err}.\n\nPunch in without your location? The office will see this punch flagged.`)) return punchMsg(`<span class="text-danger">${esc(r.loc.err)}. Turn on location and try again.</span>`);
+  const e=me(), p=db.projects.find(x=>x.name===site);
+  const a=compute({id:uid(),date:TODAY,site,cat:p?.dept||e.dept||'Electrical',empId:e.id,basic:e.basic,in:nowHM(),out:'',petrol:0,tools:0,material:0,matNote:'',update:'',amtOv:null,
+    src:'self',inSelfieAsked:true,inLoc:r.loc.err?null:r.loc,inPhoto:r.photo,outLoc:null,outPhoto:null});
+  db.attendance.push(a);
+  if(!save()){ db.attendance.pop(); return; }
+  const c=geoCheck(a.inLoc,site);
+  toast(c.k==='far'?`Punched in at ${a.in} · you seem to be ${fmtDist(c.d)} from the site`:`Punched in at ${a.in}`);
+  renderMeHome();
+}
+async function punchOut(id){
+  const a=db.attendance.find(x=>x.id===id), mat=+$('#poMat').value||0, note=$('#poMatNote').value.trim();
+  if(mat>0&&!note){ $('#poMatNote').classList.add('is-invalid'); $('#poMatNote').focus(); return toast('Write what you bought'); }
+  const r=await openSelfie('Punch out', a.site);
+  if(!r) return punchMsg('<span class="text-muted">Punch out cancelled.</span>');
+  if(r.loc.err && !confirm(`${r.loc.err}.\n\nPunch out without your location? The office will see this punch flagged.`)) return punchMsg(`<span class="text-danger">${esc(r.loc.err)}. Turn on location and try again.</span>`);
+  try{ await commitBlobs(poStage.files,poStage.blobs); }catch(err){ return toast('Could not save the files: this phone is out of space'); }
+  const before={...a};
+  Object.assign(a,{out:nowHM(),outLoc:r.loc.err?null:r.loc,outPhoto:r.photo,outSelfieAsked:true,files:[...(a.files||[]),...poStage.files],update:$('#poUpdate').value.trim(),petrol:+$('#poPetrol').value||0,material:mat,matNote:note});
+  compute(a);
+  if(!save()){ Object.assign(a,before); compute(a); return; }
+  poStage={files:[],blobs:new Map()}; toast(`Punched out at ${a.out} · ${inr(a.amount)}`); renderMeHome();
+}
+function punchProof(a,which){
+  const ph=a[which+'Photo'], when=which==='in'?'Punch in':'Punch out';
+  return `<div class="proof">${ph?`<img src="${ph}" class="proof-img" data-selfie="${a.id}" alt="${when} selfie">`:''}<div class="min-w-0">${geoLine(a[which+'Loc'],a.site,when)}${!ph&&askedSelfie(a,which)?'<div class="geo-line geo-none"><i class="bi bi-person-x"></i>No selfie</div>':''}</div></div>`;
+}
+
+/* ---- selfie camera: photo is stamped with name, time, coordinates and distance from site ---- */
+let cam={resolve:null};
+function openSelfie(title, site){
+  return new Promise(res=>{
+    cam={resolve:res,stream:null,raw:null,shot:null,loc:null,title,site};
+    // location is asked for once the camera has started (or failed), so the two permission prompts never arrive together
+    cam.locP=new Promise(done=>{ cam.startLoc=()=>getLoc().then(l=>{ if(cam.resolve===res){ cam.loc=l; camLocState(l); if(cam.raw) camStamp(); } done(l); }); });
+    $('#camTitle').textContent=`Selfie for ${title.toLowerCase()}`;
+    ['#camShot','#camConfirm','#camSnap','#camFileLbl','#camSkip'].forEach(x=>$(x).hidden=true);
+    $('#camVideo').hidden=false; $('#camRing').hidden=false; $('#camUse').disabled=false; $('#camUse').textContent='Use photo';
+    $('#camMsg').textContent='Starting the camera…'; camLocState(null);
+    $('#camSheet').hidden=false; document.body.style.overflow='hidden';
+    startCamera(res);
+  });
+}
+async function startCamera(owner){
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) throw Object.assign(new Error('none'),{name:'NoMedia'});
+    const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:720}},audio:false});
+    if(cam.resolve!==owner){ st.getTracks().forEach(t=>t.stop()); return; }
+    cam.stream=st; $('#camVideo').srcObject=st; $('#camSnap').hidden=false;
+    $('#camMsg').textContent='Keep your face inside the circle, then take the selfie.';
+  }catch(e){
+    if(cam.resolve!==owner) return;
+    $('#camVideo').hidden=true; $('#camRing').hidden=true; $('#camFileLbl').hidden=false; $('#camSkip').hidden=false;
+    $('#camMsg').textContent = e.name==='NotAllowedError' ? 'Camera permission is off for this app. Allow it in the browser settings, or use the phone camera below.' : 'The live camera is not available here. Use the phone camera below.';
+  }
+  if(cam.resolve===owner && cam.startLoc){ const go=cam.startLoc; cam.startLoc=null; go(); }
+}
+function camLocState(l){
+  const el=$('#camLoc');
+  if(!l){ el.className='cam-loc'; el.innerHTML='<span class="spinner-border spinner-border-sm me-2"></span>Getting your location…'; return; }
+  if(l.err){ el.className='cam-loc none'; el.innerHTML=`<i class="bi bi-exclamation-triangle-fill me-1"></i>${esc(l.err)}`; return; }
+  const c=geoCheck(l,cam.site);
+  el.className='cam-loc '+c.k; el.innerHTML=`<i class="bi ${c.k==='ok'?'bi-geo-alt-fill':c.k==='far'?'bi-exclamation-triangle-fill':'bi-geo-alt'} me-1"></i>${esc(cam.site)} · ${esc(c.label)} <span class="opacity-75">(±${l.acc} m)</span>`;
+}
+function cropSquare(src,w,h,mirror){
+  const S=360, c=document.createElement('canvas'); c.width=c.height=S; const x=c.getContext('2d'), m=Math.min(w,h);
+  if(mirror){ x.translate(S,0); x.scale(-1,1); }
+  x.drawImage(src,(w-m)/2,(h-m)/2,m,m,0,0,S,S); return c;
+}
+function camStamp(){
+  const S=360, c=document.createElement('canvas'); c.width=c.height=S; const x=c.getContext('2d'); x.drawImage(cam.raw,0,0,S,S);
+  const l=cam.loc, now=new Date();
+  const lines=[`${me().name} · ${cam.title}`,
+    now.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+    !l?'Getting location…':l.err?'No location captured':`${l.lat.toFixed(5)}, ${l.lng.toFixed(5)} (±${l.acc} m)`,
+    cam.site+(l&&!l.err?' · '+geoCheck(l,cam.site).label.split(' · ')[0]:'')];
+  const bh=80; x.fillStyle='rgba(5,48,65,.8)'; x.fillRect(0,S-bh,S,bh); x.fillStyle='#f5b301'; x.fillRect(0,S-bh,4,bh);
+  x.fillStyle='#fff'; x.font='700 13px "Plus Jakarta Sans",system-ui,sans-serif'; x.fillText(lines[0],12,S-bh+19);
+  x.fillStyle='#d9e6eb'; x.font='500 12px "Plus Jakarta Sans",system-ui,sans-serif'; lines.slice(1).forEach((t,i)=>x.fillText(t,12,S-bh+37+i*16));
+  cam.shot=c.toDataURL('image/jpeg',.72); $('#camShot').src=cam.shot;
+}
+function camShowShot(){
+  camStamp(); ['#camVideo','#camRing','#camSnap','#camFileLbl','#camSkip'].forEach(x=>$(x).hidden=true);
+  $('#camShot').hidden=false; $('#camConfirm').hidden=false; $('#camMsg').textContent='Your name, the time and your location are printed on the photo.';
+}
+function camFinish(v){
+  if(cam.stream) cam.stream.getTracks().forEach(t=>t.stop());
+  const r=cam.resolve; cam={resolve:null}; $('#camVideo').srcObject=null; $('#camSheet').hidden=true; document.body.style.overflow=''; if(r) r(v);
+}
+$('#camSnap').onclick=()=>{ const v=$('#camVideo'); if(!v.videoWidth) return toast('Camera is still starting'); cam.raw=cropSquare(v,v.videoWidth,v.videoHeight,true); camShowShot(); };
+$('#camFile').onchange=e=>{ const f=e.target.files[0]; e.target.value=''; if(!f) return;
+  const img=new Image(); img.onload=()=>{ cam.raw=cropSquare(img,img.naturalWidth,img.naturalHeight,false); URL.revokeObjectURL(img.src); camShowShot(); };
+  img.onerror=()=>toast('That photo could not be opened'); img.src=URL.createObjectURL(f); };
+$('#camRetake').onclick=()=>{ cam.raw=null; cam.shot=null; $('#camShot').hidden=true; $('#camConfirm').hidden=true;
+  if(cam.stream){ $('#camVideo').hidden=false; $('#camRing').hidden=false; $('#camSnap').hidden=false; $('#camMsg').textContent='Keep your face inside the circle, then take the selfie.'; }
+  else { $('#camFileLbl').hidden=false; $('#camSkip').hidden=false; } };
+$('#camUse').onclick=async()=>{ const b=$('#camUse'); b.disabled=true; if(!cam.loc) b.innerHTML='<span class="spinner-border spinner-border-sm me-2"></span>Getting location…';
+  const loc=await cam.locP; if(!cam.resolve) return; cam.loc=loc; camStamp(); camFinish({photo:cam.shot,loc}); };
+$('#camSkip').onclick=async()=>{ if(!confirm('Punch without a selfie? The office will see this punch flagged.')) return; const loc=await cam.locP; if(cam.resolve) camFinish({photo:null,loc}); };
+$('#camClose').onclick=()=>camFinish(null);
+
+/* ---- selfie viewer (staff and employee) ---- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-selfie]'); if(!t) return; e.preventDefault();
+  const a=db.attendance.find(x=>x.id===t.dataset.selfie); if(!a) return;
+  $('#svTitle').textContent=`${emp(a.empId).name} · ${fmtDs(a.date)} · ${a.site}`;
+  const cell=w=>{ if(w==='out'&&!a.out) return ''; const ph=a[w+'Photo'], loc=a[w+'Loc'], c=geoCheck(loc,a.site), lbl=w==='in'?'Punch in':'Punch out';
+    return `<div>${ph?`<img src="${ph}" alt="${lbl} selfie">`:'<div class="sv-empty"><span><i class="bi bi-person-x me-1"></i>No selfie</span></div>'}
+      <div class="sv-cap"><b>${lbl} · ${a[w]}</b><br>${esc(c.label)}${loc?` · ±${loc.acc} m · <a href="https://www.google.com/maps?q=${loc.lat},${loc.lng}" target="_blank" rel="noopener">open map</a>`:''}</div></div>`; };
+  $('#svBody').innerHTML=cell('in')+cell('out'); $('#selfieView').hidden=false;
+});
+$('#svClose').onclick=()=>$('#selfieView').hidden=true;
+$('#selfieView').addEventListener('click',e=>{ if(e.target.id==='selfieView') $('#selfieView').hidden=true; });
+document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return; if(!$('#fileView').hidden){ closeViewer(); return; } if(!$('#filesSheet').hidden){ closeFiles(); return; } if(!$('#selfieView').hidden) $('#selfieView').hidden=true; else if(!$('#camSheet').hidden) camFinish(null); });
+function lastPayment(id){
+  const ws=Object.keys(db.settlements).sort().reverse();
+  for(const w of ws){ const r=db.settlements[w].rows.find(x=>x.empId===id); if(r&&r.paid) return {paid:r.paid,on:db.settlements[w].settledOn,week:w}; }
+  return null;
+}
+
+/* my attendance: calendar and list */
+let calMonth=TODAY.slice(0,7), calSel=TODAY, calMode='cal';
+$('#calPrev').onclick=()=>{ const d=parse(calMonth+'-01'); d.setMonth(d.getMonth()-1); calMonth=iso(d).slice(0,7); renderMeAttendance(); };
+$('#calNext').onclick=()=>{ const d=parse(calMonth+'-01'); d.setMonth(d.getMonth()+1); calMonth=iso(d).slice(0,7); renderMeAttendance(); };
+document.querySelectorAll('#calMode button').forEach(b=>b.onclick=()=>{ calMode=b.dataset.m; renderMeAttendance(); });
+$('#calGrid').addEventListener('click',e=>{ const c=e.target.closest('[data-date]'); if(!c) return; calSel=c.dataset.date; if(calSel.slice(0,7)!==calMonth) calMonth=calSel.slice(0,7); renderMeAttendance(); });
+function renderMeAttendance(){
+  const e=me(), first=calMonth+'-01', fd=parse(first), last=iso(new Date(fd.getFullYear(),fd.getMonth()+1,0));
+  $('#calNext').disabled = calMonth>=TODAY.slice(0,7);
+  $('#calLabel').textContent=fd.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  document.querySelectorAll('#calMode button').forEach(b=>b.classList.toggle('active',b.dataset.m===calMode));
+  $('#calView').classList.toggle('d-none',calMode!=='cal'); $('#listView').classList.toggle('d-none',calMode!=='list');
+  const mine=db.attendance.filter(a=>a.empId===e.id), month=mine.filter(a=>a.date>=first&&a.date<=last);
+  const closed=month.filter(a=>a.out), days=closed.reduce((s,a)=>s+a.days,0), hrs=closed.reduce((s,a)=>s+a.hours,0);
+  const wages=month.reduce((s,a)=>s+a.wage,0), exp=month.reduce((s,a)=>s+(+a.petrol||0)+(+a.tools||0)+(+a.material||0),0);
+  const k=(label,val,sub,icon,amber)=>`<div class="col-6 col-xl-3"><div class="card kpi kpi-sm h-100"><div class="d-flex justify-content-between gap-2"><div><div class="k-label">${label}</div><div class="k-value">${val}</div><div class="k-sub">${sub}</div></div><div class="k-icon ${amber?'amber':''}"><i class="bi ${icon}"></i></div></div></div></div>`;
+  $('#calKpis').innerHTML = k('Days worked',fmtN(days),`${new Set(month.map(a=>a.date)).size} days on site`,'bi-calendar-check')
+    + k('Hours',hrs.toFixed(1),closed.length?`avg ${(hrs/closed.length).toFixed(1)} hrs a day`:'—','bi-clock')
+    + k('Wages',inr(wages),days?`${inr(wages/days)} a day`:'—','bi-cash-stack',true)
+    + k('Expenses',inr(exp),'petrol, tools, material','bi-fuel-pump',true);
+
+  // calendar: weeks Saturday → Friday
+  const start=weekStartOf(first), end=addDays(weekStartOf(last),6);
+  let g=['Sat','Sun','Mon','Tue','Wed','Thu','Fri'].map(d=>`<div class="cal-head">${d}</div>`).join('');
+  for(let d=start; d<=end; d=addDays(d,1)){
+    const ent=mine.filter(a=>a.date===d), dd=ent.filter(a=>a.out).reduce((s,a)=>s+a.days,0), amt=ent.reduce((s,a)=>s+a.amount,0), openE=ent.some(a=>!a.out);
+    const cls=['cal-day', d.slice(0,7)!==calMonth?'other':'', d>TODAY?'future':'', d===TODAY?'today':'', d===calSel?'sel':'',
+      openE?'open':dd>=1.5?'extra':dd>=1?'full':dd>0?'half':''].join(' ');
+    const tag=openE?'On site':dd?dayWord(dd):'';
+    g+=`<button type="button" class="${cls}" data-date="${d}" ${d>TODAY?'disabled':''} aria-label="${fmtD(d)}${tag?', '+tag:''}"><span class="dn">${parse(d).getDate()}</span>${tag?`<span class="cd-tag">${tag}</span>`:''}${amt?`<span class="cd-amt">${inr(amt)}</span>`:''}</button>`;
+  }
+  $('#calGrid').innerHTML=g;
+  const sel=mine.filter(a=>a.date===calSel);
+  $('#calDetailTitle').textContent=fmtD(calSel)+(calSel===TODAY?' · today':'');
+  $('#calDetail').innerHTML = sel.length ? sel.map(a=>`
+      <div class="fact-row"><span>Site</span><span>${esc(a.site)}</span></div>
+      <div class="fact-row"><span>Punch in / out</span><span>${a.in} – ${a.out||'on site'}</span></div>
+      ${a.out?`<div class="fact-row"><span>Hours · days</span><span>${a.hours.toFixed(2)} hrs · ${dayWord(a.days)}</span></div>
+      <div class="fact-row"><span>Wage</span><span>${inr(a.wage)}</span></div>`:''}
+      ${a.petrol?`<div class="fact-row"><span>Petrol</span><span>${inr(a.petrol)}</span></div>`:''}
+      ${a.tools?`<div class="fact-row"><span>Tools</span><span>${inr(a.tools)}</span></div>`:''}
+      ${a.material?`<div class="fact-row"><span>Material</span><span>${inr(a.material)}<div class="small text-muted fw-normal">${esc(a.matNote||'')}</div></span></div>`:''}
+      ${a.out?`<div class="fact-row"><span>Amount</span><span class="fs-6">${inr(a.amount)}</span></div>`:''}
+      ${a.update?`<div class="fact-row"><span>Work done</span><span class="fw-normal">${esc(a.update)}</span></div>`:''}${filesBlock(a)}
+      ${a.src==='self'?punchProof(a,'in')+(a.out?punchProof(a,'out'):''):'<div class="small text-muted mt-2"><i class="bi bi-pencil-square me-1"></i>Entered by the office</div>'}`).join('<hr>')
+    : `<div class="text-muted">${calSel>TODAY?'This day is still ahead.':'No attendance on this day.'}</div>`;
+
+  // list view
+  const rows=[...month].sort((a,b)=>b.date.localeCompare(a.date));
+  $('#meListBody').innerHTML = rows.map(a=>`<tr><td class="text-nowrap fw-semibold">${fmtDs(a.date)}${fileTag(a)}</td><td>${esc(a.site)}</td>
+      <td class="text-nowrap">${a.in}${geoTag(a,'in')}</td><td class="text-nowrap">${a.out?a.out+geoTag(a,'out'):'<span class="badge badge-amber">On site</span>'}</td>
+      <td class="num">${a.out?a.hours.toFixed(2):'—'}</td><td class="num">${a.out?fmtN(a.days):'—'}</td>
+      <td class="num">${(+a.petrol||0)+(+a.tools||0)+(+a.material||0)?inr((+a.petrol||0)+(+a.tools||0)+(+a.material||0)):'—'}</td>
+      <td class="num fw-semibold">${a.out?inr(a.amount):'—'}</td><td class="small text-muted">${esc(a.update||'')}</td></tr>`).join('')
+    || '<tr><td colspan="9" class="empty">No attendance this month</td></tr>';
+  $('#meListFoot').innerHTML = rows.length ? `<tr class="day-total"><td colspan="5">Month total</td><td class="num">${fmtN(days)}</td><td class="num">${inr(exp)}</td><td class="num">${inr(wages+exp)}</td><td></td></tr>` : '';
+}
+
+/* my payments */
+function renderMePayments(){
+  const e=me(), cb=currentBalance(e.id), lp=lastPayment(e.id);
+  const ws=weekStartOf(TODAY), wk=db.attendance.filter(a=>a.empId===e.id&&a.date>=ws);
+  const openAdv=db.advances.filter(a=>a.empId===e.id&&!db.settlements[weekStartOf(a.date)]);
+  const k=(label,val,sub,icon,amber,cls='')=>`<div class="col-6 col-xl-3"><div class="card kpi kpi-sm h-100"><div class="d-flex justify-content-between gap-2"><div><div class="k-label">${label}</div><div class="k-value ${cls}">${val}</div><div class="k-sub">${sub}</div></div><div class="k-icon ${amber?'amber':''}"><i class="bi ${icon}"></i></div></div></div></div>`;
+  $('#payKpis').innerHTML = k('Balance due to you', Math.abs(cb.bal)<0.5?'₹0':inr2(cb.bal), cb.bal>0.5?'paid at the end of the week':cb.bal<-0.5?'advance still to adjust':'all settled','bi-wallet2',false,cb.bal>0.5?'text-success':'')
+    + k('This week so far', inr(wk.reduce((s,a)=>s+a.amount,0)), `${fmtDs(ws)} – ${fmtDs(addDays(ws,6))}`,'bi-calendar-week',true)
+    + k('Last payment', lp?inr(lp.paid):'—', lp?`on ${fmtD(lp.on)}`:'none yet','bi-check2-circle')
+    + k('Advances to adjust', inr(openAdv.reduce((s,a)=>s+a.amount,0)), `${openAdv.length} not yet adjusted`,'bi-arrow-down-up',true);
+  const weeks=[...new Set([...db.attendance.filter(a=>a.empId===e.id).map(a=>weekStartOf(a.date)), ...db.advances.filter(a=>a.empId===e.id).map(a=>weekStartOf(a.date)),
+    ...Object.keys(db.settlements).filter(w=>db.settlements[w].rows.some(r=>r.empId===e.id))])].sort().reverse();
+  $('#payBody').innerHTML = weeks.map(w=>{ const W=buildWeek(w), r=W.rows.find(x=>x.empId===e.id); if(!r) return '';
+      const st = W.settled ? `<span class="badge badge-green">Paid ${fmtDs(W.settledOn)}</span>` : w===ws ? '<span class="badge badge-amber">This week</span>' : '<span class="badge badge-red">Waiting</span>';
+      return `<tr><td class="text-nowrap fw-semibold">${fmtDs(w)} – ${fmtDs(addDays(w,6))}</td><td class="num">${r.old?inr2(r.old):'—'}</td><td class="num">${inr(r.labour)}</td>
+        <td class="num">${r.exp+r.tools?inr(r.exp+r.tools):'—'}</td><td class="num">${r.adv?'−'+inr(r.adv):'—'}</td><td class="num fw-semibold">${inr2(r.grand)}</td>
+        <td class="num">${W.settled?inr(r.paid):'—'}</td><td class="num">${W.settled?(Math.abs(r.bal)<0.5?'₹0':inr2(r.bal)):'—'}</td><td>${st}</td></tr>`; }).join('')
+    || '<tr><td colspan="9" class="empty">No payments yet</td></tr>';
+  const advs=db.advances.filter(a=>a.empId===e.id).sort((a,b)=>b.date.localeCompare(a.date));
+  $('#payAdvBody').innerHTML = advs.map(a=>{ const w=weekStartOf(a.date); return `<tr><td class="text-nowrap">${fmtD(a.date)}</td><td>${esc(a.note)}</td><td class="text-nowrap">${fmtDs(w)} – ${fmtDs(addDays(w,6))} ${db.settlements[w]?'<span class="badge badge-green ms-1">Adjusted</span>':'<span class="badge badge-amber ms-1">Open</span>'}</td><td class="num fw-semibold">${inr(a.amount)}</td></tr>`; }).join('')
+    || '<tr><td colspan="4" class="empty">No advances taken</td></tr>';
+}
+
+/* my profile */
+function renderMeProfile(){
+  const e=me(), cs=contractState(e), row=(l,v)=>`<div class="fact-row"><span>${l}</span><span>${v}</span></div>`;
+  $('#profTop').innerHTML=`<span class="avatar prof-avatar mb-3">${initials(e.name)}</span><h2 class="h5 fw-bold mb-1">${esc(e.name)}</h2>
+    <div class="text-muted small mb-2">${esc(e.position)} · ${esc(e.dept)}</div><div>${typeBadge(e)} ${e.status==='Active'?'<span class="badge badge-green">Active</span>':'<span class="badge badge-grey">Inactive</span>'}</div>
+    <hr><div class="small text-muted">Basic pay</div><div class="h4 fw-bold m-0">${inr(e.basic)}<span class="fs-6 fw-normal text-muted"> / day</span></div><div class="small text-muted">${inr(e.basic/8)} an hour</div>`;
+  const idNo=e.idNo?'•••• '+String(e.idNo).slice(-4):'—';
+  $('#profDetails').innerHTML = row('Phone',esc(e.phone||'—')) + row('Position',esc(e.position)) + row('Department',esc(e.dept)) + row('Employee type',esc(e.type))
+    + row('Joined',e.joined?fmtD(e.joined):'—') + row('Aadhaar / ID',idNo)
+    + row('How pay is worked out', db.settings.payMode==='hourly'?'Hours × basic ÷ 8':'Under 6 hrs ½ day · 6–11 hrs 1 day · 11+ hrs 1½ days')
+    + row('Paid', 'Every week, Saturday → Friday');
+  $('#profContractCard').classList.toggle('d-none',e.type!=='Contract');
+  if(e.type==='Contract') $('#profContract').innerHTML = row('Contractor / agency',esc(e.agency||'—')) + row('From',e.cStart?fmtD(e.cStart):'—')
+    + row('Until',e.cEnd?fmtD(e.cEnd):'Open') + row('Status',`<span class="${cs.k==='expired'?'text-danger':cs.k==='soon'?'text-warning-emphasis':''}">${cs.label}</span>`) + (e.cNote?row('Terms',esc(e.cNote)):'');
+}
+
+/* ================= ATTACHMENTS: bills, TA, photos =================
+   File details live with the attendance entry; the files themselves are kept in
+   the browser's file storage (IndexedDB), which has far more room than the
+   app's normal storage. In the live app they go to the server instead. */
+const FILE_KINDS=['Bill','TA (travel)','Fuel','Material','Work photo','Other'];
+const FDB={
+  _db:null,
+  open(){ return this._db||(this._db=new Promise((res,rej)=>{ const r=indexedDB.open('stromnetz-files',1); r.onupgradeneeded=()=>r.result.createObjectStore('files'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); })); },
+  async run(mode,fn){ const d=await this.open(); return new Promise((res,rej)=>{ const t=d.transaction('files',mode), st=t.objectStore('files'), req=fn(st); t.oncomplete=()=>res(req&&req.result); t.onerror=()=>rej(t.error); t.onabort=()=>rej(t.error); }); },
+  put(id,blob){ return this.run('readwrite',st=>st.put(blob,id)); },
+  get(id){ return this.run('readonly',st=>st.get(id)); },
+  del(id){ return this.run('readwrite',st=>st.delete(id)).catch(()=>{}); },
+  clear(){ return this.run('readwrite',st=>st.clear()).catch(()=>{}); }
+};
+let poStage={files:[],blobs:new Map()}, fsKey=null, aFilesId=null;
+const fmtSize = b => b<1024 ? b+' B' : b<1048576 ? Math.round(b/1024)+' KB' : (b/1048576).toFixed(1)+' MB';
+const fileIcon = f => f.mime==='application/pdf' ? 'bi-file-earmark-pdf' : 'bi-file-earmark-image';
+const fileTag = a => (a.files&&a.files.length) ? `<button type="button" class="file-tag" data-files="${a.id}" title="${esc(a.files.map(f=>f.kind).join(', '))} · click to view"><i class="bi bi-paperclip"></i>${a.files.length}</button>` : '';
+const chips = (key,files) => files.map((f,i)=>`<button type="button" class="file-chip" data-files="${key}" data-idx="${i}" title="${esc(f.name)}">${f.thumb?`<img src="${f.thumb}" alt="">`:`<span class="fi"><i class="bi ${fileIcon(f)}"></i></span>`}<span class="fw-semibold">${esc(f.kind)}</span><small>${esc(f.name)}</small></button>`).join('');
+function filesBlock(a){
+  const files=a.files||[], canAdd=isEmp() && a.empId===view.empId && !db.settlements[weekStartOf(a.date)];
+  if(!files.length && !canAdd) return '';
+  return `<div class="mt-3"><div class="small fw-semibold text-muted mb-1">Bills, TA &amp; photos</div><div class="file-chips">${chips(a.id,files)}</div>
+    ${canAdd?`<button type="button" class="btn btn-sm btn-outline-primary mt-2" data-manage-files="${a.id}"><i class="bi bi-paperclip me-1"></i>${files.length?'Add or manage files':'Attach bill / TA'}</button>`:''}</div>`;
+}
+function renderPoFiles(){ $('#poFiles').innerHTML=chips('po',poStage.files); }
+function renderAFiles(){
+  const a=db.attendance.find(x=>x.id===aFilesId); if(!a) return; const n=(a.files||[]).length;
+  $('#aFiles').innerHTML=`<div class="file-chips">${chips(a.id,a.files||[])}</div><button type="button" class="btn btn-sm btn-outline-primary mt-2" data-manage-files="${a.id}"><i class="bi bi-paperclip me-1"></i>${n?'Add or manage files':'Attach bills, TA…'}</button><div class="form-text">Files are saved as soon as you add them.</div>`;
+}
+function fileCtx(key){
+  if(key==='po') return {files:poStage.files,blobs:poStage.blobs,live:false,cap:`${me().name} · today`};
+  if(key.startsWith('row:')){ const r=entryRows.find(x=>x.key===key.slice(4)); return r&&{files:r.files,blobs:r.blobs,live:false,cap:`${r.empId?emp(r.empId).name:'New row'} · not saved yet`}; }
+  const a=db.attendance.find(x=>x.id===key); if(!a) return null; a.files=a.files||[];
+  return {files:a.files,blobs:null,live:true,rec:a,cap:`${emp(a.empId).name} · ${fmtDs(a.date)} · ${a.site}`};
+}
+function canEditFiles(c){ if(!c.live||!isEmp()) return true; return c.rec.empId===view.empId && !db.settlements[weekStartOf(c.rec.date)]; }
+async function commitBlobs(files,blobs){ for(const f of files){ const b=blobs&&blobs.get(f.id); if(b) await FDB.put(f.id,b); } }
+const loadImg = f => new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=()=>rej(new Error(`${f.name} could not be opened`)); i.src=URL.createObjectURL(f); });
+async function prepFile(file){
+  if(file.type==='application/pdf'){ if(file.size>10*1048576) throw new Error(`${file.name} is over 10 MB`); return {blob:file,mime:file.type,name:file.name,thumb:null}; }
+  if(!file.type.startsWith('image/')) throw new Error(`${file.name}: only photos and PDF files can be attached`);
+  const img=await loadImg(file), sc=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight));
+  const c=document.createElement('canvas'); c.width=Math.round(img.naturalWidth*sc); c.height=Math.round(img.naturalHeight*sc);
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(img.src);
+  const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.8));
+  const t=document.createElement('canvas'), ts=96/Math.max(c.width,c.height); t.width=Math.max(1,Math.round(c.width*ts)); t.height=Math.max(1,Math.round(c.height*ts));
+  t.getContext('2d').drawImage(c,0,0,t.width,t.height);
+  return {blob,mime:'image/jpeg',name:file.name.replace(/\.[^.]+$/,'')+'.jpg',thumb:t.toDataURL('image/jpeg',.7)};
+}
+function guessKind(name,dflt){ const n=name.toLowerCase();
+  if(/(^|[^a-z])(ta|travel|bus|train|ticket|auto|taxi)([^a-z]|$)/.test(n)) return 'TA (travel)'; if(/petrol|fuel|diesel/.test(n)) return 'Fuel'; return dflt; }
+
+function openFiles(key){
+  const c=fileCtx(key); if(!c) return; fsKey=key;
+  $('#fsTitle').textContent = key==='po' ? 'Bills, TA & photos for today' : 'Bills, TA & photos';
+  $('#fsSub').textContent = c.cap + (c.live ? ' · saved as soon as you add them' : ' · saved with the attendance');
+  $('#fsKind').innerHTML=FILE_KINDS.map(k=>`<option>${k}</option>`).join('');
+  renderFilesSheet(); $('#filesSheet').hidden=false; document.body.style.overflow='hidden';
+}
+function renderFilesSheet(){
+  const c=fileCtx(fsKey), ed=canEditFiles(c);
+  $('#fsDrop').hidden=!ed; $('#fsKindWrap').classList.toggle('invisible',!ed);
+  $('#fsList').innerHTML = c.files.map((f,i)=>`<div class="att-item">
+      <button type="button" class="att-thumb" data-files="${fsKey}" data-idx="${i}" aria-label="View ${esc(f.name)}">${f.thumb?`<img src="${f.thumb}" alt="">`:`<i class="bi ${fileIcon(f)}"></i>`}</button>
+      <div class="att-meta"><div class="nm">${esc(f.name)}</div><div class="small text-muted">${fmtSize(f.size)} · added by ${f.by==='employee'?'worker':'office'}${f.at?' · '+new Date(f.at).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):''}</div>
+        ${ed?`<select class="form-select form-select-sm" data-kind="${i}" aria-label="Type of file">${FILE_KINDS.map(k=>`<option ${k===f.kind?'selected':''}>${k}</option>`).join('')}</select>`:`<span class="badge badge-soft mt-1">${esc(f.kind)}</span>`}</div>
+      ${ed?`<button type="button" class="btn btn-sm btn-light text-danger" data-rm="${i}" title="Remove"><i class="bi bi-trash"></i></button>`:''}</div>`).join('')
+    || `<div class="text-muted small py-2">${ed?'No files yet.':'No files attached.'}</div>`;
+}
+function closeFiles(){ $('#filesSheet').hidden=true; document.body.style.overflow=''; fsKey=null; }
+function afterFilesChange(){
+  if(fsKey==='po') return renderPoFiles();
+  if(fsKey&&fsKey.startsWith('row:')) return renderEntry();
+  if(formOpen==='attModal'&&location.hash.startsWith('#form/')) renderAFiles(); else route();
+}
+async function addFiles(list){
+  const c=fileCtx(fsKey); if(!c||!list.length) return; const dflt=$('#fsKind').value, errs=[];
+  $('#fsBusy').hidden=false;
+  for(const file of list){
+    try{
+      const p=await prepFile(file);
+      const meta={id:'f'+uid()+uid(),name:p.name,mime:p.mime,size:p.blob.size,kind:guessKind(file.name,dflt),thumb:p.thumb,at:new Date().toISOString(),by:isEmp()?'employee':'office'};
+      if(c.live) await FDB.put(meta.id,p.blob); else c.blobs.set(meta.id,p.blob);
+      c.files.push(meta);
+    }catch(e){ errs.push(e&&e.name==='QuotaExceededError'?'This device is out of space for files':(e.message||'A file could not be added')); }
+  }
+  if(c.live) save();
+  $('#fsBusy').hidden=true; renderFilesSheet(); afterFilesChange();
+  if(errs.length) toast(errs[0]); else toast(`${list.length} file${list.length>1?'s':''} added`);
+}
+$('#fsInput').onchange=e=>{ const l=[...e.target.files]; e.target.value=''; addFiles(l); };
+['dragenter','dragover'].forEach(t=>$('#fsDrop').addEventListener(t,e=>{ e.preventDefault(); $('#fsDrop').classList.add('over'); }));
+['dragleave','drop'].forEach(t=>$('#fsDrop').addEventListener(t,e=>{ e.preventDefault(); $('#fsDrop').classList.remove('over'); }));
+$('#fsDrop').addEventListener('drop',e=>addFiles([...e.dataTransfer.files]));
+$('#fsList').addEventListener('change',e=>{ const s=e.target.closest('[data-kind]'); if(!s) return; const c=fileCtx(fsKey); c.files[+s.dataset.kind].kind=s.value; if(c.live) save(); afterFilesChange(); });
+$('#fsList').addEventListener('click',e=>{ const b=e.target.closest('[data-rm]'); if(!b) return; const c=fileCtx(fsKey), i=+b.dataset.rm;
+  if(!confirm(`Remove ${c.files[i].name}?`)) return;
+  const [f]=c.files.splice(i,1); if(c.live){ FDB.del(f.id); save(); } else c.blobs.delete(f.id);
+  renderFilesSheet(); afterFilesChange(); });
+$('#fsClose').onclick=closeFiles; $('#fsDone').onclick=closeFiles;
+$('#filesSheet').addEventListener('click',e=>{ if(e.target.id==='filesSheet') closeFiles(); });
+
+/* viewer */
+let fv={key:null,idx:0,url:null};
+async function showFile(){
+  const c=fileCtx(fv.key); if(!c||!c.files.length) return closeViewer();
+  fv.idx=Math.max(0,Math.min(fv.idx,c.files.length-1)); const f=c.files[fv.idx];
+  if(fv.url){ URL.revokeObjectURL(fv.url); fv.url=null; }
+  $('#fvTitle').textContent=`${f.kind} · ${f.name}`;
+  $('#fvSub').textContent=`${c.cap} · ${fmtSize(f.size)} · ${fv.idx+1} of ${c.files.length}`;
+  $('#fvPrev').disabled=fv.idx===0; $('#fvNext').disabled=fv.idx===c.files.length-1;
+  $('#fvStrip').innerHTML = c.files.length>1 ? c.files.map((x,i)=>`<button type="button" class="${i===fv.idx?'on':''}" data-fv="${i}" aria-label="${esc(x.kind)} ${esc(x.name)}">${x.thumb?`<img src="${x.thumb}" alt="">`:`<i class="bi ${fileIcon(x)}"></i>`}</button>`).join('') : '';
+  $('#fvStage').innerHTML='<span class="spinner-border"></span>';
+  let blob=null; try{ blob=(c.blobs&&c.blobs.get(f.id)) || await FDB.get(f.id); }catch(e){}
+  if(!blob){ $('#fvStage').innerHTML='<div class="p-4"><i class="bi bi-cloud-slash fs-2 d-block mb-2"></i>This file is not on this device.<br><small>In the live app files are kept on the server, so every device can open them.</small></div>'; $('#fvOpen').hidden=true; $('#fvDl').hidden=true; return; }
+  fv.url=URL.createObjectURL(blob); $('#fvOpen').hidden=false; $('#fvDl').hidden=false;
+  $('#fvOpen').href=fv.url; $('#fvDl').href=fv.url; $('#fvDl').download=f.name;
+  const inlinePdf = matchMedia('(min-width:768px)').matches;   // phones open PDFs in their own viewer
+  $('#fvStage').innerHTML = f.mime.startsWith('image/') ? `<img src="${fv.url}" alt="${esc(f.kind)}: ${esc(f.name)}">`
+    : inlinePdf ? `<iframe src="${fv.url}" title="${esc(f.name)}"></iframe>`
+    : `<div class="p-4"><i class="bi bi-file-earmark-pdf d-block mb-2" style="font-size:3rem;color:#f5b301"></i><div class="text-white fw-semibold mb-1">${esc(f.name)}</div><div class="small mb-3">PDF · ${fmtSize(f.size)}</div><a class="btn btn-accent" href="${fv.url}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>Open PDF</a></div>`;
+}
+function closeViewer(){ $('#fileView').hidden=true; $('#fvStage').innerHTML=''; if(fv.url){ URL.revokeObjectURL(fv.url); fv.url=null; } if($('#filesSheet').hidden) document.body.style.overflow=''; }
+$('#fvPrev').onclick=()=>{ fv.idx--; showFile(); }; $('#fvNext').onclick=()=>{ fv.idx++; showFile(); };
+$('#fvStrip').addEventListener('click',e=>{ const b=e.target.closest('[data-fv]'); if(b){ fv.idx=+b.dataset.fv; showFile(); } });
+$('#fvClose').onclick=closeViewer;
+$('#fileView').addEventListener('click',e=>{ if(e.target.id==='fileView') closeViewer(); });
+document.addEventListener('keydown',e=>{ if($('#fileView').hidden) return; if(e.key==='ArrowLeft'&&!$('#fvPrev').disabled){ fv.idx--; showFile(); } if(e.key==='ArrowRight'&&!$('#fvNext').disabled){ fv.idx++; showFile(); } });
+document.addEventListener('click',e=>{
+  const v=e.target.closest('[data-files]'); if(v){ e.preventDefault(); fv={key:v.dataset.files,idx:+(v.dataset.idx||0),url:fv.url}; $('#fileView').hidden=false; document.body.style.overflow='hidden'; showFile(); return; }
+  const m=e.target.closest('[data-manage-files]'); if(m){ e.preventDefault(); openFiles(m.dataset.manageFiles); }
+});
 
 /* ================= STAFF ================= */
 const PERMS={attendance:'Mark attendance',employees:'Manage employees',settle:'Approve settlements',staff:'Manage staff',reports:'View reports'};
@@ -1448,6 +2228,18 @@ document.querySelectorAll('.content table.table').forEach(t=>{
   new MutationObserver(()=>cardify(t)).observe(t,{childList:true,subtree:true});
 });
 
+/* ================= PWA: install and offline ================= */
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+let installPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); installPrompt=e; $('#installBtn').classList.remove('d-none'); });
+$('#installBtn').onclick=async()=>{ if(!installPrompt) return; installPrompt.prompt(); await installPrompt.userChoice.catch(()=>{}); installPrompt=null; $('#installBtn').classList.add('d-none'); };
+window.addEventListener('appinstalled',()=>{ $('#installBtn').classList.add('d-none'); toast('Stromnetz is installed on this device'); });
+const netState=()=>document.body.classList.toggle('offline',!navigator.onLine);
+window.addEventListener('online',netState); window.addEventListener('offline',netState); netState();
+
+applyView();
 route();
 </script>
 </body>
