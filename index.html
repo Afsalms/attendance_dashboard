@@ -62,7 +62,13 @@
   .form-control:focus,.form-select:focus{border-color:var(--brand-400);box-shadow:0 0 0 .2rem rgba(29,107,136,.15)}
   .day-group td{background:#f7fafb!important;font-weight:700;color:var(--brand)}
   .day-total td{font-weight:700;background:#fffaf0!important}
-  .entry-table input,.entry-table select{min-width:90px}
+  .entry-table input,.entry-table select{min-width:76px}
+  .entry-table input[type=time]{width:104px;padding-left:.45rem;padding-right:.25rem;font-size:.8rem}
+  .entry-table input[data-f=petrol],.entry-table input[data-f=tools]{min-width:62px;width:66px}
+  .entry-table input[data-f=material],.entry-table input[data-f=matNote]{width:136px}
+  @media(max-width:767.98px){.entry-table input[type=time]{width:100%}}
+  .entry-table .table>:not(caption)>*>*{padding-left:.4rem;padding-right:.4rem}
+  .entry-table td,.entry-table th{padding-left:.4rem!important;padding-right:.4rem!important}
   .section{display:none}.section.active{display:block}
   .chart-box{position:relative;height:260px}
   .week-nav{display:flex;align-items:center;gap:.5rem}
@@ -71,6 +77,71 @@
   .update-item{border-left:3px solid var(--accent);padding:.15rem 0 .15rem .75rem;margin-bottom:.9rem}
   .perm-grid label{font-size:.85rem}
   .empty{padding:2.5rem;text-align:center;color:var(--muted)}
+
+  /* ---------- contract, department, material ---------- */
+  .badge-contract{background:#efe7fb;color:#5b2ea6;font-weight:600}
+  .badge-dept{background:#eef3f5;color:#33454e;font-weight:600}
+  .contract-box{background:#f7fafb;border:1px dashed #c9d6dc;border-radius:10px;padding:.15rem .75rem .9rem;margin:0}
+  .contract-box .cb-title{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--brand-400)}
+  .mat-note{font-size:.78rem}
+  .mat-sub{max-width:190px;margin-left:auto;white-space:normal;line-height:1.25;font-size:.75rem}
+  .filter-card .form-select{width:auto}
+  .dept-chips{display:flex;flex-wrap:wrap;gap:.5rem}
+  .dept-chip{display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:.45rem .85rem;font-size:.8rem;text-align:left;color:var(--ink)}
+  .dept-chip:hover{border-color:var(--brand-400)}
+  .dept-chip.active{border-color:var(--brand);box-shadow:0 0 0 2px rgba(5,48,65,.12);background:var(--brand-100)}
+  .amt-input{width:96px;margin-left:auto;text-align:right;font-weight:700}
+  .is-edited{border-color:var(--accent)!important;background:#fffaf0!important}
+  .amt-hint{font-size:.7rem;color:var(--muted);margin-top:3px;line-height:1.2}
+  .edited-mark{font-size:.62rem;color:var(--accent-600);margin-left:5px;vertical-align:1px}
+  /* ---------- phone bottom navigation ---------- */
+  .bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:1035;background:#fff;border-top:1px solid var(--line);display:flex;padding:.3rem .25rem calc(.3rem + env(safe-area-inset-bottom));box-shadow:0 -2px 10px rgba(5,48,65,.06)}
+  .bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.68rem;font-weight:600;color:var(--muted);text-decoration:none;padding:.3rem 0;border-radius:8px}
+  .bottom-nav a i{font-size:1.2rem}
+  .bottom-nav a.active{color:var(--brand)}
+  .bottom-nav a.active i{color:var(--accent-600)}
+  @media(max-width:991px){.main{padding-bottom:4.6rem}.toast-container{bottom:4.6rem!important}}
+  /* ---------- phones: every table becomes a stack of cards ---------- */
+  @media(max-width:767.98px){
+    body{font-size:.9rem}
+    .content{padding:1rem .75rem}
+    .topbar{padding:.6rem .9rem}
+    .card-header{padding:.8rem .9rem}
+    .card-header > div{width:100%}
+    .card-header .input-group,.card-header .form-select,.card-header .form-control{width:100%!important;max-width:none!important;flex:1 1 140px}
+    .filter-card .form-select{flex:1 1 150px}
+    .card-header .input-group,.filter-card .input-group{flex:1 1 100%!important;max-width:none!important}
+    .card-header .input-group .form-control{width:1%!important;flex:1 1 auto}
+    .kpi{padding:.9rem}
+    .kpi .k-icon{display:none!important}
+    .week-nav{width:100%;justify-content:space-between}
+    .week-label{min-width:0;font-size:.9rem}
+    .kpi .k-value{font-size:1.3rem}
+    .table-responsive{overflow:visible;background:#f7fafb;border-radius:0 0 12px 12px;padding:.1rem 0}
+    .table.table-cards{display:block;background:transparent}
+    .table.table-cards thead{display:none}
+    .table.table-cards tbody,.table.table-cards tfoot{display:block}
+    .table.table-cards tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem .9rem;background:#fff;border:1px solid var(--line);border-radius:12px;padding:.85rem .95rem;margin:.6rem;box-shadow:0 1px 2px rgba(5,48,65,.05)}
+    .table.table-cards > :not(caption) > * > *{display:block;padding:0;border:0;box-shadow:none;background:transparent!important;text-align:left!important;white-space:normal;min-width:0;max-width:none!important}
+    .table.table-cards td::before{content:attr(data-label);display:block;font-size:.64rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+    .table.table-cards td[data-label=""]::before,.table.table-cards td.td-title::before,.table.table-cards td.td-act::before{display:none}
+    .table.table-cards td.td-title{grid-column:1/-1;font-size:1rem;padding-bottom:.6rem;border-bottom:1px solid #edf1f3}
+    .table.table-cards td.td-wide{grid-column:1/-1}
+    .table.table-cards td.td-act{grid-column:1/-1;display:flex;justify-content:flex-end;gap:.4rem;padding-top:.65rem;border-top:1px dashed var(--line)}
+    .table.table-cards td.td-act .btn{padding:.35rem .7rem}
+    .table.table-cards td.td-blank,.table.table-cards td.td-dash,.table.table-cards td:empty{display:none}
+    .table.table-cards tr.row-flat{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.4rem}
+    .table.table-cards tr.day-group{background:transparent;border:0;box-shadow:none;margin:1.1rem .7rem .2rem;padding:0}
+    .table.table-cards tr.day-total{background:#fffaf0;border-color:#f3e3b6}
+    .table.table-cards td.empty{width:100%;padding:1.5rem 0}
+    .table.table-cards .form-control,.table.table-cards .form-select{min-width:0;width:100%;font-size:16px}
+    .table.table-cards .paid-input,.table.table-cards .amt-input{width:100%;margin:0}
+    .table.table-cards .mat-sub{margin-left:0;max-width:none}
+    .table.table-cards .text-truncate{white-space:normal!important}
+    .nav-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+    .nav-tabs .nav-link{white-space:nowrap}
+  }
+  @media print{.bottom-nav{display:none!important}}
   @media print{.sidebar,.topbar,.no-print{display:none!important}.main{margin:0}.content{padding:0}.section:not(.active){display:none!important}.card{box-shadow:none}}
 </style>
 </head>
@@ -164,13 +235,13 @@
           <div class="row g-3 mb-3">
             <div class="col-sm-4 col-lg-3"><label class="form-label">Date</label><input type="date" class="form-control" id="entDate"></div>
             <div class="col-sm-8 col-lg-5"><label class="form-label">Project / Site</label><input class="form-control" id="entSite" list="siteList" placeholder="e.g. Maya Tower"><datalist id="siteList"></datalist></div>
-            <div class="col-lg-4"><label class="form-label">Category</label><select class="form-select" id="entCat"><option>Electrical</option><option>Plumbing</option><option>HVAC</option><option>Civil support</option></select></div>
+            <div class="col-lg-4"><label class="form-label">Department</label><select class="form-select" id="entCat"><option>Electrical</option><option>Plumbing</option><option>HVAC</option><option>Civil support</option></select></div>
           </div>
           <div class="table-responsive">
             <table class="table entry-table">
-              <thead><tr><th style="min-width:170px">Employee</th><th class="num">Basic/day</th><th>Punch in</th><th>Punch out</th><th class="num">Hours</th><th class="num">Days</th><th class="num">Salary</th><th>Petrol ₹</th><th>Tools ₹</th><th class="num">Amount</th><th></th></tr></thead>
+              <thead><tr><th style="min-width:128px">Employee</th><th class="num">Basic/day</th><th>Punch in</th><th>Punch out</th><th class="num">Hours</th><th class="num">Days</th><th class="num">Salary</th><th>Petrol ₹</th><th>Tools ₹</th><th>Material ₹</th><th class="num" style="min-width:100px">Amount</th><th></th></tr></thead>
               <tbody id="entryBody"></tbody>
-              <tfoot><tr><td colspan="9"><button class="btn btn-sm btn-light" id="addRowBtn"><i class="bi bi-plus-lg me-1"></i>Add labourer</button></td><td class="num fw-bold" id="entryTotal">₹0</td><td></td></tr></tfoot>
+              <tfoot><tr><td colspan="10"><button class="btn btn-sm btn-light" id="addRowBtn"><i class="bi bi-plus-lg me-1"></i>Add labourer</button></td><td class="num fw-bold" id="entryTotal">₹0</td><td></td></tr></tfoot>
             </table>
           </div>
           <div class="row g-3 mt-1">
@@ -180,7 +251,7 @@
               <button class="btn btn-primary px-4" id="saveEntryBtn"><i class="bi bi-check2-circle me-1"></i>Save attendance</button>
             </div>
           </div>
-          <div class="small text-muted mt-2"><i class="bi bi-info-circle me-1"></i><span id="payRuleHelp"></span> Leave punch-out empty to save someone as still on site.</div>
+          <div class="small text-muted mt-2"><i class="bi bi-info-circle me-1"></i><span id="payRuleHelp"></span> Leave punch-out empty to save someone as still on site. Material purchases need a short note of what was bought.</div>
         </div>
       </div>
 
@@ -196,7 +267,7 @@
         </div>
         <div class="table-responsive">
           <table class="table table-hover">
-            <thead><tr><th>Employee</th><th>Site</th><th>In</th><th>Out</th><th class="num">Hours</th><th class="num">Rate/hr</th><th class="num">Salary</th><th class="num">Petrol</th><th class="num">Tools</th><th class="num">Amount</th><th class="no-print"></th></tr></thead>
+            <thead><tr><th>Employee</th><th>Site</th><th>In</th><th>Out</th><th class="num">Hours</th><th class="num">Rate/hr</th><th class="num">Salary</th><th class="num">Petrol</th><th class="num">Tools</th><th class="num">Material</th><th class="num">Amount</th><th class="no-print"></th></tr></thead>
             <tbody id="regBody"></tbody>
           </table>
         </div>
@@ -205,18 +276,21 @@
 
     <!-- ========== EMPLOYEES ========== -->
     <section class="section" id="sec-employees">
+      <div id="empAlert"></div>
       <div class="card">
         <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
           <span>Labour employees <span class="badge badge-soft ms-1" id="empCount"></span></span>
           <div class="d-flex flex-wrap gap-2">
             <div class="input-group input-group-sm" style="width:220px"><span class="input-group-text bg-white"><i class="bi bi-search"></i></span><input class="form-control" id="empSearch" placeholder="Search name or phone"></div>
             <select class="form-select form-select-sm" id="empStatusFilter" style="width:130px"><option value="">All status</option><option>Active</option><option>Inactive</option></select>
+            <select class="form-select form-select-sm" id="empTypeFilter" style="width:140px"><option value="">All types</option><option>Permanent</option><option>Contract</option></select>
+            <select class="form-select form-select-sm" id="empDeptFilter" style="width:160px"></select>
             <button class="btn btn-primary btn-sm" onclick="openEmp()"><i class="bi bi-person-plus me-1"></i>Add employee</button>
           </div>
         </div>
         <div class="table-responsive">
           <table class="table table-hover">
-            <thead><tr><th>Name</th><th>Phone</th><th>Position</th><th class="num">Basic/day</th><th class="num">Rate/hr</th><th class="num">Days (30d)</th><th class="num">Balance due</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+            <thead><tr><th>Name</th><th>Type</th><th>Phone</th><th>Position</th><th class="num">Basic/day</th><th class="num">Rate/hr</th><th class="num">Days (30d)</th><th class="num">Balance due</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
             <tbody id="empBody"></tbody>
           </table>
         </div>
@@ -225,18 +299,24 @@
 
     <!-- ========== PROJECTS ========== -->
     <section class="section" id="sec-projects">
+      <div class="row g-3 mb-3" id="prjKpis"></div>
+      <div class="dept-chips mb-3" id="prjDepts"></div>
+      <div class="card mb-3 filter-card no-print"><div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
+        <div class="input-group input-group-sm" style="max-width:250px"><span class="input-group-text bg-white"><i class="bi bi-search"></i></span><input class="form-control" id="prjSearch" placeholder="Search name, location, client"></div>
+        <select class="form-select form-select-sm" id="prjDeptFilter"></select>
+        <select class="form-select form-select-sm" id="prjTypeFilter"><option value="">All employee types</option><option>Permanent</option><option>Contract</option></select>
+        <select class="form-select form-select-sm" id="prjStatusFilter"><option value="">All status</option><option>Ongoing</option><option>On hold</option><option>Completed</option></select>
+        <select class="form-select form-select-sm" id="prjPeriod"><option value="all">All time</option><option value="month">This month</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option><option value="year">This year</option></select>
+        <button class="btn btn-sm btn-link text-decoration-none" id="prjClear">Clear filters</button>
+      </div></div>
       <div class="card">
         <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
           <span>Projects / sites <span class="badge badge-soft ms-1" id="prjCount"></span></span>
-          <div class="d-flex flex-wrap gap-2">
-            <div class="input-group input-group-sm" style="width:230px"><span class="input-group-text bg-white"><i class="bi bi-search"></i></span><input class="form-control" id="prjSearch" placeholder="Search name, location, client"></div>
-            <select class="form-select form-select-sm" id="prjStatusFilter" style="width:140px"><option value="">All status</option><option>Ongoing</option><option>On hold</option><option>Completed</option></select>
-            <button class="btn btn-primary btn-sm" onclick="openPrj()"><i class="bi bi-plus-lg me-1"></i>Add project</button>
-          </div>
+          <div class="d-flex align-items-center gap-3"><span class="small text-muted fw-normal" id="prjScope"></span><button class="btn btn-primary btn-sm" onclick="openPrj()"><i class="bi bi-plus-lg me-1"></i>Add project</button></div>
         </div>
         <div class="table-responsive">
           <table class="table table-hover">
-            <thead><tr><th>Project</th><th>Location</th><th>Client</th><th>Started</th><th class="num">Man-days</th><th class="num">Labour cost</th><th>Last activity</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+            <thead><tr><th>Project</th><th>Department</th><th>Started</th><th class="num">Man-days</th><th class="num">Contract share</th><th class="num">Labour cost</th><th class="num">Material</th><th>Last activity</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
             <tbody id="prjBody"></tbody>
           </table>
         </div>
@@ -284,7 +364,7 @@
         </div>
         <div class="tab-content">
           <div class="tab-pane fade show active" id="ehTabAtt"><div class="table-responsive"><table class="table table-hover">
-            <thead><tr><th>Date</th><th>Site</th><th>In</th><th>Out</th><th class="num">Hours</th><th class="num">Days</th><th class="num">Basic</th><th class="num">Salary</th><th class="num">Petrol</th><th class="num">Tools</th><th class="num">Amount</th><th>Work update</th><th class="no-print"></th></tr></thead>
+            <thead><tr><th>Date</th><th>Site</th><th>In</th><th>Out</th><th class="num">Hours</th><th class="num">Days</th><th class="num">Basic</th><th class="num">Salary</th><th class="num">Petrol</th><th class="num">Tools</th><th class="num">Material</th><th class="num">Amount</th><th>Work update</th><th class="no-print"></th></tr></thead>
             <tbody id="ehAttBody"></tbody></table></div></div>
           <div class="tab-pane fade" id="ehTabSet"><div class="table-responsive"><table class="table table-hover">
             <thead><tr><th>Week (Sat → Fri)</th><th class="num">Old bal.</th><th class="num">Labour</th><th class="num">Expenses</th><th class="num">Tools</th><th class="num">Advance</th><th class="num">Grand total</th><th class="num">Paid</th><th class="num">Balance</th><th>Status</th></tr></thead>
@@ -353,6 +433,14 @@
   </main>
 </div>
 
+<nav class="bottom-nav d-lg-none" aria-label="Main">
+  <a href="#dashboard" data-nav="dashboard"><i class="bi bi-grid-1x2"></i><span>Home</span></a>
+  <a href="#attendance" data-nav="attendance"><i class="bi bi-calendar2-check"></i><span>Attendance</span></a>
+  <a href="#settlement" data-nav="settlement"><i class="bi bi-cash-coin"></i><span>Settle</span></a>
+  <a href="#projects" data-nav="projects"><i class="bi bi-buildings"></i><span>Projects</span></a>
+  <a href="#employees" data-nav="employees"><i class="bi bi-person-badge"></i><span>Employees</span></a>
+</nav>
+
 <!-- ================= MODALS ================= -->
 <div class="modal fade" id="empModal" tabindex="-1"><div class="modal-dialog"><form class="modal-content" id="empForm">
   <div class="modal-header"><h5 class="modal-title" id="empModalTitle">Add employee</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
@@ -361,10 +449,19 @@
     <div class="col-12"><label class="form-label">Full name</label><input class="form-control" id="empName" required></div>
     <div class="col-6"><label class="form-label">Phone</label><input class="form-control" id="empPhone" placeholder="+91"></div>
     <div class="col-6"><label class="form-label">Position</label><select class="form-select" id="empPos"><option>Electrical Technician</option><option>Senior Technician</option><option>Helper</option><option>Plumber</option><option>Supervisor</option></select></div>
+    <div class="col-6"><label class="form-label">Employee type</label><select class="form-select" id="empType"><option>Permanent</option><option>Contract</option></select></div>
+    <div class="col-6"><label class="form-label">Department</label><select class="form-select" id="empDept"></select></div>
     <div class="col-6"><label class="form-label">Basic salary / day (₹)</label><input type="number" class="form-control" id="empBasic" min="0" step="25" required></div>
     <div class="col-6"><label class="form-label">Joined on</label><input type="date" class="form-control" id="empJoined"></div>
     <div class="col-6"><label class="form-label">Aadhaar / ID (optional)</label><input class="form-control" id="empIdNo"></div>
     <div class="col-6"><label class="form-label">Status</label><select class="form-select" id="empStatus"><option>Active</option><option>Inactive</option></select></div>
+    <div class="col-12 d-none" id="contractBox"><div class="row g-2 contract-box">
+      <div class="col-12 cb-title pt-2"><i class="bi bi-file-earmark-text me-1"></i>Contract details</div>
+      <div class="col-12"><label class="form-label">Contractor / agency</label><input class="form-control" id="empAgency" placeholder="e.g. Malabar Manpower Services, or Direct contract"></div>
+      <div class="col-6"><label class="form-label">Contract start</label><input type="date" class="form-control" id="empCStart"></div>
+      <div class="col-6"><label class="form-label">Contract end</label><input type="date" class="form-control" id="empCEnd"></div>
+      <div class="col-12"><label class="form-label">Terms / notes</label><input class="form-control" id="empCNote" placeholder="Rate agreed, scope, notice period…"></div>
+    </div></div>
     <div class="col-12 small text-muted">Hourly rate is worked out as basic ÷ 8, the same as the sheet.</div>
   </div>
   <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary">Save employee</button></div>
@@ -377,6 +474,7 @@
     <div class="col-12"><label class="form-label">Project / site name</label><input class="form-control" id="prjName" required placeholder="e.g. Maya Tower"></div>
     <div class="col-6"><label class="form-label">Location</label><input class="form-control" id="prjLoc" placeholder="Town / district"></div>
     <div class="col-6"><label class="form-label">Client</label><input class="form-control" id="prjClient"></div>
+    <div class="col-6"><label class="form-label">Department</label><select class="form-select" id="prjDept"></select></div>
     <div class="col-6"><label class="form-label">Start date</label><input type="date" class="form-control" id="prjStart"></div>
     <div class="col-6"><label class="form-label">Status</label><select class="form-select" id="prjStatus"><option>Ongoing</option><option>On hold</option><option>Completed</option></select></div>
     <div class="col-12"><label class="form-label">Notes</label><textarea class="form-control" id="prjNotes" rows="2" placeholder="Scope, contact person…"></textarea></div>
@@ -410,9 +508,12 @@
     <div class="col-6"><label class="form-label">Site</label><input class="form-control" id="aSite" list="siteList" required></div>
     <div class="col-6"><label class="form-label">Punch in</label><input type="time" class="form-control" id="aIn" required></div>
     <div class="col-6"><label class="form-label">Punch out</label><input type="time" class="form-control" id="aOut"></div>
-    <div class="col-4"><label class="form-label">Basic/day</label><input type="number" class="form-control" id="aBasic"></div>
-    <div class="col-4"><label class="form-label">Petrol ₹</label><input type="number" class="form-control" id="aPetrol"></div>
-    <div class="col-4"><label class="form-label">Tools ₹</label><input type="number" class="form-control" id="aTools"></div>
+    <div class="col-6 col-sm-3"><label class="form-label">Basic/day</label><input type="number" class="form-control" id="aBasic"></div>
+    <div class="col-6 col-sm-3"><label class="form-label">Petrol ₹</label><input type="number" class="form-control" id="aPetrol"></div>
+    <div class="col-6 col-sm-3"><label class="form-label">Tools ₹</label><input type="number" class="form-control" id="aTools"></div>
+    <div class="col-6 col-sm-3"><label class="form-label">Material ₹</label><input type="number" class="form-control" id="aMat" min="0"></div>
+    <div class="col-12"><label class="form-label">Material purchase note</label><input class="form-control" id="aMatNote" placeholder="What was bought, shop, bill no."></div>
+    <div class="col-12"><label class="form-label">Final amount ₹</label><div class="input-group"><input type="number" min="0" class="form-control fw-bold" id="aAmt"><button type="button" class="btn btn-outline-secondary d-none" id="aAmtReset">Use auto</button></div><div class="form-text" id="aAmtHint"></div></div>
     <div class="col-12"><label class="form-label">Work update</label><textarea class="form-control" id="aUpdate" rows="2"></textarea></div>
   </div>
   <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary">Update</button></div>
@@ -454,7 +555,10 @@ const weekStartOf = s => { const d = parse(s); const diff = (d.getDay() - WEEK_S
 function hoursBetween(a,b){ if(!a||!b) return 0; const [h1,m1]=a.split(':').map(Number),[h2,m2]=b.split(':').map(Number); let m=(h2*60+m2)-(h1*60+m1); if(m<0)m+=1440; return m/60; }
 function dayFraction(h){ if(!h) return 0; if(h < 6) return 0.5; if(h < 11) return 1; return 1.5; }
 function calcPay(basic,h){ return db.settings.payMode==='hourly' ? h*basic/8 : dayFraction(h)*basic; }
-function compute(r){ r.hours = hoursBetween(r.in,r.out); r.days = r.out ? (db.settings.payMode==='hourly'? r.hours/8 : dayFraction(r.hours)) : 0; r.salary = r.out ? calcPay(r.basic,r.hours) : 0; r.amount = r.salary + (+r.petrol||0) + (+r.tools||0); return r; }
+function compute(r){ r.hours = hoursBetween(r.in,r.out); r.days = r.out ? (db.settings.payMode==='hourly'? r.hours/8 : dayFraction(r.hours)) : 0; r.salary = r.out ? calcPay(r.basic,r.hours) : 0; r.auto = r.salary + (+r.petrol||0) + (+r.tools||0) + (+r.material||0);
+  const ov = (r.amtOv===''||r.amtOv==null) ? null : +r.amtOv;
+  r.adj = ov==null ? 0 : ov - r.auto; r.amount = ov==null ? r.auto : ov; r.wage = r.salary + r.adj; return r; }
+const amtCell = a => `${inr(a.amount)}${a.adj?`<i class="bi bi-pencil-fill edited-mark" title="Edited by hand · auto ${inr(a.auto)}"></i>`:''}`;
 
 /* ================= seed data (from Electrical_Labour_Attendance_.xlsx) ================= */
 function seed(){
@@ -518,6 +622,51 @@ let db;
 try { db = JSON.parse(localStorage.getItem(KEY)); } catch(e) { db = null; }
 if(!db) db = seed();
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(db)); }catch(e){} }
+/* departments, employee types, material (data version 2) */
+const DEPTS=['Electrical','Plumbing','HVAC','Civil support'];
+function migrate(){
+  if((db.v||1)>=2) return;
+  const CONTRACT={Adhil:['Malabar Manpower Services','2026-06-01','2026-11-30','Agency rate, 15-day notice'],
+    Swalih:['Malabar Manpower Services','2026-09-01','2027-03-31','Helper; agency pays PF/ESI'],
+    Amal:['Direct contract','2026-05-01','2026-10-31','6-month site contract'],
+    Nazzer:['Direct contract','2025-11-01','2026-04-30','Contract ended']};
+  const EDEPT={Niyas:'Plumbing',Uvais:'HVAC'};
+  db.employees.forEach(e=>{
+    if(!e.type){ const c=CONTRACT[e.name]; e.type=c?'Contract':'Permanent'; if(c) [e.agency,e.cStart,e.cEnd,e.cNote]=c; }
+    e.dept=e.dept||EDEPT[e.name]||'Electrical';
+  });
+  db.attendance.forEach(a=>{ if(a.material==null){ a.material=0; a.matNote=''; } a.cat=a.cat||'Electrical'; });
+  [['2026-11-04','Jinod',1450,'LED panel clips + 12 junction boxes · Sree Electricals bill 4412'],
+   ['2026-11-06','Ratheesh',620,'Cable ties and insulation tape'],
+   ['2026-11-07','Jinod',980,'Corridor light fittings, 6 nos']].forEach(([d,n,amt,note])=>{
+    const e=db.employees.find(x=>x.name===n), a=e&&db.attendance.find(x=>x.date===d&&x.empId===e.id);
+    if(a){ a.material=amt; a.matNote=note; } });
+  const add=(date,site,cat,name,inT,outT,mat=0,note='',update='')=>{ const e=db.employees.find(x=>x.name===name); if(!e||db.attendance.some(a=>a.date===date&&a.empId===e.id)) return;
+    db.attendance.push({id:uid(),date,site,cat,empId:e.id,basic:e.basic,in:inT,out:outT,petrol:0,tools:0,material:mat,matNote:note,update}); };
+  if(TODAY>='2026-11-11'){
+    add('2026-11-09','Maya Tower','Electrical','Adhil','07:30','17:30',0,'','Conduit for 3rd floor rooms');
+    add('2026-11-09','Maya Tower','Electrical','Swalih','07:30','17:30');
+    add('2026-11-10','Maya Tower','Electrical','Adhil','07:15','19:00');
+    add('2026-11-10','Maya Tower','Electrical','Swalih','07:15','19:00');
+    add('2026-11-09','Accel-TVM','Plumbing','Niyas','08:00','17:00',2300,'CPVC pipes 1 in, 10 lengths + elbows','Bathroom line on ground floor');
+    add('2026-11-10','Lenovo Oberon Mall','HVAC','Uvais','09:00','14:30',0,'','Drain line check, AC units 2 and 3');
+  }
+  const PDEPT={'Lenovo Oberon Mall':'HVAC','Accel-TVM':'Plumbing','Bluetrench':'Civil support','Aslam':'Plumbing'};
+  db.projects.forEach(p=>{ p.dept=p.dept||PDEPT[p.name]||'Electrical'; if(['Accel-TVM','Lenovo Oberon Mall'].includes(p.name)&&p.status==='On hold'){ p.status='Ongoing'; p.start=p.start||'2026-11-09'; } });
+  db.v=2;
+}
+const daysTo = s => Math.round((parse(s)-parse(TODAY))/864e5);
+function contractState(e){
+  if(e.type!=='Contract') return null;
+  if(!e.cEnd) return {k:'open',label:'No end date'};
+  const d=daysTo(e.cEnd);
+  if(d<0) return {k:'expired',label:`Ended ${fmtD(e.cEnd)}`};
+  if(d<=30) return {k:'soon',label:`Ends in ${d} day${d===1?'':'s'}`};
+  return {k:'ok',label:`Until ${fmtD(e.cEnd)}`};
+}
+const typeBadge = e => e.type==='Contract' ? '<span class="badge badge-contract">Contract</span>' : '<span class="badge badge-soft">Permanent</span>';
+const matCell = a => a.material ? `${inr(a.material)}${a.matNote?`<div class="text-muted mat-sub" title="${esc(a.matNote)}">${esc(a.matNote)}</div>`:''}` : '—';
+const fmtN = n => n%1 ? n.toFixed(1) : String(n);
 // projects: build from the old site list on first run
 function ensureProjects(){ if(db.projects) return;
   const LOC={'Maya Tower':['','',''],'BRV Cottage - Vagamon':['Vagamon, Idukki','BRV',''],'Kannur':['Kannur','',''],'Adivad':['Adivad, Kothamangalam','',''],
@@ -528,12 +677,12 @@ function ensureProjects(){ if(db.projects) return;
     return {id:uid(),name:n,location:(LOC[n]||[''])[0],client:(LOC[n]||['',''])[1],start:d[0]||'',status,notes:''}; });
   delete db.sites; save();
 }
-ensureProjects();
+ensureProjects(); migrate();
 const siteNames = (onlyOngoing) => db.projects.filter(p=>!onlyOngoing||p.status==='Ongoing').map(p=>p.name).sort((a,b)=>a.localeCompare(b));
 db.attendance.forEach(compute); save();
 const emp = id => db.employees.find(e=>e.id===id) || {name:'(removed)',basic:0};
 function toast(msg){ $('#toastMsg').textContent=msg; bootstrap.Toast.getOrCreateInstance($('#toast'),{delay:2200}).show(); }
-function addSite(s,date){ s=s.trim(); if(s && !db.projects.some(p=>p.name===s)) db.projects.push({id:uid(),name:s,location:'',client:'',start:date||TODAY,status:'Ongoing',notes:''}); }
+function addSite(s,date,dept){ s=s.trim(); if(s && !db.projects.some(p=>p.name===s)) db.projects.push({id:uid(),name:s,location:'',client:'',dept:dept||'Electrical',start:date||TODAY,status:'Ongoing',notes:''}); }
 
 /* ================= routing ================= */
 const titles={projects:'Projects',dashboard:'Dashboard',attendance:'Add Attendance',employees:'Manage Employees',staff:'Manage Staff',settlement:'Weekly Settlement'};
@@ -557,14 +706,14 @@ function route(){
 window.addEventListener('hashchange',route);
 $('#menuBtn').onclick=()=>$('#sidebar').classList.toggle('show');
 $('#todayLabel').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-$('#resetDemo').onclick=e=>{e.preventDefault(); if(confirm('Reset all demo data?')){ try{localStorage.removeItem(KEY);}catch(_){} db=seed(); db.attendance.forEach(compute); ensureProjects(); save(); route(); toast('Demo data reset'); }};
+$('#resetDemo').onclick=e=>{e.preventDefault(); if(confirm('Reset all demo data?')){ try{localStorage.removeItem(KEY);}catch(_){} db=seed(); ensureProjects(); migrate(); db.attendance.forEach(compute); save(); route(); toast('Demo data reset'); }};
 
 /* ================= DASHBOARD ================= */
 let chDaily, chSite;
 const CH = { bar:'#1d6b88', barHover:'#053041', grid:'#e9eef1', tick:'#5d707a' };
 function renderDashboard(){
   const active = db.employees.filter(e=>e.status==='Active');
-  $('#kEmp').textContent = active.length; $('#kEmpSub').textContent = `${db.employees.length-active.length} inactive`;
+  $('#kEmp').textContent = active.length; $('#kEmpSub').textContent = `${active.filter(e=>e.type==='Contract').length} contract · ${db.employees.length-active.length} inactive`;
   const todays = db.attendance.filter(a=>a.date===TODAY);
   $('#kToday').textContent = todays.length;
   $('#kTodaySub').textContent = todays.length ? [...new Set(todays.map(a=>a.site))].join(', ') : 'No entries yet';
@@ -609,7 +758,7 @@ function payHelp(){
   $('#payModeLabel').textContent = hourly ? 'Hourly (hours × basic ÷ 8)' : 'Shift slabs (½ / 1 / 1½ day)';
   $('#payRuleHelp').textContent = hourly ? 'Salary = hours worked × (basic ÷ 8).' : 'Salary = basic × day factor: under 6 hrs = ½ day, 6–11 hrs = 1 day, 11+ hrs = 1½ days.';
 }
-function newRow(empId){ const e=empId?emp(empId):null; return {key:uid(),empId:empId||'',basic:e?e.basic:0,in:'08:00',out:'17:00',petrol:'',tools:''}; }
+function newRow(empId){ const e=empId?emp(empId):null; return {key:uid(),empId:empId||'',basic:e?e.basic:0,in:'08:00',out:'17:00',petrol:'',tools:'',material:'',matNote:''}; }
 function renderEntry(){
   const opts = db.employees.filter(e=>e.status==='Active').map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
   let total=0;
@@ -625,17 +774,20 @@ function renderEntry(){
       <td class="num">${inr(c.salary)}</td>
       <td><input type="number" min="0" class="form-control form-control-sm" data-f="petrol" value="${r.petrol}"></td>
       <td><input type="number" min="0" class="form-control form-control-sm" data-f="tools" value="${r.tools}"></td>
-      <td class="num fw-semibold">${inr(c.amount)}</td>
+      <td><input type="number" min="0" class="form-control form-control-sm" data-f="material" value="${r.material}" placeholder="0"><input class="form-control form-control-sm mt-1 mat-note${+r.material>0&&!String(r.matNote||'').trim()?' is-invalid':''}" data-f="matNote" value="${esc(r.matNote)}" placeholder="What was bought?"></td>
+      <td class="num"><input type="number" min="0" class="form-control form-control-sm amt-input ${c.adj?'is-edited':''}" data-f="amtOv" value="${Math.round(c.amount)}" title="Auto-calculated, type to change"><div class="amt-hint">${c.adj?`Auto ${inr(c.auto)} · <a href="#" data-reset="${r.key}">reset</a>`:'Auto · editable'}</div></td>
       <td><button class="btn btn-sm btn-link text-danger p-0" data-del="${r.key}"><i class="bi bi-x-circle"></i></button></td></tr>`;
-  }).join('') || `<tr><td colspan="11" class="empty">Add labourers for this day, or click <b>Load last team</b>.</td></tr>`;
+  }).join('') || `<tr><td colspan="12" class="empty">Add labourers for this day, or click <b>Load last team</b>.</td></tr>`;
   entryRows.forEach(r=>{ const sel=document.querySelector(`tr[data-k="${r.key}"] select`); if(sel) sel.value=r.empId; });
   $('#entryTotal').textContent = inr(total);
 }
 $('#entryBody').addEventListener('change',e=>{
   const tr=e.target.closest('tr[data-k]'); if(!tr) return; const r=entryRows.find(x=>x.key===tr.dataset.k); const f=e.target.dataset.f; if(!f) return;
-  r[f]=e.target.value; if(f==='empId') r.basic=r.empId?emp(r.empId).basic:0; renderEntry();
+  r[f]=e.target.value; if(f==='empId') r.basic=r.empId?emp(r.empId).basic:0;
+  if(f==='amtOv'){ const auto=Math.round(compute({...r,amtOv:null}).amount); r.amtOv = e.target.value===''||+e.target.value===auto ? null : +e.target.value; }
+  renderEntry();
 });
-$('#entryBody').addEventListener('click',e=>{ const b=e.target.closest('[data-del]'); if(b){ entryRows=entryRows.filter(r=>r.key!==b.dataset.del); renderEntry(); }});
+$('#entryBody').addEventListener('click',e=>{ const rs=e.target.closest('[data-reset]'); if(rs){ e.preventDefault(); entryRows.find(x=>x.key===rs.dataset.reset).amtOv=null; return renderEntry(); } const b=e.target.closest('[data-del]'); if(b){ entryRows=entryRows.filter(r=>r.key!==b.dataset.del); renderEntry(); }});
 $('#addRowBtn').onclick=()=>{ entryRows.push(newRow()); renderEntry(); };
 $('#loadTeamBtn').onclick=()=>{
   const past=db.attendance.filter(a=>a.date<$('#entDate').value).sort((a,b)=>b.date.localeCompare(a.date));
@@ -651,27 +803,29 @@ $('#saveEntryBtn').onclick=()=>{
   if(!date||!site) return toast('Pick a date and site first');
   const rows=entryRows.filter(r=>r.empId);
   if(!rows.length) return toast('Add at least one employee');
+  const noNote=rows.find(r=>+r.material>0&&!String(r.matNote||'').trim());
+  if(noNote){ renderEntry(); return toast(`Add what was bought for ${emp(noNote.empId).name}'s material purchase`); }
   const dup = rows.find(r=>db.attendance.some(a=>a.date===date&&a.empId===r.empId));
   if(dup && !confirm(`${emp(dup.empId).name} already has an entry on ${fmtD(date)}. Save anyway?`)) return;
-  rows.forEach((r,i)=>db.attendance.push(compute({id:uid(),date,site,cat:$('#entCat').value,empId:r.empId,basic:+r.basic,in:r.in,out:r.out,petrol:+r.petrol||0,tools:+r.tools||0,update:i===0?$('#entUpdate').value.trim():''})));
-  addSite(site,date); save(); toast(`Saved ${rows.length} attendance entr${rows.length>1?'ies':'y'}`);
+  rows.forEach((r,i)=>db.attendance.push(compute({id:uid(),date,site,cat:$('#entCat').value,empId:r.empId,basic:+r.basic,in:r.in,out:r.out,petrol:+r.petrol||0,tools:+r.tools||0,material:+r.material||0,matNote:String(r.matNote||'').trim(),amtOv:r.amtOv==null||r.amtOv===''?null:+r.amtOv,update:i===0?$('#entUpdate').value.trim():''})));
+  addSite(site,date,$('#entCat').value); save(); toast(`Saved ${rows.length} attendance entr${rows.length>1?'ies':'y'}`);
   entryRows=[newRow()]; $('#entUpdate').value=''; renderAttendance();
 };
 ['#regFrom','#regTo','#regSite','#regEmp'].forEach(s=>$(s).addEventListener('change',renderRegister));
 function renderRegister(){
   const f=$('#regFrom').value, t=$('#regTo').value, s=$('#regSite').value, e=$('#regEmp').value;
   const list=db.attendance.filter(a=>(!f||a.date>=f)&&(!t||a.date<=t)&&(!s||a.site===s)&&(!e||a.empId===e)).sort((a,b)=>b.date.localeCompare(a.date)||emp(a.empId).name.localeCompare(emp(b.empId).name));
-  if(!list.length){ $('#regBody').innerHTML='<tr><td colspan="11" class="empty">No entries for this filter</td></tr>'; return; }
+  if(!list.length){ $('#regBody').innerHTML='<tr><td colspan="12" class="empty">No entries for this filter</td></tr>'; return; }
   let html='', cur=null, dayTot=0, grand=0;
-  const close=()=>{ if(cur) html+=`<tr class="day-total"><td colspan="9" class="text-end">Total · ${fmtDs(cur)}</td><td class="num">${inr(dayTot)}</td><td class="no-print"></td></tr>`; };
+  const close=()=>{ if(cur) html+=`<tr class="day-total"><td colspan="10" class="text-end">Total · ${fmtDs(cur)}</td><td class="num">${inr(dayTot)}</td><td class="no-print"></td></tr>`; };
   list.forEach(a=>{
-    if(a.date!==cur){ close(); cur=a.date; dayTot=0; html+=`<tr class="day-group"><td colspan="11"><i class="bi bi-calendar3 me-2"></i>${fmtD(a.date)} <span class="text-muted fw-normal ms-2 small">${esc([...new Set(list.filter(x=>x.date===a.date).map(x=>x.site))].join(', '))}</span></td></tr>`; }
+    if(a.date!==cur){ close(); cur=a.date; dayTot=0; html+=`<tr class="day-group"><td colspan="12"><i class="bi bi-calendar3 me-2"></i>${fmtD(a.date)} <span class="text-muted fw-normal ms-2 small">${esc([...new Set(list.filter(x=>x.date===a.date).map(x=>x.site))].join(', '))}</span></td></tr>`; }
     dayTot+=a.amount; grand+=a.amount;
     html+=`<tr><td>${empLink(a.empId,'')}${a.update?`<div class="small text-muted text-truncate" style="max-width:260px" title="${esc(a.update)}">${esc(a.update)}</div>`:''}</td><td>${esc(a.site)}</td><td>${a.in||'—'}</td><td>${a.out||'<span class="badge badge-amber">On site</span>'}</td>
-      <td class="num">${a.out?a.hours.toFixed(2):'—'}</td><td class="num">₹${(a.basic/8).toFixed(2)}</td><td class="num">${inr(a.salary)}</td><td class="num">${a.petrol?inr(a.petrol):'—'}</td><td class="num">${a.tools?inr(a.tools):'—'}</td><td class="num fw-semibold">${inr(a.amount)}</td>
+      <td class="num">${a.out?a.hours.toFixed(2):'—'}</td><td class="num">₹${(a.basic/8).toFixed(2)}</td><td class="num">${inr(a.salary)}</td><td class="num">${a.petrol?inr(a.petrol):'—'}</td><td class="num">${a.tools?inr(a.tools):'—'}</td><td class="num">${matCell(a)}</td><td class="num fw-semibold">${amtCell(a)}</td>
       <td class="text-end text-nowrap no-print"><button class="btn btn-sm btn-link p-0 me-2" onclick="editAtt('${a.id}')"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-link text-danger p-0" onclick="delAtt('${a.id}')"><i class="bi bi-trash"></i></button></td></tr>`;
   });
-  close(); html+=`<tr><td colspan="9" class="text-end fw-bold">Grand total</td><td class="num fw-bold">${inr(grand)}</td><td></td></tr>`;
+  close(); html+=`<tr><td colspan="10" class="text-end fw-bold">Grand total</td><td class="num fw-bold">${inr(grand)}</td><td></td></tr>`;
   $('#regBody').innerHTML=html;
 }
 function renderAttendance(){
@@ -682,39 +836,57 @@ function renderAttendance(){
   renderEntry(); renderRegister();
 }
 window.editAtt=id=>{ const a=db.attendance.find(x=>x.id===id);
-  $('#aId').value=id; $('#aWho').textContent=emp(a.empId).name; $('#aDate').value=a.date; $('#aSite').value=a.site; $('#aIn').value=a.in; $('#aOut').value=a.out||''; $('#aBasic').value=a.basic; $('#aPetrol').value=a.petrol||''; $('#aTools').value=a.tools||''; $('#aUpdate').value=a.update||'';
+  $('#aId').value=id; $('#aWho').textContent=emp(a.empId).name; $('#aDate').value=a.date; $('#aSite').value=a.site; $('#aIn').value=a.in; $('#aOut').value=a.out||''; $('#aBasic').value=a.basic; $('#aPetrol').value=a.petrol||''; $('#aTools').value=a.tools||''; $('#aMat').value=a.material||''; $('#aMatNote').value=a.matNote||''; aAmtEdited=a.amtOv!=null; $('#aAmt').value=Math.round(a.amount); amtHint(true); $('#aUpdate').value=a.update||'';
   bootstrap.Modal.getOrCreateInstance($('#attModal')).show(); };
-$('#attForm').onsubmit=e=>{ e.preventDefault(); const a=db.attendance.find(x=>x.id===$('#aId').value);
-  Object.assign(a,{date:$('#aDate').value,site:$('#aSite').value.trim(),in:$('#aIn').value,out:$('#aOut').value,basic:+$('#aBasic').value,petrol:+$('#aPetrol').value||0,tools:+$('#aTools').value||0,update:$('#aUpdate').value.trim()});
-  compute(a); addSite(a.site,a.date); save(); bootstrap.Modal.getInstance($('#attModal')).hide(); route(); toast('Attendance updated'); };
+let aAmtEdited=false;
+function modalAuto(){ return Math.round(compute({in:$('#aIn').value,out:$('#aOut').value,basic:+$('#aBasic').value,petrol:+$('#aPetrol').value||0,tools:+$('#aTools').value||0,material:+$('#aMat').value||0,amtOv:null}).amount); }
+function amtHint(keepValue){ const auto=modalAuto();
+  if(!aAmtEdited && !keepValue) $('#aAmt').value=auto;
+  $('#aAmt').classList.toggle('is-edited',aAmtEdited); $('#aAmtReset').classList.toggle('d-none',!aAmtEdited);
+  $('#aAmtHint').innerHTML = aAmtEdited ? `Changed by hand · auto-calculated would be <b>${inr(auto)}</b>` : 'Auto-calculated from salary + petrol + tools + material. Type here to change it.'; }
+['#aIn','#aOut','#aBasic','#aPetrol','#aTools','#aMat'].forEach(s=>$(s).addEventListener('input',()=>amtHint()));
+$('#aAmt').addEventListener('input',()=>{ const v=$('#aAmt').value; aAmtEdited = v!=='' && +v!==modalAuto(); amtHint(true); });
+$('#aAmtReset').onclick=()=>{ aAmtEdited=false; amtHint(); };
+$('#attForm').onsubmit=e=>{ e.preventDefault(); if(+$('#aMat').value>0&&!$('#aMatNote').value.trim()){ $('#aMatNote').focus(); return toast('Add what was bought for this material purchase'); } const a=db.attendance.find(x=>x.id===$('#aId').value);
+  Object.assign(a,{date:$('#aDate').value,site:$('#aSite').value.trim(),in:$('#aIn').value,out:$('#aOut').value,basic:+$('#aBasic').value,petrol:+$('#aPetrol').value||0,tools:+$('#aTools').value||0,material:+$('#aMat').value||0,matNote:$('#aMatNote').value.trim(),amtOv:aAmtEdited&&$('#aAmt').value!==''?+$('#aAmt').value:null,update:$('#aUpdate').value.trim()});
+  compute(a); addSite(a.site,a.date,a.cat); save(); bootstrap.Modal.getInstance($('#attModal')).hide(); route(); toast('Attendance updated'); };
 window.delAtt=id=>{ if(!confirm('Delete this attendance entry?')) return; db.attendance=db.attendance.filter(a=>a.id!==id); save(); route(); toast('Entry deleted'); };
 
 /* ================= EMPLOYEES ================= */
-$('#empSearch').oninput=renderEmployees; $('#empStatusFilter').onchange=renderEmployees;
+$('#empSearch').oninput=renderEmployees; ['#empStatusFilter','#empTypeFilter','#empDeptFilter'].forEach(s=>$(s).onchange=renderEmployees);
+function toggleContract(){ $('#contractBox').classList.toggle('d-none',$('#empType').value!=='Contract'); }
+$('#empType').onchange=toggleContract;
 function lastBalance(empId){ const ws=Object.keys(db.settlements).sort().reverse(); for(const w of ws){ const r=db.settlements[w].rows.find(x=>x.empId===empId); if(r) return r.bal; } return 0; }
 function renderEmployees(){
-  const q=$('#empSearch').value.toLowerCase(), st=$('#empStatusFilter').value, from=addDays(TODAY,-29);
-  const list=db.employees.filter(e=>(!q||e.name.toLowerCase().includes(q)||(e.phone||'').includes(q))&&(!st||e.status===st));
+  const q=$('#empSearch').value.toLowerCase(), st=$('#empStatusFilter').value, ty=$('#empTypeFilter').value, dp=$('#empDeptFilter').value, from=addDays(TODAY,-29);
+  const list=db.employees.filter(e=>(!q||e.name.toLowerCase().includes(q)||(e.phone||'').includes(q))&&(!st||e.status===st)&&(!ty||e.type===ty)&&(!dp||e.dept===dp));
   $('#empCount').textContent=db.employees.length;
+  const due=db.employees.filter(e=>e.status==='Active').map(e=>[e,contractState(e)]).filter(([,c])=>c&&(c.k==='soon'||c.k==='expired'));
+  $('#empAlert').innerHTML = due.length ? `<div class="alert alert-warning py-2 small mb-3"><i class="bi bi-file-earmark-text me-1"></i><b>${due.length} contract${due.length>1?'s':''} need attention:</b> ${due.map(([e,c])=>`<a href="#" class="alert-link" onclick="openEmp('${e.id}');return false">${esc(e.name)}</a> (${c.label.toLowerCase()})`).join(', ')}</div>` : '';
   $('#empBody').innerHTML=list.map(e=>{
     const days=db.attendance.filter(a=>a.empId===e.id&&a.date>=from).reduce((s,a)=>s+a.days,0);
-    const bal=lastBalance(e.id);
+    const bal=lastBalance(e.id), cs=contractState(e);
     return `<tr><td><div class="d-flex align-items-center gap-2"><span class="avatar">${initials(e.name)}</span><div><div>${empLink(e.id)}</div><div class="small text-muted">since ${e.joined?fmtD(e.joined):'—'}</div></div></div></td>
-      <td>${esc(e.phone||'—')}</td><td>${esc(e.position)}</td><td class="num">${inr(e.basic)}</td><td class="num">${inr(e.basic/8)}</td><td class="num">${days?days.toFixed(1):'—'}</td>
+      <td>${typeBadge(e)}${cs?`<div class="small mt-1 ${cs.k==='expired'?'text-danger fw-semibold':cs.k==='soon'?'text-warning-emphasis fw-semibold':'text-muted'}">${e.agency?esc(e.agency)+' · ':''}${cs.label}</div>`:''}</td><td>${esc(e.phone||'—')}</td><td>${esc(e.position)}<div class="small text-muted">${esc(e.dept)}</div></td><td class="num">${inr(e.basic)}</td><td class="num">${inr(e.basic/8)}</td><td class="num">${days?days.toFixed(1):'—'}</td>
       <td class="num ${bal>0?'text-danger fw-semibold':''}">${bal?inr2(bal):'—'}</td>
       <td>${e.status==='Active'?'<span class="badge badge-green">Active</span>':'<span class="badge badge-grey">Inactive</span>'}</td>
       <td class="text-end text-nowrap"><a class="btn btn-sm btn-light" title="History" href="#employee/${e.id}"><i class="bi bi-clock-history"></i></a>
       <button class="btn btn-sm btn-light" title="Record advance" onclick="openAdvance('${e.id}')"><i class="bi bi-wallet2"></i></button>
       <button class="btn btn-sm btn-light" title="Edit" onclick="openEmp('${e.id}')"><i class="bi bi-pencil"></i></button>
       <button class="btn btn-sm btn-light text-danger" title="Delete" onclick="delEmp('${e.id}')"><i class="bi bi-trash"></i></button></td></tr>`;
-  }).join('') || '<tr><td colspan="9" class="empty">No employees match</td></tr>';
+  }).join('') || '<tr><td colspan="10" class="empty">No employees match</td></tr>';
 }
-window.openEmp=id=>{ const e=id?emp(id):{name:'',phone:'',position:'Electrical Technician',basic:'',joined:TODAY,idNo:'',status:'Active'};
+window.openEmp=id=>{ const e=id?emp(id):{name:'',phone:'',position:'Electrical Technician',basic:'',joined:TODAY,idNo:'',status:'Active',type:'Permanent',dept:'Electrical',agency:'',cStart:TODAY,cEnd:'',cNote:''};
   $('#empModalTitle').textContent=id?'Edit employee':'Add employee'; $('#empId').value=id||'';
   $('#empName').value=e.name; $('#empPhone').value=e.phone; $('#empPos').value=e.position; $('#empBasic').value=e.basic; $('#empJoined').value=e.joined; $('#empIdNo').value=e.idNo||''; $('#empStatus').value=e.status;
+  $('#empType').value=e.type||'Permanent'; $('#empDept').value=e.dept||'Electrical'; $('#empAgency').value=e.agency||''; $('#empCStart').value=e.cStart||''; $('#empCEnd').value=e.cEnd||''; $('#empCNote').value=e.cNote||''; toggleContract();
   bootstrap.Modal.getOrCreateInstance($('#empModal')).show(); };
 $('#empForm').onsubmit=ev=>{ ev.preventDefault(); const id=$('#empId').value;
-  const data={name:$('#empName').value.trim(),phone:$('#empPhone').value.trim(),position:$('#empPos').value,basic:+$('#empBasic').value,joined:$('#empJoined').value,idNo:$('#empIdNo').value.trim(),status:$('#empStatus').value};
+  const isC=$('#empType').value==='Contract';
+  if(isC&&!$('#empAgency').value.trim()){ $('#empAgency').focus(); return toast('Add the contractor or agency (or "Direct contract")'); }
+  if(isC&&$('#empCStart').value&&$('#empCEnd').value&&$('#empCEnd').value<$('#empCStart').value) return toast('Contract end is before its start');
+  const data={name:$('#empName').value.trim(),phone:$('#empPhone').value.trim(),position:$('#empPos').value,basic:+$('#empBasic').value,joined:$('#empJoined').value,idNo:$('#empIdNo').value.trim(),status:$('#empStatus').value,type:$('#empType').value,dept:$('#empDept').value,
+    agency:isC?$('#empAgency').value.trim():'',cStart:isC?$('#empCStart').value:'',cEnd:isC?$('#empCEnd').value:'',cNote:isC?$('#empCNote').value.trim():''};
   if(id) Object.assign(emp(id),data); else db.employees.push({id:uid(),...data});
   save(); bootstrap.Modal.getInstance($('#empModal')).hide(); renderEmployees(); toast(id?'Employee updated':'Employee added'); };
 window.delEmp=id=>{ if(db.attendance.some(a=>a.empId===id)){ if(!confirm('This employee has attendance history. Mark as Inactive instead?')) return; emp(id).status='Inactive'; }
@@ -723,33 +895,62 @@ window.delEmp=id=>{ if(db.attendance.some(a=>a.empId===id)){ if(!confirm('This e
 
 /* ================= PROJECTS ================= */
 const PRJ_BADGE={Ongoing:'badge-amber','On hold':'badge-grey',Completed:'badge-green'};
-$('#prjSearch').oninput=renderProjects; $('#prjStatusFilter').onchange=renderProjects;
+$('#prjSearch').oninput=renderProjects;
+['#prjStatusFilter','#prjDeptFilter','#prjTypeFilter','#prjPeriod'].forEach(s=>$(s).onchange=renderProjects);
+$('#prjClear').onclick=()=>{ $('#prjSearch').value=''; ['#prjStatusFilter','#prjDeptFilter','#prjTypeFilter'].forEach(s=>$(s).value=''); $('#prjPeriod').value='all'; renderProjects(); };
+$('#prjDepts').addEventListener('click',e=>{ const b=e.target.closest('[data-dept]'); if(!b) return; $('#prjDeptFilter').value = $('#prjDeptFilter').value===b.dataset.dept ? '' : b.dataset.dept; renderProjects(); });
+function periodStart(p){ return p==='30'?addDays(TODAY,-29) : p==='90'?addDays(TODAY,-89) : p==='month'?TODAY.slice(0,8)+'01' : p==='year'?TODAY.slice(0,5)+'01-01' : ''; }
 function renderProjects(){
-  const q=$('#prjSearch').value.toLowerCase(), st=$('#prjStatusFilter').value;
-  const list=db.projects.filter(p=>(!st||p.status===st)&&(!q||[p.name,p.location,p.client].join(' ').toLowerCase().includes(q)));
+  const q=$('#prjSearch').value.toLowerCase(), st=$('#prjStatusFilter').value, dp=$('#prjDeptFilter').value, ty=$('#prjTypeFilter').value, from=periodStart($('#prjPeriod').value);
   const order={Ongoing:0,'On hold':1,Completed:2};
-  $('#prjCount').textContent=db.projects.length;
-  $('#prjBody').innerHTML=list.map(p=>{ const att=db.attendance.filter(a=>a.site===p.name); const last=att.map(a=>a.date).sort().at(-1);
-      return {p,att,last,days:att.reduce((s,a)=>s+a.days,0),cost:att.reduce((s,a)=>s+a.amount,0)}; })
-    .sort((a,b)=>order[a.p.status]-order[b.p.status]||(b.last||'').localeCompare(a.last||''))
-    .map(({p,att,last,days,cost})=>`<tr><td><div class="fw-semibold">${esc(p.name)}</div>${p.notes?`<div class="small text-muted text-truncate" style="max-width:240px">${esc(p.notes)}</div>`:''}</td>
-      <td>${p.location?`<i class="bi bi-geo-alt text-muted me-1"></i>${esc(p.location)}`:'<span class="text-muted">—</span>'}</td><td>${esc(p.client)||'<span class="text-muted">—</span>'}</td>
-      <td class="text-nowrap">${p.start?fmtD(p.start):'—'}</td><td class="num">${days?(days%1?days.toFixed(1):days):'—'}</td><td class="num fw-semibold">${cost?inr(cost):'—'}</td>
+  const counted = a => (!from||a.date>=from) && (!ty||emp(a.empId).type===ty);
+  const rows=db.projects.filter(p=>(!st||p.status===st)&&(!dp||p.dept===dp)&&(!q||[p.name,p.location,p.client,p.dept].join(' ').toLowerCase().includes(q)))
+    .map(p=>{ const all=db.attendance.filter(a=>a.site===p.name), att=all.filter(counted);
+      return {p,att,last:all.map(a=>a.date).sort().at(-1),
+        days:att.reduce((s,a)=>s+a.days,0), cDays:att.filter(a=>emp(a.empId).type==='Contract').reduce((s,a)=>s+a.days,0),
+        labour:att.reduce((s,a)=>s+a.wage,0), mat:att.reduce((s,a)=>s+(+a.material||0),0), exp:att.reduce((s,a)=>s+(+a.petrol||0)+(+a.tools||0),0)}; })
+    .filter(r=>!ty||r.att.length)
+    .sort((a,b)=>order[a.p.status]-order[b.p.status]||(b.last||'').localeCompare(a.last||''));
+
+  // KPIs follow the filters
+  const S=k=>rows.reduce((s,r)=>s+r[k],0), days=S('days'), cDays=S('cDays'), labour=S('labour'), mat=S('mat'), exp=S('exp');
+  const cnt=s=>rows.filter(r=>r.p.status===s).length;
+  const k=(label,val,sub,icon,amber)=>`<div class="col-6 col-xl-3"><div class="card kpi h-100"><div class="d-flex justify-content-between gap-2"><div><div class="k-label">${label}</div><div class="k-value">${val}</div><div class="k-sub">${sub}</div></div><div class="k-icon ${amber?'amber':''}"><i class="bi ${icon}"></i></div></div></div></div>`;
+  $('#prjKpis').innerHTML =
+    k('Projects', rows.length, `${cnt('Ongoing')} ongoing · ${cnt('On hold')} on hold · ${cnt('Completed')} done`, 'bi-buildings') +
+    k('Man-days', fmtN(days), days?`${Math.round(cDays/days*100)}% by contract labour`:'No work in this view', 'bi-people', true) +
+    k('Labour cost', inr(labour), days?`${inr(labour/days)} per man-day`:'—', 'bi-cash-stack') +
+    k('Material & expenses', inr(mat+exp), `${inr(mat)} material · ${inr(exp)} petrol & tools`, 'bi-box-seam', true);
+
+  // department strip (click to filter)
+  const byDept={}; rows.forEach(r=>{ const d=byDept[r.p.dept]||(byDept[r.p.dept]={n:0,cost:0}); d.n++; d.cost+=r.labour+r.mat+r.exp; });
+  $('#prjDepts').innerHTML = Object.entries(byDept).sort((a,b)=>b[1].cost-a[1].cost).map(([d,v])=>`<button type="button" class="dept-chip ${dp===d?'active':''}" data-dept="${esc(d)}"><span class="fw-bold">${esc(d)}</span><span class="text-muted">${v.n} project${v.n>1?'s':''} · ${inr(v.cost)}</span></button>`).join('');
+
+  $('#prjCount').textContent = rows.length===db.projects.length ? rows.length : `${rows.length} of ${db.projects.length}`;
+  $('#prjScope').textContent = $('#prjPeriod').selectedOptions[0].text + (ty?` · ${ty} employees only`:'');
+  $('#prjBody').innerHTML=rows.map(({p,last,days,cDays,labour,mat})=>`<tr>
+      <td><div class="fw-semibold">${esc(p.name)}</div><div class="small text-muted">${[p.location,p.client].filter(Boolean).map(esc).join(' · ')||'No location yet'}</div></td>
+      <td><span class="badge badge-dept">${esc(p.dept)}</span></td>
+      <td class="text-nowrap">${p.start?fmtD(p.start):'—'}</td>
+      <td class="num">${days?fmtN(days):'—'}</td>
+      <td class="num">${days?Math.round(cDays/days*100)+'%':'—'}</td>
+      <td class="num fw-semibold">${labour?inr(labour):'—'}</td>
+      <td class="num">${mat?inr(mat):'—'}</td>
       <td class="text-nowrap">${last?fmtDs(last):'<span class="text-muted">No work yet</span>'}</td>
       <td><span class="badge ${PRJ_BADGE[p.status]}">${p.status}</span></td>
       <td class="text-end text-nowrap"><button class="btn btn-sm btn-light" title="View attendance" onclick="viewPrjAtt('${esc(p.name)}')"><i class="bi bi-list-check"></i></button>
         <button class="btn btn-sm btn-light" title="Edit" onclick="openPrj('${p.id}')"><i class="bi bi-pencil"></i></button>
         <button class="btn btn-sm btn-light text-danger" title="Delete" onclick="delPrj('${p.id}')"><i class="bi bi-trash"></i></button></td></tr>`).join('')
-    || '<tr><td colspan="9" class="empty">No projects match</td></tr>';
+    || '<tr><td colspan="10" class="empty">No projects match these filters</td></tr>';
 }
 window.viewPrjAtt=name=>{ fillSelectors(); $('#regSite').value=name; $('#regFrom').value=''; $('#regTo').value=''; location.hash='attendance'; setTimeout(()=>$('#regBody').scrollIntoView({behavior:'smooth'}),50); };
-window.openPrj=id=>{ const p=id?db.projects.find(x=>x.id===id):{name:'',location:'',client:'',start:TODAY,status:'Ongoing',notes:''};
+window.openPrj=id=>{ const p=id?db.projects.find(x=>x.id===id):{name:'',location:'',client:'',dept:'Electrical',start:TODAY,status:'Ongoing',notes:''};
   $('#prjModalTitle').textContent=id?'Edit project':'Add project'; $('#prjId').value=id||'';
-  $('#prjName').value=p.name; $('#prjLoc').value=p.location; $('#prjClient').value=p.client; $('#prjStart').value=p.start; $('#prjStatus').value=p.status; $('#prjNotes').value=p.notes||'';
+  $('#prjName').value=p.name; $('#prjLoc').value=p.location; $('#prjClient').value=p.client; $('#prjStart').value=p.start; $('#prjStatus').value=p.status; $('#prjNotes').value=p.notes||''; $('#prjDept').value=p.dept||'Electrical';
   bootstrap.Modal.getOrCreateInstance($('#prjModal')).show(); };
 $('#prjForm').onsubmit=ev=>{ ev.preventDefault(); const id=$('#prjId').value, name=$('#prjName').value.trim();
   if(db.projects.some(p=>p.name.toLowerCase()===name.toLowerCase()&&p.id!==id)) return toast('A project with this name already exists');
-  const data={name,location:$('#prjLoc').value.trim(),client:$('#prjClient').value.trim(),start:$('#prjStart').value,status:$('#prjStatus').value,notes:$('#prjNotes').value.trim()};
+  const data={name,location:$('#prjLoc').value.trim(),client:$('#prjClient').value.trim(),start:$('#prjStart').value,status:$('#prjStatus').value,dept:$('#prjDept').value,notes:$('#prjNotes').value.trim()};
   if(id){ const p=db.projects.find(x=>x.id===id);
     if(p.name!==name){ db.attendance.forEach(a=>{ if(a.site===p.name) a.site=name; }); db.staff.forEach(s=>s.sites=s.sites.map(x=>x===p.name?name:x)); }
     Object.assign(p,data); } else db.projects.push({id:uid(),...data});
@@ -798,7 +999,7 @@ function renderHistory(id, keepFilters){
   // header
   $('#ehAvatar').textContent=initials(e.name); $('#ehName').textContent=e.name;
   $('#ehStatus').innerHTML=e.status==='Active'?'<span class="badge badge-green">Active</span>':'<span class="badge badge-grey">Inactive</span>';
-  $('#ehMeta').innerHTML=`${esc(e.position)} · ${esc(e.phone||'no phone')} · Basic ${inr(e.basic)}/day (₹${(e.basic/8).toFixed(2)}/hr) · Joined ${e.joined?fmtD(e.joined):'—'}`;
+  $('#ehMeta').innerHTML=`${typeBadge(e)} <span class="badge badge-dept">${esc(e.dept)}</span> ${esc(e.position)} · ${esc(e.phone||'no phone')} · Basic ${inr(e.basic)}/day (₹${(e.basic/8).toFixed(2)}/hr) · Joined ${e.joined?fmtD(e.joined):'—'}${e.type==='Contract'?`<div class="mt-1"><i class="bi bi-file-earmark-text me-1"></i>${esc(e.agency||'Contract')} · ${e.cStart?fmtD(e.cStart):'—'} → ${e.cEnd?fmtD(e.cEnd):'open'} · <b class="${(contractState(e).k==='expired')?'text-danger':contractState(e).k==='soon'?'text-warning-emphasis':''}">${contractState(e).label}</b>${e.cNote?' · '+esc(e.cNote):''}</div>`:''}`;
   const cb=currentBalance(id);
   $('#ehBal').textContent=Math.abs(cb.bal)<0.5?'₹0':inr2(cb.bal); $('#ehBal').className='h4 fw-bold m-0 '+(cb.bal>0.5?'text-danger':cb.bal<-0.5?'text-success':'');
   $('#ehBalSub').textContent = cb.bal>0.5?'payable to employee':cb.bal<-0.5?'overpaid / recoverable':'fully settled';
@@ -806,33 +1007,33 @@ function renderHistory(id, keepFilters){
   // KPIs
   const sum=(arr,k)=>arr.reduce((s,a)=>s+(+a[k]||0),0);
   const closed=att.filter(a=>a.out);
-  const daysW=sum(closed,'days'), hrs=sum(closed,'hours'), sal=sum(att,'salary'), exp=sum(att,'petrol')+sum(att,'tools'), adv=sum(advs,'amount');
+  const daysW=sum(closed,'days'), hrs=sum(closed,'hours'), sal=sum(att,'wage'), exp=sum(att,'petrol')+sum(att,'tools')+sum(att,'material'), adv=sum(advs,'amount');
   const paid=Object.entries(db.settlements).filter(([w])=>w>=weekStartOf(f)&&w<=t).reduce((s,[,v])=>s+(v.rows.find(r=>r.empId===id)?.paid||0),0);
   const k=(label,val,sub,icon,amber)=>`<div class="col-6 col-md-4 col-xl-2"><div class="card kpi h-100"><div class="d-flex justify-content-between"><div><div class="k-label">${label}</div><div class="k-value" style="font-size:1.35rem">${val}</div><div class="k-sub">${sub}</div></div><div class="k-icon ${amber?'amber':''}" style="width:36px;height:36px;font-size:1rem"><i class="bi ${icon}"></i></div></div></div></div>`;
   $('#ehKpis').innerHTML =
     k('Days worked', daysW%1?daysW.toFixed(1):daysW, `${closed.length} attendance entries`,'bi-calendar-check') +
     k('Hours', hrs.toFixed(1), closed.length?`avg ${(hrs/closed.length).toFixed(1)} hrs/day`:'—','bi-clock') +
     k('Wages earned', inr(sal), daysW?`avg ${inr(sal/closed.length)}/day`:'—','bi-cash-stack') +
-    k('Expenses', inr(exp), 'petrol + tools','bi-fuel-pump',true) +
+    k('Expenses', inr(exp), 'petrol, tools, material','bi-fuel-pump',true) +
     k('Advances', inr(adv), `${advs.length} advance${advs.length===1?'':'s'}`,'bi-wallet2',true) +
     k('Paid out', inr(paid), 'in settled weeks','bi-check2-circle');
 
   // attendance tab
   $('#ehCntAtt').textContent=att.length;
   let html='', curM=null, mTot=0, mDays=0;
-  const closeM=()=>{ if(curM) html+=`<tr class="day-total"><td colspan="5" class="text-end">${curM} total</td><td class="num">${mDays%1?mDays.toFixed(1):mDays}</td><td></td><td colspan="3"></td><td class="num">${inr(mTot)}</td><td colspan="2"></td></tr>`; };
+  const closeM=()=>{ if(curM) html+=`<tr class="day-total"><td colspan="5" class="text-end">${curM} total</td><td class="num">${mDays%1?mDays.toFixed(1):mDays}</td><td></td><td colspan="4"></td><td class="num">${inr(mTot)}</td><td colspan="2"></td></tr>`; };
   att.forEach(a=>{
     const m=parse(a.date).toLocaleDateString('en-IN',{month:'long',year:'numeric'});
     if(m!==curM){ closeM(); curM=m; mTot=0; mDays=0; }
     mTot+=a.amount; mDays+=a.days;
     html+=`<tr><td class="text-nowrap">${fmtDs(a.date)}</td><td>${esc(a.site)}</td><td>${a.in||'—'}</td><td>${a.out||'<span class="badge badge-amber">On site</span>'}</td>
       <td class="num">${a.out?a.hours.toFixed(2):'—'}</td><td class="num">${a.out?(a.days%1?a.days.toFixed(2).replace(/0$/,''):a.days):'—'}</td><td class="num">${inr(a.basic)}</td><td class="num">${inr(a.salary)}</td>
-      <td class="num">${a.petrol?inr(a.petrol):'—'}</td><td class="num">${a.tools?inr(a.tools):'—'}</td><td class="num fw-semibold">${inr(a.amount)}</td>
+      <td class="num">${a.petrol?inr(a.petrol):'—'}</td><td class="num">${a.tools?inr(a.tools):'—'}</td><td class="num">${matCell(a)}</td><td class="num fw-semibold">${amtCell(a)}</td>
       <td class="small text-muted" style="max-width:240px">${esc(a.update||'')}</td>
       <td class="text-end no-print"><button class="btn btn-sm btn-link p-0" onclick="editAtt('${a.id}')"><i class="bi bi-pencil"></i></button></td></tr>`;
   });
   closeM();
-  $('#ehAttBody').innerHTML = html || '<tr><td colspan="13" class="empty">No attendance in this period</td></tr>';
+  $('#ehAttBody').innerHTML = html || '<tr><td colspan="14" class="empty">No attendance in this period</td></tr>';
 
   // weekly payments tab
   const weeks=new Set([...all.map(a=>weekStartOf(a.date)), ...db.advances.filter(a=>a.empId===id).map(a=>weekStartOf(a.date)),
@@ -850,7 +1051,7 @@ function renderHistory(id, keepFilters){
 
   // advances tab
   $('#ehCntAdv').textContent=advs.length;
-  $('#ehAdvBody').innerHTML = advs.map(a=>{ const w=weekStartOf(a.date); return `<tr><td>${fmtD(a.date)}</td><td>${esc(a.note)}</td><td>${fmtDs(w)} – ${fmtDs(addDays(w,6))} ${db.settlements[w]?'<span class="badge badge-green ms-1">Settled</span>':'<span class="badge badge-amber ms-1">Open</span>'}</td><td class="num fw-semibold">${inr(a.amount)}</td></tr>`; }).join('')
+  $('#ehAdvBody').innerHTML = advs.map(a=>{ const w=weekStartOf(a.date); return `<tr><td>${fmtD(a.date)}</td><td>${esc(a.note)}</td><td>${fmtDs(w)} – ${fmtDs(addDays(w,6))} ${db.settlements[w]?'<span class="badge badge-green ms-1">Settled</span>':'<span class="badge badge-amber ms-1">Open</span>'}</td><td class="num fw-semibold">${amtCell(a)}</td></tr>`; }).join('')
     + (advs.length?`<tr class="day-total"><td colspan="3" class="text-end">Total</td><td class="num">${inr(adv)}</td></tr>`:'<tr><td colspan="4" class="empty">No advances in this period</td></tr>');
 
   // sites + rate changes
@@ -865,8 +1066,8 @@ $('#ehCsvBtn').onclick=()=>{
   const e=emp(ehId), f=$('#ehFrom').value, t=$('#ehTo').value, site=$('#ehSite').value;
   const att=db.attendance.filter(a=>a.empId===ehId&&a.date>=f&&a.date<=t&&(!site||a.site===site)).sort((a,b)=>a.date.localeCompare(b.date));
   const q=v=>`"${String(v??'').replace(/"/g,'""')}"`;
-  const lines=[['Date','Site','Punch In','Punch Out','Hours','Days','Basic','Salary','Petrol','Tools','Amount','Work Update'].join(','),
-    ...att.map(a=>[a.date,q(a.site),a.in,a.out,a.hours.toFixed(2),a.days,a.basic,Math.round(a.salary),a.petrol||0,a.tools||0,Math.round(a.amount),q(a.update)].join(','))];
+  const lines=[['Date','Site','Punch In','Punch Out','Hours','Days','Basic','Salary','Petrol','Tools','Material','Material Note','Amount','Work Update'].join(','),
+    ...att.map(a=>[a.date,q(a.site),a.in,a.out,a.hours.toFixed(2),a.days,a.basic,Math.round(a.salary),a.petrol||0,a.tools||0,a.material||0,q(a.matNote),Math.round(a.amount),q(a.update)].join(','))];
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/csv'})); a.download=`${e.name}_history_${f}_to_${t}.csv`; a.click();
 };
 
@@ -907,7 +1108,7 @@ function buildWeek(ws){
   db.employees.forEach(e=>{ if(Math.abs(prevBalance(e.id,ws))>=1) ids.add(e.id); });
   const rows=[...ids].map(id=>{
     const mine=att.filter(a=>a.empId===id);
-    const old=Math.round(prevBalance(id,ws)), labour=mine.reduce((s,a)=>s+a.salary,0), exp=mine.reduce((s,a)=>s+(+a.petrol||0),0), tools=mine.reduce((s,a)=>s+(+a.tools||0),0);
+    const old=Math.round(prevBalance(id,ws)), labour=mine.reduce((s,a)=>s+a.wage,0), exp=mine.reduce((s,a)=>s+(+a.petrol||0),0), tools=mine.reduce((s,a)=>s+(+a.tools||0)+(+a.material||0),0);
     const total=old+labour+exp+tools, advAmt=adv.filter(a=>a.empId===id).reduce((s,a)=>s+a.amount,0), grand=total-advAmt;
     const paid = paidDraft[ws+id] ?? Math.max(0,Math.round(grand));
     return {empId:id,old,labour,exp,tools,total,adv:advAmt,grand,paid,bal:grand-paid};
@@ -961,6 +1162,41 @@ $('#advForm').onsubmit=e=>{ e.preventDefault(); const date=$('#advDate').value; 
   db.advances.push({id:uid(),date,empId:$('#advEmp').value,amount:+$('#advAmt').value,note:$('#advNote').value.trim()||'Advance'});
   save(); bootstrap.Modal.getInstance($('#advModal')).hide(); route(); toast('Advance recorded'); };
 window.delAdv=id=>{ if(!confirm('Delete this advance?')) return; db.advances=db.advances.filter(a=>a.id!==id); save(); renderSettlement(); };
+
+/* ================= DEPARTMENT LISTS ================= */
+(function(){
+  const opts=DEPTS.map(d=>`<option>${d}</option>`).join('');
+  $('#empDept').innerHTML=opts; $('#prjDept').innerHTML=opts;
+  $('#empDeptFilter').innerHTML='<option value="">All departments</option>'+opts;
+  $('#prjDeptFilter').innerHTML='<option value="">All departments</option>'+opts;
+})();
+
+/* ================= PHONE CARDS =================
+   Below 768px every table is drawn as a stack of cards: the first cell is the
+   card's title, the others become label/value pairs read from the table head. */
+const WIDE_COLS=new Set(['Work update','Permissions','Assigned sites','Note','Material ₹','Site']);
+function cardify(table){
+  const heads=[...table.querySelectorAll(':scope > thead th')].map(th=>th.textContent.replace(/\s+/g,' ').trim());
+  table.querySelectorAll(':scope > tbody > tr, :scope > tfoot > tr').forEach(tr=>{
+    const cells=[...tr.children]; let col=0;
+    const flat=cells.some(td=>td.colSpan>1);
+    tr.classList.toggle('row-flat',flat);
+    cells.forEach((td,i)=>{
+      const h=heads[col]||''; col+=td.colSpan||1;
+      const text=td.textContent.trim(), ctl=td.querySelector('input,select,button,.btn,.badge');
+      td.dataset.label = flat ? '' : h;
+      td.classList.toggle('td-title', !flat && i===0);
+      td.classList.toggle('td-wide', !flat && i>0 && WIDE_COLS.has(h) && h!=='Site');
+      td.classList.toggle('td-act', !flat && i>0 && !text && !!td.querySelector('button,.btn') && !td.querySelector('input,select'));
+      td.classList.toggle('td-blank', !flat && !text && !ctl);
+      td.classList.toggle('td-dash', !flat && text==='—');
+    });
+  });
+}
+document.querySelectorAll('.content table.table').forEach(t=>{
+  t.classList.add('table-cards'); cardify(t);
+  new MutationObserver(()=>cardify(t)).observe(t,{childList:true,subtree:true});
+});
 
 route();
 </script>
